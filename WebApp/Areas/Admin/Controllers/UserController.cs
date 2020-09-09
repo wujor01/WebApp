@@ -1,5 +1,6 @@
 ﻿using Model.Dao;
 using Model.EF;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,21 @@ namespace WebApp.Areas.Admin.Controllers
     public class UserController : BaseController
     {
         // GET: Admin/User
-        public ActionResult Index()
+        public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
+        {
+            var dao = new UserDao();
+            var model = dao.ListAllPaging(searchString, page, pageSize);
+
+            ViewBag.SearchString = searchString;
+
+            return View(model);
+        }
+        [HttpGet]
+        public ActionResult Create()
         {
             return View();
         }
+        [HttpPost]
         public ActionResult Create(User user)
         {
             if (ModelState.IsValid) 

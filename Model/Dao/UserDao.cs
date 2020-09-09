@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PagedList;
 
 namespace Model.Dao
 {
@@ -19,6 +20,17 @@ namespace Model.Dao
             db.User.Add(entity);
             db.SaveChanges();
             return entity.ID;
+        }
+
+        public IEnumerable<User> ListAllPaging(string searchString, int page, int pageSize)
+        {
+            IQueryable<User> model = db.User;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                model = model.Where(x => x.Username.Contains(searchString) || x.Email.Contains(searchString));
+            }
+
+            return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
         }
         public User GetById(string userName)
         {
