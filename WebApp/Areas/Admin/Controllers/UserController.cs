@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using WebApp.Common;
 
 namespace WebApp.Areas.Admin.Controllers
@@ -25,6 +26,10 @@ namespace WebApp.Areas.Admin.Controllers
             var encryptedMd5Pas = Encryptor.MD5Hash(user.Password);
             user.Password = encryptedMd5Pas;
 
+                //lấy id trong session đăng nhập của mod lưu vào phiên tạo mới user
+                var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+                user.CreatedBy = session.UserName;
+                user.CreatedDate = DateTime.Now;
             long id = dao.Insert(user);
                 if (id >0)
                 {
