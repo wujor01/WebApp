@@ -57,6 +57,10 @@ namespace WebApp.Areas.Admin.Controllers
             }
             return View("Index");
         }
-        
+        public ActionResult LogOut()
+        {
+            Session.Abandon();
+            return RedirectToAction("Index", "Login");
+        }
     }
 }
