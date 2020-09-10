@@ -36,12 +36,13 @@ namespace Model.Dao
                 }
                 user.TimeStart = entity.TimeStart;
                 user.TimeOut = entity.TimeOut;
-                user.ModifiedBy = entity.ModifiedBy;
+                user.Status = entity.Status;
+
                 user.ModifiedDate = DateTime.Now;
                 db.SaveChanges();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
                 //logging
                 return false;
@@ -108,7 +109,7 @@ namespace Model.Dao
                 db.SaveChanges();
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return false;
             }

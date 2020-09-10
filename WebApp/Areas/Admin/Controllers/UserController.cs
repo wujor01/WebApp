@@ -44,6 +44,9 @@ namespace WebApp.Areas.Admin.Controllers
                 {
                     var encryptedMd5Pas = Encryptor.MD5Hash(user.Password);
                     user.Password = encryptedMd5Pas;
+
+                    var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+                    user.ModifiedBy = session.UserName;
                 }
 
 
