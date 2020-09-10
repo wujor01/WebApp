@@ -26,6 +26,42 @@ namespace WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        //[HasCredential(RoleID = "ADD_USER")]
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        //[HasCredential(RoleID = "ADD_USER")]
+        public ActionResult Create(User user)
+        {
+            if (ModelState.IsValid)
+            {
+                var dao = new UserDao();
+                //Băm mật khẩu bằng hàm MD5
+                var encryptedMd5Pas = Encryptor.MD5Hash(user.Password);
+                user.Password = encryptedMd5Pas;
+
+                //lấy id trong session đăng nhập của quản trị lưu vào phiên tạo mới user
+                var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+                user.CreatedBy = session.UserName;
+                user.CreatedDate = DateTime.Now;
+                long id = dao.Insert(user);
+                if (id > 0)
+                {
+                    SetAlert("Thêm user thành công", "success");
+                    return RedirectToAction("Index", "User");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Thêm user không thành công");
+                }
+            }
+            return View("Index");
+        }
+
         //[HasCredential(RoleID = "EDIT_USER")]
         public ActionResult Edit(int id)
         {
@@ -82,42 +118,6 @@ namespace WebApp.Areas.Admin.Controllers
             {
                 status = result
             });
-        }
-
-        [HttpGet]
-        //[HasCredential(RoleID = "ADD_USER")]
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        //[HasCredential(RoleID = "ADD_USER")]
-        public ActionResult Create(User user)
-        {
-            if (ModelState.IsValid) 
-            {
-            var dao = new UserDao();
-            //Băm mật khẩu bằng hàm MD5
-            var encryptedMd5Pas = Encryptor.MD5Hash(user.Password);
-            user.Password = encryptedMd5Pas;
-
-                //lấy id trong session đăng nhập của quản trị lưu vào phiên tạo mới user
-                var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-                user.CreatedBy = session.UserName;
-                user.CreatedDate = DateTime.Now;
-            long id = dao.Insert(user);
-                if (id >0)
-                {
-                SetAlert("Thêm user thành công", "success");
-                return RedirectToAction("Index", "User");
-                }
-                else
-                {
-                ModelState.AddModelError("", "Thêm user không thành công");
-                }
-            }
-            return View("Index");
         }
     }
 }

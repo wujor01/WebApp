@@ -40,5 +40,8 @@ namespace Model.EF
         public TimeSpan? TimeStart { get; set; }
 
         public TimeSpan? TimeOut { get; set; }
+
+        [StringLength(20)]
+        public string GroupID { get; set; }
     }
 }

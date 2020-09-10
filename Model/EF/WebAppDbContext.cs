@@ -19,6 +19,8 @@ namespace Model.EF
         public virtual DbSet<Profile> Profile { get; set; }
         public virtual DbSet<Taxi> Taxi { get; set; }
         public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<Role> Role { get; set; }
+        public virtual DbSet<UserGroup> UserGroup { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -112,6 +114,18 @@ namespace Model.EF
 
             modelBuilder.Entity<User>()
                 .Property(e => e.ModifiedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<User>()
+                .Property(e => e.GroupID)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Role>()
+                .Property(e => e.ID)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<UserGroup>()
+                .Property(e => e.GroupID)
                 .IsUnicode(false);
         }
     }
