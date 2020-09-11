@@ -153,6 +153,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Admin\Data\Employee\img\avt.jpg" />
+    <Content Include="Areas\Admin\Data\Employee\img\IMG_20161015_152951.jpg" />
     <Content Include="assets\admin\bower_components\bootstrap-social\bootstrap-social.css" />
     <Content Include="assets\admin\bower_components\bootstrap\dist\css\bootstrap-theme.css" />
     <Content Include="assets\admin\bower_components\bootstrap\dist\css\bootstrap-theme.min.css" />
@@ -2622,7 +2624,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Views\Base\" />
     <Folder Include="Models\" />
   </ItemGroup>

@@ -36,7 +36,7 @@ namespace WebApp.Areas.Admin.Controllers
 
         [HttpPost]
         //[HasCredential(RoleID = "ADD_USER")]
-        public ActionResult Create(Employee employee)
+        public ActionResult Create(Employee employee, HttpPostedFileBase Image)
         {
             if (ModelState.IsValid)
             {
@@ -47,6 +47,10 @@ namespace WebApp.Areas.Admin.Controllers
                 employee.CreatedBy = session.UserName;
                 employee.CreatedDate = DateTime.Now;
                 //lấy đường dẫn ảnh upload lưu vào db
+                var fileName = Path.GetFileName(Image.FileName);
+                var path = Path.Combine(Server.MapPath("/Areas/Admin/Data/Employee/img/"), fileName);
+                Image.SaveAs(path);
+                employee.Image = path;
                 long id = dao.Insert(employee);
                 if (id > 0)
                 {
@@ -60,8 +64,6 @@ namespace WebApp.Areas.Admin.Controllers
             }
             return View("Index");
         }
-
-
-
+            
     }
 }
