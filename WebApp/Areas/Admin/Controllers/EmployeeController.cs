@@ -13,10 +13,6 @@ namespace WebApp.Areas.Admin.Controllers
     public class EmployeeController : BaseController
     {
         // GET: Admin/Employee
-        public ActionResult Index()
-        {
-            return View();
-        }
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
             var dao = new EmployeeDao();
@@ -48,9 +44,11 @@ namespace WebApp.Areas.Admin.Controllers
                 employee.CreatedDate = DateTime.Now;
                 //lấy đường dẫn ảnh upload lưu vào db
                 var fileName = Path.GetFileName(Image.FileName);
-                var path = Path.Combine(Server.MapPath("/Areas/Admin/Data/Employee/img/"), fileName);
+                var folderName = "/Areas/Admin/Data/Employee/img/";
+                var path = Path.Combine(Server.MapPath(folderName), fileName);
                 Image.SaveAs(path);
-                employee.Image = path;
+                //Lấy chuỗi từ vị trí "Areas" -1 giống với folderName lưu vào db
+                employee.Image = path.Substring(path.IndexOf("Areas")-1);
                 long id = dao.Insert(employee);
                 if (id > 0)
                 {
