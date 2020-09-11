@@ -5,7 +5,6 @@ namespace Model.EF
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
-    using System.Web;
 
     [Table("Employee")]
     public partial class Employee
@@ -45,5 +44,31 @@ namespace Model.EF
 
         [StringLength(500)]
         public string Description { get; set; }
+
+        public bool ApplicationForm { get; set; }
+
+        public bool CV { get; set; }
+
+        public bool HouseholdBook { get; set; }
+
+        public bool CardID { get; set; }
+
+        [StringLength(150)]
+        public string Certificate { get; set; }
+
+        public TimeSpan? TimeStart { get; set; }
+
+        public TimeSpan? TimeOut { get; set; }
+
+        [StringLength(20)]
+        public string GroupID { get; set; }
+
+        [StringLength(50)]
+        public string Username { get; set; }
+
+        [StringLength(150)]
+        public string Password { get; set; }
+
+        public bool StatusAccount { get; set; }
     }
 }

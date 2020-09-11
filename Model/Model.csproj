@@ -60,16 +60,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dao\EmployeeDao.cs" />
-    <Compile Include="Dao\UserDao.cs" />
     <Compile Include="EF\Customer.cs" />
     <Compile Include="EF\DayOff.cs" />
     <Compile Include="EF\Employee.cs" />
     <Compile Include="EF\List.cs" />
-    <Compile Include="EF\Profile.cs" />
     <Compile Include="EF\Role.cs" />
     <Compile Include="EF\Taxi.cs" />
-    <Compile Include="EF\User.cs" />
     <Compile Include="EF\UserGroup.cs" />
+    <Compile Include="EF\Violator.cs" />
     <Compile Include="EF\WebAppDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

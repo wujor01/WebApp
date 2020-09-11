@@ -40,15 +40,29 @@ namespace WebApp.Areas.Admin.Controllers
             {
                 var dao = new EmployeeDao();
 
+                //Băm mật khẩu bằng hàm MD5
+                var encryptedMd5Pas = Encryptor.MD5Hash(employee.Password);
+                employee.Password = encryptedMd5Pas;
+
+                //mã nhân viên khi lưu vào db luôn là HOA
+                var upperCode = employee.Code.ToUpper();
+                employee.Code = upperCode;
+
+                //tài khoản luôn là chữ thường khi lưu
+                var lowerUserName = employee.Username.ToLower();
+                employee.Username = lowerUserName;
+
                 //lấy id trong session đăng nhập của quản trị lưu vào phiên tạo mới user
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
                 employee.CreatedBy = session.UserName;
                 employee.CreatedDate = DateTime.Now;
+
                 //lấy đường dẫn ảnh upload lưu vào db
                 var fileName = Path.GetFileName(Image.FileName);
                 var folderName = "/Areas/Admin/Data/Employee/img/";
                 var path = Path.Combine(Server.MapPath(folderName), fileName);
                 Image.SaveAs(path);
+
                 //Lấy chuỗi từ vị trí "Areas"-1 giống với folderName lưu vào db
                 employee.Image = path.Substring(path.IndexOf("Areas")-1);
                 long id = dao.Insert(employee);
@@ -104,5 +118,35 @@ namespace WebApp.Areas.Admin.Controllers
             return View("Index");
         }
 
+        [HttpDelete]
+        //[HasCredential(RoleID = "DELETE_USER")]
+        public ActionResult Delete(int id)
+        {
+            new EmployeeDao().Delete(id);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        //[HasCredential(RoleID = "EDIT_USER")]
+        public JsonResult ChangeStatus(long id)
+        {
+            var result = new EmployeeDao().ChangeStatus(id);
+            return Json(new
+            {
+                status = result
+            });
+        }
+
+        [HttpPost]
+        //[HasCredential(RoleID = "EDIT_USER")]
+        public JsonResult ChangeStatusAccount(long id)
+        {
+            var result = new EmployeeDao().ChangeStatusAccount(id);
+            return Json(new
+            {
+                status = result
+            });
+        }
     }
 }
