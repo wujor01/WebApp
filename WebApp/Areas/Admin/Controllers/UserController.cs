@@ -79,12 +79,11 @@ namespace WebApp.Areas.Admin.Controllers
                 if (!string.IsNullOrEmpty(user.Password))
                 {
                     var encryptedMd5Pas = Encryptor.MD5Hash(user.Password);
-                    user.Password = encryptedMd5Pas;
-
-                    var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-                    user.ModifiedBy = session.UserName;
+                    user.Password = encryptedMd5Pas;     
                 }
 
+                var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+                user.ModifiedBy = session.UserName;
 
                 var result = dao.Update(user);
                 if (result)

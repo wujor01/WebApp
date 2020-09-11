@@ -13,6 +13,8 @@ namespace WebApp.Areas.Admin.Controllers
     public class EmployeeController : BaseController
     {
         // GET: Admin/Employee
+
+        //[HasCredential(RoleID = "VIEW_USER")]
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
             var dao = new EmployeeDao();
@@ -47,7 +49,7 @@ namespace WebApp.Areas.Admin.Controllers
                 var folderName = "/Areas/Admin/Data/Employee/img/";
                 var path = Path.Combine(Server.MapPath(folderName), fileName);
                 Image.SaveAs(path);
-                //Lấy chuỗi từ vị trí "Areas" -1 giống với folderName lưu vào db
+                //Lấy chuỗi từ vị trí "Areas"-1 giống với folderName lưu vào db
                 employee.Image = path.Substring(path.IndexOf("Areas")-1);
                 long id = dao.Insert(employee);
                 if (id > 0)
@@ -62,6 +64,45 @@ namespace WebApp.Areas.Admin.Controllers
             }
             return View("Index");
         }
-            
+
+        //[HasCredential(RoleID = "EDIT_USER")]
+        public ActionResult Edit(int id)
+        {
+            var employee = new EmployeeDao().ViewDetail(id);
+            return View(employee);
+        }
+
+        [HttpPost]
+        //[HasCredential(RoleID = "EDIT_USER")]
+        public ActionResult Edit(Employee employee, HttpPostedFileBase Image)
+        {
+            if (ModelState.IsValid)
+            {
+                var dao = new EmployeeDao();
+                var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+                employee.ModifiedBy = session.UserName;
+
+                ////lấy đường dẫn ảnh upload lưu vào db
+                //var fileName = Path.GetFileName(Image.FileName);
+                //var folderName = "/Areas/Admin/Data/Employee/img/";
+                //var path = Path.Combine(Server.MapPath(folderName), fileName);
+                //Image.SaveAs(path);
+                ////Lấy chuỗi từ vị trí "Areas"-1 giống với folderName lưu vào db
+                //employee.Image = path.Substring(path.IndexOf("Areas") - 1);
+
+                var result = dao.Update(employee);
+                if (result)
+                {
+                    SetAlert("Cập nhật thông tin thành công", "success");
+                    return RedirectToAction("Index", "Employee");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Cập nhật thông tin thành công");
+                }
+            }
+            return View("Index");
+        }
+
     }
 }
