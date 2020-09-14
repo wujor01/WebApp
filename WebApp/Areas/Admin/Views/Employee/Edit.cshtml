@@ -5,6 +5,23 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
+@section jsFooter{
+    <script>
+        $('#btnSelectImage').on('click', function (e) {
+            e.preventDefault();
+            var finder = new CKFinder();
+            finder.selectActionFunction = function (url) {
+                $('#txtImage').val(url);
+            };
+            finder.popup();
+        })
+
+        var editor = CKEDITOR.replace('txtContent', {
+            customConfig: '/assets/admin/js/plugins/ckeditor/config.js',
+        });
+    </script>
+}
+
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-default">
@@ -15,7 +32,7 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-lg-6">
-                        @using (Html.BeginForm("Edit", "Employee", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        @using (Html.BeginForm("Edit", "Employee", FormMethod.Post))
                         {
                             @Html.AntiForgeryToken()
 
@@ -52,7 +69,8 @@
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.Image, htmlAttributes: new { @class = "control-label col-md-2" })
                                     <div class="col-md-10">
-                                        @Html.EditorFor(model => model.Image, new { htmlAttributes = new { @class = "form-control", @type = "file" } })
+                                        @Html.TextBoxFor(model => model.Image, new { htmlAttributes = new { @class = "form-control", @id = "txtImage" }, id = "txtImage" })
+                                        <a id="btnSelectImage" href="#">Chọn ảnh</a>
                                         @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -63,7 +81,7 @@
                                         @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
                                         @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
                                     </div>
-                                </div>           
+                                </div>
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
                                     <div class="col-md-10">
@@ -177,10 +195,10 @@
                                         <input type="submit" value="Save" class="btn btn-default" />
                                     </div>
                                 </div>
-                            <div>
-                                @Html.ActionLink("Back to List", "Index")
+                                <div>
+                                    @Html.ActionLink("Back to List", "Index")
+                                </div>
                             </div>
-                         </div>
                         }
                     </div>
                 </div>
