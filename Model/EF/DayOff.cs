@@ -19,6 +19,8 @@ namespace Model.EF
 
         public long? Employee_ID { get; set; }
 
+        public bool Status { get; set; }
+
         public DateTime? CreatedDate { get; set; }
 
         [StringLength(50)]

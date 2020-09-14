@@ -16,9 +16,10 @@ namespace Model.EF
         public virtual DbSet<DayOff> DayOff { get; set; }
         public virtual DbSet<Employee> Employee { get; set; }
         public virtual DbSet<List> List { get; set; }
-        public virtual DbSet<Profile> Profile { get; set; }
         public virtual DbSet<Taxi> Taxi { get; set; }
-        public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<UserGroup> UserGroup { get; set; }
+        public virtual DbSet<Violator> Violator { get; set; }
+        public virtual DbSet<Role> Role { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -62,6 +63,10 @@ namespace Model.EF
                 .Property(e => e.ModifiedBy)
                 .IsUnicode(false);
 
+            modelBuilder.Entity<Employee>()
+                .Property(e => e.GroupID)
+                .IsUnicode(false);
+
             modelBuilder.Entity<List>()
                 .Property(e => e.Room)
                 .IsFixedLength();
@@ -86,14 +91,6 @@ namespace Model.EF
                 .Property(e => e.ModifiedBy)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Profile>()
-                .Property(e => e.CreatedBy)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<Profile>()
-                .Property(e => e.ModifiedBy)
-                .IsUnicode(false);
-
             modelBuilder.Entity<Taxi>()
                 .Property(e => e.Commission)
                 .HasPrecision(18, 0);
@@ -106,12 +103,24 @@ namespace Model.EF
                 .Property(e => e.Phone)
                 .IsFixedLength();
 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<UserGroup>()
+                .Property(e => e.GroupID)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Violator>()
+                .Property(e => e.Code)
+                .IsFixedLength();
+
+            modelBuilder.Entity<Violator>()
                 .Property(e => e.CreatedBy)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<Violator>()
                 .Property(e => e.ModifiedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Role>()
+                .Property(e => e.ID)
                 .IsUnicode(false);
         }
     }

@@ -6,26 +6,17 @@ namespace Model.EF
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("User")]
-    public partial class User
+    [Table("Violator")]
+    public partial class Violator
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long ID { get; set; }
 
-        [StringLength(50)]
-        public string Username { get; set; }
-
-        [StringLength(150)]
-        public string Password { get; set; }
-
-        [StringLength(50)]
-        public string Email { get; set; }
-
-        public long? Employee_ID { get; set; }
+        [StringLength(10)]
+        public string Code { get; set; }
 
         [StringLength(500)]
         public string Description { get; set; }
-
-        public bool Status { get; set; }
 
         public DateTime? CreatedDate { get; set; }
 
@@ -36,9 +27,5 @@ namespace Model.EF
 
         [StringLength(50)]
         public string ModifiedBy { get; set; }
-
-        public TimeSpan? TimeStart { get; set; }
-
-        public TimeSpan? TimeOut { get; set; }
     }
 }

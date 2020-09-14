@@ -22,7 +22,7 @@ namespace WebApp.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var dao = new UserDao();
+                var dao = new EmployeeDao();
                 var result = dao.Login(model.UserName, Encryptor.MD5Hash(model.PassWord));
                 if (result == 1)
                 {
@@ -57,6 +57,10 @@ namespace WebApp.Areas.Admin.Controllers
             }
             return View("Index");
         }
-        
+        public ActionResult LogOut()
+        {
+            Session.Abandon();
+            return RedirectToAction("Index", "Login");
+        }
     }
 }
