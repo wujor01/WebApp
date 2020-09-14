@@ -34,7 +34,7 @@ namespace WebApp.Areas.Admin.Controllers
 
         [HttpPost]
         //[HasCredential(RoleID = "ADD_USER")]
-        public ActionResult Create(Employee employee, HttpPostedFileBase Image)
+        public ActionResult Create(Employee employee)
         {
             //if (ModelState.IsValid)
             //{
@@ -64,18 +64,6 @@ namespace WebApp.Areas.Admin.Controllers
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
                 employee.CreatedBy = session.UserName;
                 employee.CreatedDate = DateTime.Now;
-
-                if (Image != null)
-                {
-                    //lấy đường dẫn ảnh upload lưu vào db
-                var fileName = Path.GetFileName(Image.FileName);
-                var folderName = "/Areas/Admin/Data/Employee/img/";
-                var path = Path.Combine(Server.MapPath(folderName), fileName);
-                Image.SaveAs(path);
-
-                //Lấy chuỗi từ vị trí "Areas"-1 giống với folderName lưu vào db
-                employee.Image = path.Substring(path.IndexOf("Areas")-1);
-                }
                 
                 long id = dao.Insert(employee);
                 if (id > 0)
@@ -100,7 +88,7 @@ namespace WebApp.Areas.Admin.Controllers
 
         [HttpPost]
         //[HasCredential(RoleID = "EDIT_USER")]
-        public ActionResult Edit(Employee employee, HttpPostedFileBase Image)
+        public ActionResult Edit(Employee employee)
         {
             //if (ModelState.IsValid)
             //{
@@ -113,20 +101,7 @@ namespace WebApp.Areas.Admin.Controllers
                     var encryptedMd5Pas = Encryptor.MD5Hash(employee.Password);
                     employee.Password = encryptedMd5Pas;
                 }
-               
-                if (Image != null)
-                {
-                    //lấy đường dẫn ảnh upload lưu vào db
-                var fileName = Path.GetFileName(Image.FileName);
-                var folderName = "/Areas/Admin/Data/Employee/img/";
-                var path = Path.Combine(Server.MapPath(folderName), fileName);
-                Image.SaveAs(path);
-
-                //Lấy chuỗi từ vị trí "Areas"-1 giống với folderName lưu vào db
-                employee.Image = path.Substring(path.IndexOf("Areas")-1);
-                }
-                
-
+        
                 var result = dao.Update(employee);
                 if (result)
                 {

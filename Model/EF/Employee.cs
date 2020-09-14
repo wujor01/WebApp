@@ -20,9 +20,7 @@ namespace Model.EF
         [DataType(DataType.Date)]
         public DateTime? Birthday { get; set; }
 
-        [DataType(DataType.Upload)]
-        [Display(Name = "Upload File")]
-        [Required(ErrorMessage = "Please choose file to upload.")]
+        [StringLength(250)]
         public string Image { get; set; }
 
         [StringLength(10)]
