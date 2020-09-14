@@ -14,7 +14,7 @@ namespace WebApp.Areas.Admin.Controllers
     {
         // GET: Admin/Employee
 
-        //[HasCredential(RoleID = "VIEW_USER")]
+        [HasCredential(RoleID = "VIEW_USER")]
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
             var dao = new EmployeeDao();
@@ -26,18 +26,18 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        //[HasCredential(RoleID = "ADD_USER")]
+        [HasCredential(RoleID = "ADD_USER")]
         public ActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        //[HasCredential(RoleID = "ADD_USER")]
+        [HasCredential(RoleID = "ADD_USER")]
         public ActionResult Create(Employee employee)
         {
-            //if (ModelState.IsValid)
-            //{
+            if (ModelState.IsValid)
+            {
                 var dao = new EmployeeDao();
 
                 //Băm mật khẩu bằng hàm MD5
@@ -75,11 +75,12 @@ namespace WebApp.Areas.Admin.Controllers
                 {
                     ModelState.AddModelError("", "Thêm nhân viên không thành công");
                 }
-            //}
-            return View("Index");
+            }
+            SetAlert("Tài khoản hoặc mã nhân viên đã tồn tại!", "error");
+            return RedirectToAction("Index", "Employee");
         }
 
-        //[HasCredential(RoleID = "EDIT_USER")]
+        [HasCredential(RoleID = "EDIT_USER")]
         public ActionResult Edit(int id)
         {
             var employee = new EmployeeDao().ViewDetail(id);
@@ -87,11 +88,11 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        //[HasCredential(RoleID = "EDIT_USER")]
+        [HasCredential(RoleID = "EDIT_USER")]
         public ActionResult Edit(Employee employee)
         {
-            //if (ModelState.IsValid)
-            //{
+            if (ModelState.IsValid)
+            {
                 var dao = new EmployeeDao();
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
                 employee.ModifiedBy = session.UserName;
@@ -101,23 +102,25 @@ namespace WebApp.Areas.Admin.Controllers
                     var encryptedMd5Pas = Encryptor.MD5Hash(employee.Password);
                     employee.Password = encryptedMd5Pas;
                 }
-        
-                var result = dao.Update(employee);
-                if (result)
+
+                long id = dao.Update(employee);
+                if (id > 0)
                 {
-                    SetAlert("Cập nhật thông tin thành công", "success");
+                    SetAlert("Sửa thông tin nhân viên thành công", "success");
                     return RedirectToAction("Index", "Employee");
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Cập nhật thông tin thành công");
-                //}
+                    SetAlert("Tài khoản hoặc mã nhân viên đã tồn tại!", "error");
+                    return RedirectToAction("Index", "Employee");
+                }
             }
-            return View("Index");
+            SetAlert("Sửa thông tin nhân viên thất bại", "error");
+            return RedirectToAction("Index", "Employee");
         }
 
         [HttpDelete]
-        //[HasCredential(RoleID = "DELETE_USER")]
+        [HasCredential(RoleID = "DELETE_USER")]
         public ActionResult Delete(int id)
         {
             new EmployeeDao().Delete(id);
@@ -126,7 +129,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        //[HasCredential(RoleID = "EDIT_USER")]
+        [HasCredential(RoleID = "EDIT_USER")]
         public JsonResult ChangeStatus(long id)
         {
             var result = new EmployeeDao().ChangeStatus(id);
@@ -137,7 +140,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        //[HasCredential(RoleID = "EDIT_USER")]
+        [HasCredential(RoleID = "EDIT_USER")]
         public JsonResult ChangeStatusAccount(long id)
         {
             var result = new EmployeeDao().ChangeStatusAccount(id);

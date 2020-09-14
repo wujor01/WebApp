@@ -12,6 +12,7 @@ namespace Model.EF
         {
         }
 
+        public virtual DbSet<Credential> Credential { get; set; }
         public virtual DbSet<Customer> Customer { get; set; }
         public virtual DbSet<DayOff> DayOff { get; set; }
         public virtual DbSet<Employee> Employee { get; set; }
@@ -23,6 +24,14 @@ namespace Model.EF
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Credential>()
+                .Property(e => e.UserGroupID)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Credential>()
+                .Property(e => e.RoleID)
+                .IsUnicode(false);
+
             modelBuilder.Entity<Customer>()
                 .Property(e => e.CardID)
                 .IsFixedLength();

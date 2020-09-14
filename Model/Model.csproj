@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dao\EmployeeDao.cs" />
+    <Compile Include="EF\Credential.cs" />
     <Compile Include="EF\Customer.cs" />
     <Compile Include="EF\DayOff.cs" />
     <Compile Include="EF\Employee.cs" />

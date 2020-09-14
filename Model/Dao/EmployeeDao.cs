@@ -20,22 +20,24 @@ namespace Model.Dao
 
         public long Insert(Employee entity)
         {
-            db.Employee.Add(entity);
-            db.SaveChanges();
+            if (CheckUserName(entity.Username) == false && CheckCode(entity.Code) == false)
+            {
+                db.Employee.Add(entity);
+                db.SaveChanges();               
+            }
             return entity.ID;
         }
 
-        public bool Update(Employee entity)
+        public long Update(Employee entity)
         {
-            try
+            var employee = db.Employee.Find(entity.ID);
+            if (entity.Username != employee.Username && entity.Code != employee.Code)
             {
-                var employee = db.Employee.Find(entity.ID);
                 //Đểm số ngày nghỉ
                 int countdayoff = db.DayOff.Where(c => c.ID == entity.ID).ToList().Count();
-
                 employee.Name = entity.Name;
                 employee.Phone = entity.Phone;
-                employee.Birthday = entity.Birthday;                
+                employee.Birthday = entity.Birthday;
                 employee.Image = entity.Image;
                 employee.Code = entity.Code;
                 employee.Status = entity.Status;
@@ -58,13 +60,15 @@ namespace Model.Dao
                 employee.StatusAccount = entity.StatusAccount;
                 //Ngày chỉnh sửa = Now
                 employee.ModifiedDate = DateTime.Now;
-                db.SaveChanges();
-                return true;
+                if (CheckUserName(employee.Username) == false && CheckCode(employee.Code) == false)
+                {
+                    db.SaveChanges();
+                }
+                return 1;
             }
-            catch (Exception)
+            else
             {
-                //logging
-                return false;
+                return 0;
             }
         }
 
@@ -141,9 +145,9 @@ namespace Model.Dao
         {
             return db.Employee.Count(x => x.Username == userName) > 0;
         }
-        public bool CheckEmail(string phone)
+        public bool CheckCode(string code)
         {
-            return db.Employee.Count(x => x.Phone == phone) > 0;
+            return db.Employee.Count(x => x.Code == code) > 0;
         }
 
         public int Login(string userName, string passWord)
@@ -196,24 +200,24 @@ namespace Model.Dao
 
         //Kiểm tra user đang nhập có quyền thực hiện các tác vụ thêm, sửa, xóa theo phân quyền
 
-        //public List<string> GetListCredential(string userName)
-        //{
-        //    var user = db.User.Single(x => x.Username == userName);
-        //    var data = (from a in db.Employee
-        //                join b in db.UserGroups on a.UserGroupID equals b.ID
-        //                join c in db.Roles on a.RoleID equals c.ID
-        //                where b.ID == user.GroupID
-        //                select new
-        //                {
-        //                    RoleID = a.RoleID,
-        //                    UserGroupID = a.UserGroupID
-        //                }).AsEnumerable().Select(x => new Credential()
-        //                {
-        //                    RoleID = x.RoleID,
-        //                    UserGroupID = x.UserGroupID
-        //                });
-        //    return data.Select(x => x.RoleID).ToList();
+        public List<string> GetListCredential(string userName)
+        {
+            var user = db.Employee.Single(x => x.Username == userName);
+            var data = (from a in db.Credential
+                        join b in db.UserGroup on a.UserGroupID equals b.GroupID
+                        join c in db.Role on a.RoleID equals c.ID
+                        where b.GroupID == user.GroupID
+                        select new
+                        {
+                            RoleID = a.RoleID,
+                            UserGroupID = a.UserGroupID
+                        }).AsEnumerable().Select(x => new Credential()
+                        {
+                            RoleID = x.RoleID,
+                            UserGroupID = x.UserGroupID
+                        });
+            return data.Select(x => x.RoleID).ToList();
 
-        //}
+        }
     }
 }
