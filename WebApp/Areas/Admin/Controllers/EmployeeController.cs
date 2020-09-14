@@ -36,28 +36,38 @@ namespace WebApp.Areas.Admin.Controllers
         //[HasCredential(RoleID = "ADD_USER")]
         public ActionResult Create(Employee employee, HttpPostedFileBase Image)
         {
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 var dao = new EmployeeDao();
 
                 //Băm mật khẩu bằng hàm MD5
-                var encryptedMd5Pas = Encryptor.MD5Hash(employee.Password);
-                employee.Password = encryptedMd5Pas;
-
+                if (!string.IsNullOrEmpty(employee.Password))
+                {
+                    var encryptedMd5Pas = Encryptor.MD5Hash(employee.Password);
+                    employee.Password = encryptedMd5Pas;
+                }
                 //mã nhân viên khi lưu vào db luôn là HOA
-                var upperCode = employee.Code.ToUpper();
-                employee.Code = upperCode;
+                if (!string.IsNullOrEmpty(employee.Code))
+                {
+                    var upperCode = employee.Code.ToUpper();
+                    employee.Code = upperCode;
+                }
 
                 //tài khoản luôn là chữ thường khi lưu
-                var lowerUserName = employee.Username.ToLower();
-                employee.Username = lowerUserName;
+                if (!string.IsNullOrEmpty(employee.Username))
+                {
+                    var lowerUserName = employee.Username.ToLower();
+                    employee.Username = lowerUserName;
+                }
 
                 //lấy id trong session đăng nhập của quản trị lưu vào phiên tạo mới user
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
                 employee.CreatedBy = session.UserName;
                 employee.CreatedDate = DateTime.Now;
 
-                //lấy đường dẫn ảnh upload lưu vào db
+                if (Image != null)
+                {
+                    //lấy đường dẫn ảnh upload lưu vào db
                 var fileName = Path.GetFileName(Image.FileName);
                 var folderName = "/Areas/Admin/Data/Employee/img/";
                 var path = Path.Combine(Server.MapPath(folderName), fileName);
@@ -65,6 +75,8 @@ namespace WebApp.Areas.Admin.Controllers
 
                 //Lấy chuỗi từ vị trí "Areas"-1 giống với folderName lưu vào db
                 employee.Image = path.Substring(path.IndexOf("Areas")-1);
+                }
+                
                 long id = dao.Insert(employee);
                 if (id > 0)
                 {
@@ -75,7 +87,7 @@ namespace WebApp.Areas.Admin.Controllers
                 {
                     ModelState.AddModelError("", "Thêm nhân viên không thành công");
                 }
-            }
+            //}
             return View("Index");
         }
 
@@ -90,19 +102,30 @@ namespace WebApp.Areas.Admin.Controllers
         //[HasCredential(RoleID = "EDIT_USER")]
         public ActionResult Edit(Employee employee, HttpPostedFileBase Image)
         {
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 var dao = new EmployeeDao();
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
                 employee.ModifiedBy = session.UserName;
 
-                ////lấy đường dẫn ảnh upload lưu vào db
-                //var fileName = Path.GetFileName(Image.FileName);
-                //var folderName = "/Areas/Admin/Data/Employee/img/";
-                //var path = Path.Combine(Server.MapPath(folderName), fileName);
-                //Image.SaveAs(path);
-                ////Lấy chuỗi từ vị trí "Areas"-1 giống với folderName lưu vào db
-                //employee.Image = path.Substring(path.IndexOf("Areas") - 1);
+                if (!string.IsNullOrEmpty(employee.Password))
+                {
+                    var encryptedMd5Pas = Encryptor.MD5Hash(employee.Password);
+                    employee.Password = encryptedMd5Pas;
+                }
+               
+                if (Image != null)
+                {
+                    //lấy đường dẫn ảnh upload lưu vào db
+                var fileName = Path.GetFileName(Image.FileName);
+                var folderName = "/Areas/Admin/Data/Employee/img/";
+                var path = Path.Combine(Server.MapPath(folderName), fileName);
+                Image.SaveAs(path);
+
+                //Lấy chuỗi từ vị trí "Areas"-1 giống với folderName lưu vào db
+                employee.Image = path.Substring(path.IndexOf("Areas")-1);
+                }
+                
 
                 var result = dao.Update(employee);
                 if (result)
@@ -113,7 +136,7 @@ namespace WebApp.Areas.Admin.Controllers
                 else
                 {
                     ModelState.AddModelError("", "Cập nhật thông tin thành công");
-                }
+                //}
             }
             return View("Index");
         }

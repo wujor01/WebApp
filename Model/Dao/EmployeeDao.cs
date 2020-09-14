@@ -35,7 +35,7 @@ namespace Model.Dao
 
                 employee.Name = entity.Name;
                 employee.Phone = entity.Phone;
-                employee.Birthday = entity.Birthday;
+                employee.Birthday = entity.Birthday;                
                 employee.Image = entity.Image;
                 employee.Code = entity.Code;
                 employee.Status = entity.Status;
@@ -61,7 +61,7 @@ namespace Model.Dao
                 db.SaveChanges();
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //logging
                 return false;
@@ -130,7 +130,7 @@ namespace Model.Dao
                 db.SaveChanges();
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
