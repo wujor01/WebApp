@@ -1592,7 +1592,6 @@
     <Content Include="assets\admin\less\mixins.less" />
     <Content Include="assets\admin\less\sb-admin-2.less" />
     <Content Include="assets\admin\less\variables.less" />
-    <Content Include="Areas\Admin\Views\Login\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_Navigation.cshtml" />
@@ -1607,6 +1606,7 @@
     <Content Include="assets\admin\js\plugins\ckfinder\userfiles\.htaccess" />
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\401.cshtml" />
+    <Content Include="Areas\Admin\Views\Login\Index.cshtml" />
     <None Include="Properties\PublishProfiles\registry.hub.docker.com_wujor01.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />

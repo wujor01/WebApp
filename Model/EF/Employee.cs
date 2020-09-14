@@ -17,7 +17,7 @@ namespace Model.EF
         [StringLength(10)]
         public string Code { get; set; }
 
-        [Column(TypeName = "date")]
+        [DataType(DataType.Date)]
         public DateTime? Birthday { get; set; }
 
         [StringLength(250)]
