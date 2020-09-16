@@ -18,6 +18,8 @@ namespace Model.EF
         [StringLength(500)]
         public string Description { get; set; }
 
+        public decimal? Loan { get; set; }
+
         public DateTime? CreatedDate { get; set; }
 
         [StringLength(50)]

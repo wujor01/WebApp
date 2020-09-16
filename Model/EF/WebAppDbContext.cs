@@ -14,9 +14,9 @@ namespace Model.EF
 
         public virtual DbSet<Credential> Credential { get; set; }
         public virtual DbSet<Customer> Customer { get; set; }
+        public virtual DbSet<DailyList> DailyList { get; set; }
         public virtual DbSet<DayOff> DayOff { get; set; }
         public virtual DbSet<Employee> Employee { get; set; }
-        public virtual DbSet<List> List { get; set; }
         public virtual DbSet<Taxi> Taxi { get; set; }
         public virtual DbSet<UserGroup> UserGroup { get; set; }
         public virtual DbSet<Violator> Violator { get; set; }
@@ -48,6 +48,42 @@ namespace Model.EF
                 .Property(e => e.ModifiedBy)
                 .IsUnicode(false);
 
+            modelBuilder.Entity<DailyList>()
+                .Property(e => e.Employee_Code)
+                .IsFixedLength();
+
+            modelBuilder.Entity<DailyList>()
+                .Property(e => e.Room)
+                .IsFixedLength();
+
+            modelBuilder.Entity<DailyList>()
+                .Property(e => e.Ticket)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<DailyList>()
+                .Property(e => e.Tip)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<DailyList>()
+                .Property(e => e.Code)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<DailyList>()
+                .Property(e => e.Voucher)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<DailyList>()
+                .Property(e => e.Total)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<DailyList>()
+                .Property(e => e.CreatedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<DailyList>()
+                .Property(e => e.ModifiedBy)
+                .IsUnicode(false);
+
             modelBuilder.Entity<DayOff>()
                 .Property(e => e.CreatedBy)
                 .IsUnicode(false);
@@ -74,30 +110,6 @@ namespace Model.EF
 
             modelBuilder.Entity<Employee>()
                 .Property(e => e.GroupID)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<List>()
-                .Property(e => e.Room)
-                .IsFixedLength();
-
-            modelBuilder.Entity<List>()
-                .Property(e => e.Fare)
-                .HasPrecision(18, 0);
-
-            modelBuilder.Entity<List>()
-                .Property(e => e.Tip)
-                .HasPrecision(18, 0);
-
-            modelBuilder.Entity<List>()
-                .Property(e => e.Code)
-                .IsFixedLength();
-
-            modelBuilder.Entity<List>()
-                .Property(e => e.CreatedBy)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<List>()
-                .Property(e => e.ModifiedBy)
                 .IsUnicode(false);
 
             modelBuilder.Entity<Taxi>()
@@ -119,6 +131,10 @@ namespace Model.EF
             modelBuilder.Entity<Violator>()
                 .Property(e => e.Code)
                 .IsFixedLength();
+
+            modelBuilder.Entity<Violator>()
+                .Property(e => e.Loan)
+                .HasPrecision(18, 0);
 
             modelBuilder.Entity<Violator>()
                 .Property(e => e.CreatedBy)

@@ -1,24 +1,25 @@
-﻿@model PagedList.IPagedList<Model.EF.Employee>
+﻿@model PagedList.IPagedList<Model.EF.DailyList>
 @using PagedList.Mvc;
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layouts.cshtml";
 }
+
 @section header{
-    Danh sách người dùng
 }
+
 <div class="row">
 
     <div class="col-lg-12">
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                Danh sách người dùng
+                Danh sách bang ke
             </div>
 
             <!-- /.panel-heading -->
             <div class="panel-body">
-                @using (Html.BeginForm("Index", "Employee", FormMethod.Get))
+                @using (Html.BeginForm("Index", "ListvsTaxi", FormMethod.Get))
                 {
                     <div class="row form-group">
                         <div class="col-lg-12">
@@ -27,7 +28,7 @@
                             </div>
                             <div class="col-md-4">
                                 <button type="submit" class="btn btn-success">Tìm kiếm</button>
-                                <a class="btn btn-primary" href="/Admin/Employee/Create">Thêm mới</a>
+                                <a class="btn btn-primary" href="/Admin/ListvsTaxi/Create">Thêm mới</a>
                             </div>
                         </div>
                     </div>
@@ -37,32 +38,30 @@
                     <table class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>Mã nhân viên</th>
-                                <th>Họ tên</th>
-                                <th>Tài khoản</th>
-                                <th>Hình ảnh</th>
-                                <th>Số điện thoại</th>
-                                <th>Ngày sinh</th>
-                                <td>Giờ vào ca</td>
-                                <td>Giờ kết ca</td>
-                                <td>Số ngày đã nghỉ</td>
+                                <th>KTV</th>
+                                <th>Phòng</th>
+                                <th>Giờ vào</th>
+                                <th>Giờ ra</th>
+                                <th>Giá vé</th>
+                                <th>Tổng tiền</th>
+                                <td>Yêu cầu</td>
+                                <td>Xác nhận</td>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model)
                             {
                                 <tr id="row_@item.ID">
-                                    <td>@item.Code</td>
-                                    <td>@item.Name</td>
-                                    <td>@item.Username</td>
-                                    <td><img src="@item.Image" width="100px" /></td>
-                                    <td>@item.Phone</td>
-                                    <td>@item.Birthday</td>
-                                    <td>@item.TimeStart</td>
+                                    <td>@item.Employee_Code</td>
+                                    <td>@item.Room</td>
+                                    <td>@item.TimeIn</td>
                                     <td>@item.TimeOut</td>
-                                    <td>@item.NumberOfDayOff</td>
+                                    <td>@item.Ticket</td>
+                                    <td>@item.Total</td>
+                                    <td>@item.Description</td>
+                                    <td>@item.Status</td>
                                     <td>
-                                        <a href="/Admin/Employee/Edit/@item.ID">Sửa</a>
+                                        <a href="/Admin/ListvsTaxi/Edit/@item.ID">Sửa</a>
                                         |
                                         @Ajax.ActionLink("Xoá", "Delete", new { @id = item.ID }, new AjaxOptions
                                    {
