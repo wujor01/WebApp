@@ -60,11 +60,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dao\EmployeeDao.cs" />
+    <Compile Include="Dao\ListvsTaxiDao.cs" />
+    <Compile Include="EFJoin\ListvsTaxiModel.cs" />
     <Compile Include="EF\Credential.cs" />
     <Compile Include="EF\Customer.cs" />
+    <Compile Include="EF\DailyList.cs" />
     <Compile Include="EF\DayOff.cs" />
     <Compile Include="EF\Employee.cs" />
-    <Compile Include="EF\List.cs" />
     <Compile Include="EF\Role.cs" />
     <Compile Include="EF\Taxi.cs" />
     <Compile Include="EF\UserGroup.cs" />

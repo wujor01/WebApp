@@ -6,10 +6,13 @@ namespace Model.EF
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("List")]
-    public partial class List
+    [Table("DailyList")]
+    public partial class DailyList
     {
         public long ID { get; set; }
+
+        [StringLength(10)]
+        public string Employee_Code { get; set; }
 
         [StringLength(10)]
         public string Room { get; set; }
@@ -18,14 +21,17 @@ namespace Model.EF
 
         public DateTime? TimeOut { get; set; }
 
-        public decimal? Fare { get; set; }
+        public decimal? Ticket { get; set; }
 
         public decimal? Tip { get; set; }
 
-        [StringLength(10)]
-        public string Code { get; set; }
+        public decimal? Code { get; set; }
+
+        public decimal? Voucher { get; set; }
 
         public long? Taxi_ID { get; set; }
+
+        public decimal? Total { get; set; }
 
         public bool Status { get; set; }
 
