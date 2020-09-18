@@ -9,11 +9,13 @@ namespace Model.EF
     [Table("Violator")]
     public partial class Violator
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long ID { get; set; }
 
         [StringLength(10)]
         public string Code { get; set; }
+
+        [StringLength(50)]
+        public string Type { get; set; }
 
         [StringLength(500)]
         public string Description { get; set; }

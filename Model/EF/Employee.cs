@@ -9,6 +9,12 @@ namespace Model.EF
     [Table("Employee")]
     public partial class Employee
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Employee()
+        {
+            DayOffs = new HashSet<DayOff>();
+        }
+
         public long ID { get; set; }
 
         [StringLength(150)]
@@ -68,5 +74,8 @@ namespace Model.EF
         public string Password { get; set; }
 
         public bool StatusAccount { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DayOff> DayOffs { get; set; }
     }
 }

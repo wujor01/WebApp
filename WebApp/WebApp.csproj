@@ -52,19 +52,19 @@
   <ItemGroup>
     <Reference Include="CKFinder, Version=2.6.0.2792, Culture=neutral, PublicKeyToken=579e7adc719a1423, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Downloads\Compressed\ckfinder\bin\Release\CKFinder.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\Debug\CKFinder.dll</HintPath>
     </Reference>
     <Reference Include="CKFinder_FileEditor, Version=2.1.0.1132, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Downloads\Compressed\ckfinder\bin\Release\CKFinder_FileEditor.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\Debug\CKFinder_FileEditor.dll</HintPath>
     </Reference>
     <Reference Include="CKFinder_ImageResize, Version=2.1.0.1132, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Downloads\Compressed\ckfinder\bin\Release\CKFinder_ImageResize.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\Debug\CKFinder_ImageResize.dll</HintPath>
     </Reference>
     <Reference Include="CKFinder_Watermark, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Downloads\Compressed\ckfinder\bin\Release\CKFinder_Watermark.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\Debug\CKFinder_Watermark.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
@@ -155,10 +155,12 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseController.cs" />
+    <Compile Include="Areas\Admin\Controllers\DayOffController.cs" />
     <Compile Include="Areas\Admin\Controllers\EmployeeController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
-    <Compile Include="Areas\Admin\Controllers\ListvsTaxiController.cs" />
+    <Compile Include="Areas\Admin\Controllers\DailyListController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ViolatorController.cs" />
     <Compile Include="Areas\Admin\Models\LoginModel.cs" />
     <Compile Include="Common\CommonConstants.cs" />
     <Compile Include="Common\Encryptor.cs" />
@@ -1607,8 +1609,14 @@
     <Content Include="Areas\Admin\Views\Shared\401.cshtml" />
     <Content Include="Areas\Admin\Views\Login\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_Layouts.cshtml" />
-    <Content Include="Areas\Admin\Views\ListvsTaxi\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\ListvsTaxi\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Violator\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Violator\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Violator\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\DayOff\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\DayOff\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\DayOff\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\DailyList\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\DailyList\Index.cshtml" />
     <None Include="Properties\PublishProfiles\registry.hub.docker.com_wujor01.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
