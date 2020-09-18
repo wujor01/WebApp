@@ -12,15 +12,15 @@ namespace Model.EF
         {
         }
 
-        public virtual DbSet<Credential> Credential { get; set; }
-        public virtual DbSet<Customer> Customer { get; set; }
-        public virtual DbSet<DailyList> DailyList { get; set; }
-        public virtual DbSet<DayOff> DayOff { get; set; }
-        public virtual DbSet<Employee> Employee { get; set; }
-        public virtual DbSet<Taxi> Taxi { get; set; }
-        public virtual DbSet<UserGroup> UserGroup { get; set; }
-        public virtual DbSet<Violator> Violator { get; set; }
-        public virtual DbSet<Role> Role { get; set; }
+        public virtual DbSet<Credential> Credentials { get; set; }
+        public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<DailyList> DailyLists { get; set; }
+        public virtual DbSet<DayOff> DayOffs { get; set; }
+        public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<Taxi> Taxis { get; set; }
+        public virtual DbSet<UserGroup> UserGroups { get; set; }
+        public virtual DbSet<Violator> Violators { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -112,6 +112,11 @@ namespace Model.EF
                 .Property(e => e.GroupID)
                 .IsUnicode(false);
 
+            modelBuilder.Entity<Employee>()
+                .HasMany(e => e.DayOffs)
+                .WithOptional(e => e.Employee)
+                .HasForeignKey(e => e.Employee_ID);
+
             modelBuilder.Entity<Taxi>()
                 .Property(e => e.Commission)
                 .HasPrecision(18, 0);
@@ -123,6 +128,11 @@ namespace Model.EF
             modelBuilder.Entity<Taxi>()
                 .Property(e => e.Phone)
                 .IsFixedLength();
+
+            modelBuilder.Entity<Taxi>()
+                .HasMany(e => e.DailyLists)
+                .WithOptional(e => e.Taxi)
+                .HasForeignKey(e => e.Taxi_ID);
 
             modelBuilder.Entity<UserGroup>()
                 .Property(e => e.GroupID)

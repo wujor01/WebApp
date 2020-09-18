@@ -59,9 +59,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dao\DayOffDao.cs" />
     <Compile Include="Dao\EmployeeDao.cs" />
-    <Compile Include="Dao\ListvsTaxiDao.cs" />
-    <Compile Include="EFJoin\ListvsTaxiModel.cs" />
+    <Compile Include="Dao\DailyListDao.cs" />
+    <Compile Include="Dao\ViolatorDao.cs" />
     <Compile Include="EF\Credential.cs" />
     <Compile Include="EF\Customer.cs" />
     <Compile Include="EF\DailyList.cs" />

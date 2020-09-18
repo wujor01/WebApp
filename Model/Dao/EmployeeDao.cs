@@ -22,7 +22,7 @@ namespace Model.Dao
         {
             if (CheckUserName(entity.Username) == false && CheckCode(entity.Code) == false)
             {
-                db.Employee.Add(entity);
+                db.Employees.Add(entity);
                 db.SaveChanges();               
             }
             return entity.ID;
@@ -30,11 +30,11 @@ namespace Model.Dao
 
         public long Update(Employee entity)
         {
-            var employee = db.Employee.Find(entity.ID);
+            var employee = db.Employees.Find(entity.ID);
             if (entity.Username != employee.Username && entity.Code != employee.Code)
             {
                 //Đểm số ngày nghỉ
-                int countdayoff = db.DayOff.Where(c => c.ID == entity.ID).ToList().Count();
+                int countdayoff = db.DayOffs.Where(c => c.Employee_ID == entity.ID).ToList().Count();
                 employee.Name = entity.Name;
                 employee.Phone = entity.Phone;
                 employee.Birthday = entity.Birthday;
@@ -68,58 +68,87 @@ namespace Model.Dao
             }
             else
             {
-                return 0;
+                //Đểm số ngày nghỉ
+                int countdayoff = db.DayOffs.Where(c => c.Employee_ID == entity.ID).ToList().Count();
+                employee.Name = entity.Name;
+                employee.Phone = entity.Phone;
+                employee.Birthday = entity.Birthday;
+                employee.Image = entity.Image;
+                employee.Code = entity.Code;
+                employee.Status = entity.Status;
+                employee.Description = entity.Description;
+                employee.NumberOfDayOff = countdayoff;
+                //CV
+                employee.ApplicationForm = entity.ApplicationForm;
+                employee.CV = entity.CV;
+                employee.HouseholdBook = entity.HouseholdBook;
+                employee.CardID = entity.CardID;
+                employee.Certificate = entity.Certificate;
+                //Tài khoản đăng nhập hệ thống
+                employee.Username = entity.Username;
+                if (!string.IsNullOrEmpty(entity.Password))
+                {
+                    employee.Password = entity.Password;
+                }
+                employee.TimeStart = entity.TimeStart;
+                employee.TimeOut = entity.TimeOut;
+                employee.StatusAccount = entity.StatusAccount;
+                //Ngày chỉnh sửa = Now
+                employee.ModifiedDate = DateTime.Now;              
+                db.SaveChanges();
+                return 1;
             }
+            return 0;
         }
 
         public Employee GetById(string userName)
         {
-            return db.Employee.SingleOrDefault(x => x.Username == userName);
+            return db.Employees.SingleOrDefault(x => x.Username == userName);
         }
 
         public Employee ViewDetail(int id)
         {
-            return db.Employee.Find(id);
+            return db.Employees.Find(id);
         }
         //chuyển các dạng dữ liệu bool về kiểu tích chọn không phải dạng list chọn
         public bool ChangeStatus(long id)
         {
-            var employee = db.Employee.Find(id);
+            var employee = db.Employees.Find(id);
             employee.Status = !employee.Status;
             db.SaveChanges();
             return employee.Status;
         }
         public bool ChangeStatusAccount(long id)
         {
-            var employee = db.Employee.Find(id);
+            var employee = db.Employees.Find(id);
             employee.StatusAccount = !employee.StatusAccount;
             db.SaveChanges();
             return employee.StatusAccount;
         }
         public bool ChangeApplicationForm(long id)
         {
-            var employee = db.Employee.Find(id);
+            var employee = db.Employees.Find(id);
             employee.ApplicationForm = !employee.ApplicationForm;
             db.SaveChanges();
             return employee.ApplicationForm;
         }
         public bool ChangeCV(long id)
         {
-            var employee = db.Employee.Find(id);
+            var employee = db.Employees.Find(id);
             employee.CV = !employee.CV;
             db.SaveChanges();
             return employee.CV;
         }
         public bool ChangeHouseholdBook(long id)
         {
-            var employee = db.Employee.Find(id);
+            var employee = db.Employees.Find(id);
             employee.HouseholdBook = !employee.HouseholdBook;
             db.SaveChanges();
             return employee.HouseholdBook;
         }
         public bool ChangeCardID(long id)
         {
-            var employee = db.Employee.Find(id);
+            var employee = db.Employees.Find(id);
             employee.CardID = !employee.CardID;
             db.SaveChanges();
             return employee.CardID;
@@ -129,8 +158,8 @@ namespace Model.Dao
         {
             try
             {
-                var emplyee = db.Employee.Find(id);
-                db.Employee.Remove(emplyee);
+                var emplyee = db.Employees.Find(id);
+                db.Employees.Remove(emplyee);
                 db.SaveChanges();
                 return true;
             }
@@ -143,16 +172,16 @@ namespace Model.Dao
 
         public bool CheckUserName(string userName)
         {
-            return db.Employee.Count(x => x.Username == userName) > 0;
+            return db.Employees.Count(x => x.Username == userName) > 0;
         }
         public bool CheckCode(string code)
         {
-            return db.Employee.Count(x => x.Code == code) > 0;
+            return db.Employees.Count(x => x.Code == code) > 0;
         }
 
         public int Login(string userName, string passWord)
         {
-            var result = db.Employee.SingleOrDefault(x => x.Username == userName);
+            var result = db.Employees.SingleOrDefault(x => x.Username == userName);
             if (result == null)
             {
                 return 0;
@@ -187,7 +216,7 @@ namespace Model.Dao
     //Phân trang quản lý user và thêm mục tìm kiếm theo username và email
     public IEnumerable<Employee> ListAllPaging(string searchString, int page, int pageSize)
         {
-            IQueryable<Employee> model = db.Employee;
+            IQueryable<Employee> model = db.Employees;
             if (!string.IsNullOrEmpty(searchString))
             {
                 model = model.Where(
@@ -202,10 +231,10 @@ namespace Model.Dao
 
         public List<string> GetListCredential(string userName)
         {
-            var user = db.Employee.Single(x => x.Username == userName);
-            var data = (from a in db.Credential
-                        join b in db.UserGroup on a.UserGroupID equals b.GroupID
-                        join c in db.Role on a.RoleID equals c.ID
+            var user = db.Employees.Single(x => x.Username == userName);
+            var data = (from a in db.Credentials
+                        join b in db.UserGroups on a.UserGroupID equals b.GroupID
+                        join c in db.Roles on a.RoleID equals c.ID
                         where b.GroupID == user.GroupID
                         select new
                         {
@@ -218,6 +247,11 @@ namespace Model.Dao
                         });
             return data.Select(x => x.RoleID).ToList();
 
+        }
+
+        public List<Employee> ListAll()
+        {
+            return db.Employees.Where(x => x.Status == true).ToList();
         }
     }
 }
