@@ -39,6 +39,8 @@
                     <table class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
+                                <th>ID</th>
+                                <td>Ngày giờ</td>
                                 <th>Mã nhân viên</th>
                                 <td>Loại</td>
                                 <td>Số tiền</td>
@@ -50,6 +52,8 @@
                             @foreach (var item in Model)
                             {
                                 <tr id="row_@item.ID">
+                                    <th>@item.ID</th>
+                                    <td>@item.CreatedDate</td>
                                     <td>@item.Employee.Code</td>
                                     <td>@item.Tour</td>
                                     <td>@item.Fruit</td>

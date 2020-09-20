@@ -38,11 +38,12 @@
                         <thead>
                             <tr>
                                 <th>Mã nhân viên</th>
-                                <th>Họ tên</th>
-                                <th>Tài khoản</th>
-                                <th>Hình ảnh</th>
-                                <th>Số điện thoại</th>
-                                <th>Ngày sinh</th>
+                                <th>Chi nhánh</th>
+                                <td>Họ tên</td>
+                                <td>Tài khoản</td>
+                                <td>Hình ảnh</td>
+                                <td>Số điện thoại</td>
+                                <td>Ngày sinh</td>
                                 <td>Giờ vào ca</td>
                                 <td>Giờ kết ca</td>
                                 <td>Số ngày đã nghỉ</td>
@@ -54,6 +55,7 @@
                             {
                             <tr id="row_@item.ID">
                                 <td>@item.Code</td>
+                                <td>@item.Department.Name</td>
                                 <td>@item.Name</td>
                                 <td>@item.Username</td>
                                 <td><img src="@item.Image" width="100px" /></td>

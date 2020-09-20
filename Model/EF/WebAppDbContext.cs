@@ -16,6 +16,7 @@ namespace Model.EF
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<DailyList> DailyLists { get; set; }
         public virtual DbSet<DayOff> DayOffs { get; set; }
+        public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<ReExType> ReExTypes { get; set; }
         public virtual DbSet<RevenueExpenditure> RevenueExpenditures { get; set; }
@@ -91,6 +92,11 @@ namespace Model.EF
             modelBuilder.Entity<DayOff>()
                 .Property(e => e.ModifiedBy)
                 .IsUnicode(false);
+
+            modelBuilder.Entity<Department>()
+                .HasMany(e => e.Employees)
+                .WithOptional(e => e.Department)
+                .HasForeignKey(e => e.Department_ID);
 
             modelBuilder.Entity<Employee>()
                 .Property(e => e.Code)

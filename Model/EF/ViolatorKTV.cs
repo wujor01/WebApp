@@ -14,7 +14,7 @@
         [Display(Name = "Mã nhân viên")]
         public long? Employee_ID { get; set; }
 
-        [Display(Name = "Chi tiết")]
+        [Display(Name = "Vi phạm")]
         [StringLength(500)]
         public string Description { get; set; }
 

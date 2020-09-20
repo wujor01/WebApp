@@ -69,6 +69,7 @@
     <Compile Include="EF\Customer.cs" />
     <Compile Include="EF\DailyList.cs" />
     <Compile Include="EF\DayOff.cs" />
+    <Compile Include="EF\Department.cs" />
     <Compile Include="EF\Employee.cs" />
     <Compile Include="EF\ReExType.cs" />
     <Compile Include="EF\RevenueExpenditure.cs" />

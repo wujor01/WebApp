@@ -21,6 +21,9 @@
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long ID { get; set; }
 
+        [Display(Name = "Chi nhánh")]
+        public int? Department_ID { get; set; }
+
         [Display(Name = "Tên nhân viên")]
         [StringLength(150)]
         public string Name { get; set; }
@@ -105,6 +108,8 @@
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DayOff> DayOffs { get; set; }
+
+        public virtual Department Department { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Violator> Violators { get; set; }

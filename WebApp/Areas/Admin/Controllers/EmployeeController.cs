@@ -18,18 +18,27 @@ namespace WebApp.Areas.Admin.Controllers
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
             var dao = new EmployeeDao();
-            var model = dao.ListAllPaging(searchString, page, pageSize);
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+            int departmentid = session.DepartmentID;
+            var model = dao.ListAllPaging(searchString, page, pageSize, departmentid);
 
             ViewBag.SearchString = searchString;
 
             return View(model);
         }
 
+        public void SetViewBag(int? selectedId = null)
+        {
+            var dao = new EmployeeDao();
+            ViewBag.Department_ID = new SelectList(dao.ListDepartment(), "ID", "Name", selectedId);
+        }
+
         [HttpGet]
         [HasCredential(RoleID = "ADD_USER")]
         public ActionResult Create()
         {
-            return View();
+            SetViewBag();
+            return View();        
         }
 
         [HttpPost]
@@ -64,6 +73,7 @@ namespace WebApp.Areas.Admin.Controllers
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
                 employee.CreatedBy = session.UserName;
                 employee.CreatedDate = DateTime.Now;
+                int deparmentId = session.DepartmentID;
                 
                 long id = dao.Insert(employee);
                 if (id > 0)
@@ -76,6 +86,7 @@ namespace WebApp.Areas.Admin.Controllers
                     ModelState.AddModelError("", "Thêm nhân viên không thành công");
                 }
             }
+            SetViewBag();
             SetAlert("Tài khoản hoặc mã nhân viên đã tồn tại!", "error");
             return RedirectToAction("Index", "Employee");
         }
@@ -84,6 +95,7 @@ namespace WebApp.Areas.Admin.Controllers
         public ActionResult Edit(int id)
         {
             var employee = new EmployeeDao().ViewDetail(id);
+            SetViewBag();
             return View(employee);
         }
 
@@ -115,6 +127,7 @@ namespace WebApp.Areas.Admin.Controllers
                     return RedirectToAction("Index", "Employee");
                 }
             }
+            SetViewBag();
             SetAlert("Sửa thông tin nhân viên thất bại", "error");
             return RedirectToAction("Index", "Employee");
         }
