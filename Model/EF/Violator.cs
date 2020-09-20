@@ -1,4 +1,4 @@
-namespace Model.EF
+﻿namespace Model.EF
 {
     using System;
     using System.Collections.Generic;
@@ -11,15 +11,16 @@ namespace Model.EF
     {
         public long ID { get; set; }
 
-        [StringLength(10)]
-        public string Code { get; set; }
+        public long? Employee_ID { get; set; }
 
-        [StringLength(50)]
-        public string Type { get; set; }
+        [Display(Name ="Loại")]
+        public bool? Type { get; set; }
 
+        [Display(Name = "Chi tiết")]
         [StringLength(500)]
         public string Description { get; set; }
 
+        [Display(Name = "Ứng trước")]
         public decimal? Loan { get; set; }
 
         public DateTime? CreatedDate { get; set; }
@@ -31,5 +32,7 @@ namespace Model.EF
 
         [StringLength(50)]
         public string ModifiedBy { get; set; }
+
+        public virtual Employee Employee { get; set; }
     }
 }

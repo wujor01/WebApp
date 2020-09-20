@@ -20,6 +20,19 @@ namespace Model.Dao
 
         public long Insert(DailyList list)
         {
+            if (list.Tip == null)
+            {
+                list.Tip = 0;
+            }
+            if (list.Code == null)
+            {
+                list.Code = 0;
+            }
+            if (list.Voucher == null)
+            {
+                list.Voucher = 0;
+            }
+            
             if (list.Taxi.Code == null)
             {
                 //lưu vào db
@@ -34,6 +47,14 @@ namespace Model.Dao
             }
             else
             {
+                if (list.Taxi.Commission == null)
+                {
+                    list.Taxi.Commission = 0;
+                }
+                if (list.Taxi.Price == null)
+                {
+                    list.Taxi.Price = 0;
+                }
                 db.DailyLists.Add(list);
                 db.SaveChanges();
             }
@@ -45,7 +66,7 @@ namespace Model.Dao
             var dailyList = db.DailyLists.Find(entity.ID);
             dailyList.Code = entity.Code;
             dailyList.Description = entity.Description;
-            dailyList.Employee_Code = entity.Employee_Code;
+            dailyList.Employee_ID = entity.Employee_ID;
             dailyList.Room = entity.Room;
             dailyList.Status = entity.Status;
             dailyList.Ticket = entity.Ticket;
@@ -73,7 +94,20 @@ namespace Model.Dao
             if (!string.IsNullOrEmpty(searchString))
             {
                 model = model.Where(
-                    x => x.Employee_Code.Contains(searchString) || x.Room.Contains(searchString)
+                    x => x.Employee.Code.Contains(searchString) || x.Room.Contains(searchString)
+                );
+            }
+
+            return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+        }
+
+        public IEnumerable<DailyList> ListAllPagingTaxi(string searchString, int page, int pageSize)
+        {
+            IQueryable<DailyList> model = db.DailyLists;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                model = model.Where(
+                    x => x.Taxi.Code.Contains(searchString) || x.Taxi.Phone.ToString().Contains(searchString)
                 );
             }
 

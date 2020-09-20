@@ -6,22 +6,27 @@
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("DayOff")]
-    public partial class DayOff
+    [Table("ViolatorKTV")]
+    public partial class ViolatorKTV
     {
         public long ID { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime? Date { get; set; }
+        public long? Employee_ID { get; set; }
 
-        [Display(Name ="Ghi Chú")]
+        [Display(Name = "Chi tiết")]
         [StringLength(500)]
         public string Description { get; set; }
 
-        public long? Employee_ID { get; set; }
+        [Display(Name = "Tua")]
+        [StringLength(100)]
+        public string Tour { get; set; }
 
-        [Display(Name = "Xác nhận")]
-        public bool Status { get; set; }
+        [Display(Name = "Trái cây")]
+        public decimal? Fruit { get; set; }
+
+        [Display(Name = "Thế chân")]
+        [StringLength(50)]
+        public string Substitution { get; set; }
 
         public DateTime? CreatedDate { get; set; }
 

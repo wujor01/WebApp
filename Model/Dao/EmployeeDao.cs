@@ -158,8 +158,8 @@ namespace Model.Dao
         {
             try
             {
-                var emplyee = db.Employees.Find(id);
-                db.Employees.Remove(emplyee);
+                var employee = db.Employees.Find(id);
+                db.Employees.Remove(employee);
                 db.SaveChanges();
                 return true;
             }

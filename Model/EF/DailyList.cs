@@ -1,4 +1,4 @@
-namespace Model.EF
+﻿namespace Model.EF
 {
     using System;
     using System.Collections.Generic;
@@ -11,16 +11,22 @@ namespace Model.EF
     {
         public long ID { get; set; }
 
-        [StringLength(10)]
-        public string Employee_Code { get; set; }
+        [Display(Name ="Mã KTV")]
+        public long? Employee_ID { get; set; }
 
+        [Display(Name = "Phòng")]
         [StringLength(10)]
         public string Room { get; set; }
 
-        public DateTime? TimeIn { get; set; }
+        [Display(Name ="Giờ vào")]
+        [DataType(DataType.Time)]
+        public TimeSpan? TimeIn { get; set; }
 
-        public DateTime? TimeOut { get; set; }
+        [Display(Name = "Giờ ra")]
+        [DataType(DataType.Time)]
+        public TimeSpan? TimeOut { get; set; }
 
+        [Display(Name = "Giá vé")]
         public decimal? Ticket { get; set; }
 
         public decimal? Tip { get; set; }
@@ -33,8 +39,10 @@ namespace Model.EF
 
         public decimal? Total { get; set; }
 
+        [Display(Name = "Xác nhận")]
         public bool Status { get; set; }
 
+        [Display(Name = "Yêu cầu")]
         [StringLength(500)]
         public string Description { get; set; }
 
@@ -47,6 +55,8 @@ namespace Model.EF
 
         [StringLength(50)]
         public string ModifiedBy { get; set; }
+
+        public virtual Employee Employee { get; set; }
 
         public virtual Taxi Taxi { get; set; }
     }

@@ -1,4 +1,4 @@
-namespace Model.EF
+﻿namespace Model.EF
 {
     using System;
     using System.Collections.Generic;
@@ -11,15 +11,19 @@ namespace Model.EF
     {
         public long ID { get; set; }
 
+        [Display(Name = "Tên khách hàng")]
         [StringLength(50)]
         public string Name { get; set; }
 
+        [Display(Name = "Số CMND")]
         [StringLength(50)]
         public string CardID { get; set; }
 
+        [Display(Name = "Số Điện Thoại")]
         [StringLength(10)]
         public string Phone { get; set; }
 
+        [Display(Name = "Ghi chú")]
         [StringLength(500)]
         public string Description { get; set; }
 

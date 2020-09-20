@@ -8,31 +8,31 @@ using System.Threading.Tasks;
 
 namespace Model.Dao
 {
-    public class ViolatorDao
+    public class ViolatorKTVDao
     {
         WebAppDbContext db = null;
-        public ViolatorDao()
+        public ViolatorKTVDao()
         {
             db = new WebAppDbContext();
         }
 
-        public long Insert(Violator entity)
+        public long Insert(ViolatorKTV entity)
         {
-            db.Violators.Add(entity);
+            db.ViolatorKTVs.Add(entity);
             db.SaveChanges();
             return entity.ID;
         }
 
-        public long Update(Violator entity)
+        public long Update(ViolatorKTV entity)
         {
-            var violator = db.Violators.Find(entity.ID);
-            violator.Employee_ID = entity.Employee_ID;
-            violator.Type = entity.Type;
-            violator.Loan = entity.Loan;
-            violator.Description = entity.Description;
+            var violatorKTV = db.ViolatorKTVs.Find(entity.ID);
+            violatorKTV.Employee_ID = entity.Employee_ID;
+            violatorKTV.Tour = entity.Tour;
+            violatorKTV.Fruit = entity.Fruit;
+            violatorKTV.Description = entity.Description;
 
             //Ngày chỉnh sửa = Now
-            violator.ModifiedDate = DateTime.Now;
+            violatorKTV.ModifiedDate = DateTime.Now;
             db.SaveChanges();
             return entity.ID;
         }
@@ -41,8 +41,8 @@ namespace Model.Dao
         {
             try
             {
-                var violator = db.Violators.Find(id);
-                db.Violators.Remove(violator);
+                var violatorKTV = db.ViolatorKTVs.Find(id);
+                db.ViolatorKTVs.Remove(violatorKTV);
                 db.SaveChanges();
                 return true;
             }
@@ -53,14 +53,14 @@ namespace Model.Dao
 
         }
 
-        public Violator ViewDetail(int id)
+        public ViolatorKTV ViewDetail(int id)
         {
-            return db.Violators.Find(id);
+            return db.ViolatorKTVs.Find(id);
         }
 
-        public IEnumerable<Violator> ListAllPaging(string searchString, int page, int pageSize)
+        public IEnumerable<ViolatorKTV> ListAllPaging(string searchString, int page, int pageSize)
         {
-            IQueryable<Violator> model = db.Violators;
+            IQueryable<ViolatorKTV> model = db.ViolatorKTVs;
             if (!string.IsNullOrEmpty(searchString))
             {
                 model = model.Where(

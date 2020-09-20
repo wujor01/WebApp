@@ -26,7 +26,14 @@ namespace WebApp.Areas.Admin.Controllers
         //[HasCredential(RoleID = "ADD_USER")]
         public ActionResult Create()
         {
+            SetViewBag();
             return View();
+        }
+
+        public void SetViewBag(long? selectedId = null)
+        {
+            var dao = new EmployeeDao();
+            ViewBag.Employee_ID = new SelectList(dao.ListAll(), "ID", "Code", selectedId);
         }
 
         [HttpPost]
@@ -45,14 +52,15 @@ namespace WebApp.Areas.Admin.Controllers
                 long id = dao.Insert(violator);
                 if (id > 0)
                 {
-                    SetAlert("Thêm chấm công thành công", "success");
+                    SetAlert("Thêm chấm công nhân viên thành công", "success");
                     return RedirectToAction("Index", "Violator");
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Thêm chấm công không thành công");
+                    ModelState.AddModelError("", "Thêm chấm nhân viên công không thành công");
                 }
             }
+            SetViewBag();
             SetAlert("Error", "error");
             return RedirectToAction("Index", "Violator");
         }
@@ -61,6 +69,7 @@ namespace WebApp.Areas.Admin.Controllers
         public ActionResult Edit(int id)
         {
             var violator = new ViolatorDao().ViewDetail(id);
+            SetViewBag();
             return View(violator);
         }
 
@@ -86,6 +95,7 @@ namespace WebApp.Areas.Admin.Controllers
                     return RedirectToAction("Index", "Violator");
                 }
             }
+            SetViewBag();
             SetAlert("Sửa thông tin nhân viên thất bại", "error");
             return RedirectToAction("Index", "Violator");
         }

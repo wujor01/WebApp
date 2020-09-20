@@ -23,11 +23,28 @@ namespace WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
+        public ActionResult TaxiIndex(string searchString, int page = 1, int pageSize = 10)
+        {
+            var dao = new DailyListDao();
+            var model = dao.ListAllPagingTaxi(searchString, page, pageSize);
+
+            ViewBag.SearchString = searchString;
+
+            return View(model);
+        }
+
         [HttpGet]
         //[HasCredential(RoleID = "ADD_USER")]
         public ActionResult Create()
         {
+            SetViewBag();
             return View();
+        }
+
+        public void SetViewBag(long? selectedId = null)
+        {
+            var dao = new EmployeeDao();
+            ViewBag.Employee_ID = new SelectList(dao.ListAll(), "ID", "Code", selectedId);
         }
 
         [HttpPost]
@@ -47,21 +64,23 @@ namespace WebApp.Areas.Admin.Controllers
                 if (id > 0)
                 {
                     SetAlert("Thêm bảng kê thành công", "success");
-                    return RedirectToAction("Index", "ListvsTaxi");
+                    return RedirectToAction("Index", "DailyList");
                 }
                 else
                 {
                     ModelState.AddModelError("", "Thêm bảng kê không thành công");
                 }
             //}
+            SetViewBag();
             SetAlert("Error!", "error");
-            return RedirectToAction("Index", "ListvsTaxi");
+            return RedirectToAction("Index", "DailyList");
         }
 
         //[HasCredential(RoleID = "EDIT_USER")]
         public ActionResult Edit(int id)
         {
             var dailyList = new DailyListDao().ViewDetail(id);
+            SetViewBag();
             return View(dailyList);
         }
 
@@ -78,16 +97,17 @@ namespace WebApp.Areas.Admin.Controllers
                 long id = dao.Update(dailyList);
                 if (id > 0)
                 {
-                    SetAlert("Sửa thông tin nhân viên thành công", "success");
+                    SetAlert("Sửa thông tin bảng kê thành công", "success");
                     return RedirectToAction("Index", "DailyList");
                 }
                 else
                 {
-                    SetAlert("Tài khoản hoặc mã nhân viên đã tồn tại!", "error");
+                    SetAlert("Error!", "error");
                     return RedirectToAction("Index", "DailyList");
                 }
             }
-            SetAlert("Sửa thông tin nhân viên thất bại", "error");
+            SetViewBag();
+            SetAlert("Error", "error");
             return RedirectToAction("Index", "DailyList");
         }
 
@@ -101,5 +121,4 @@ namespace WebApp.Areas.Admin.Controllers
         }
     }
 
-}
 }

@@ -123,8 +123,17 @@ namespace WebApp.Areas.Admin.Controllers
         [HasCredential(RoleID = "DELETE_USER")]
         public ActionResult Delete(int id)
         {
-            new EmployeeDao().Delete(id);
+            var dao = new EmployeeDao();
 
+            bool status = dao.Delete(id);
+            if (status)
+            {
+                SetAlert("Xóa nhân viên thành công", "success");
+            }
+            else
+            {
+                SetAlert("Xóa nhân viên thất bại", "error");
+            }
             return RedirectToAction("Index");
         }
 
