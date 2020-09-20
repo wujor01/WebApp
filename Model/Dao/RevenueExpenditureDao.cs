@@ -27,7 +27,7 @@ namespace Model.Dao
         {
             var revenueExpenditure = db.RevenueExpenditures.Find(entity.ID);
             revenueExpenditure.Contents = entity.Contents;
-            revenueExpenditure.Type = entity.Type;
+            revenueExpenditure.Type_ID = entity.Type_ID;
             revenueExpenditure.Description = entity.Description;
             revenueExpenditure.Money = revenueExpenditure.Money;
 
@@ -69,6 +69,11 @@ namespace Model.Dao
             }
 
             return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+        }
+
+        public List<ReExType> ListAll()
+        {
+            return db.ReExTypes.ToList();
         }
     }
 }

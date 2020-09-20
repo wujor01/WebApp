@@ -11,14 +11,14 @@
     {
         public long ID { get; set; }
 
-        [Display(Name ="Mã KTV")]
+        [Display(Name = "Mã KTV")]
         public long? Employee_ID { get; set; }
 
         [Display(Name = "Phòng")]
         [StringLength(10)]
         public string Room { get; set; }
 
-        [Display(Name ="Giờ vào")]
+        [Display(Name = "Giờ vào")]
         [DataType(DataType.Time)]
         public TimeSpan? TimeIn { get; set; }
 

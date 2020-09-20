@@ -27,7 +27,7 @@ namespace Model.Dao
         {
             var violator = db.Violators.Find(entity.ID);
             violator.Employee_ID = entity.Employee_ID;
-            violator.Type = entity.Type;
+            violator.Type_ID = entity.Type_ID;
             violator.Loan = entity.Loan;
             violator.Description = entity.Description;
 
@@ -69,6 +69,11 @@ namespace Model.Dao
             }
 
             return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+        }
+
+        public List<ViolatorType> ListAll()
+        {
+            return db.ViolatorTypes.ToList();
         }
     }
 }

@@ -11,10 +11,11 @@
     {
         public long ID { get; set; }
 
+        [Display(Name ="Mã nhân viên")]
         public long? Employee_ID { get; set; }
 
         [Display(Name ="Loại")]
-        public bool? Type { get; set; }
+        public int Type_ID { get; set; }
 
         [Display(Name = "Chi tiết")]
         [StringLength(500)]
@@ -34,5 +35,7 @@
         public string ModifiedBy { get; set; }
 
         public virtual Employee Employee { get; set; }
+
+        public virtual ViolatorType ViolatorType { get; set; }
     }
 }

@@ -61,7 +61,7 @@ namespace WebApp.Areas.Admin.Controllers
         public void SetViewBag(long? selectedId = null)
         {
             var dao = new EmployeeDao();
-            ViewBag.Employee_ID = new SelectList(dao.ListAll(), "ID", "Code", selectedId);
+            ViewBag.Employee_ID = new SelectList(dao.ListAll(""), "ID", "Code", selectedId);
         }
 
         //[HasCredential(RoleID = "EDIT_USER")]

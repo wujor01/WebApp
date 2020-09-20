@@ -26,7 +26,14 @@ namespace WebApp.Areas.Admin.Controllers
         //[HasCredential(RoleID = "ADD_USER")]
         public ActionResult Create()
         {
+            SetTypeBag();
             return View();
+        }
+
+        public void SetTypeBag(int? selectedId = null)
+        {
+            var dao = new RevenueExpenditureDao();
+            ViewBag.Type_ID = new SelectList(dao.ListAll(), "ID", "Type", selectedId);
         }
 
         [HttpPost]
@@ -53,6 +60,7 @@ namespace WebApp.Areas.Admin.Controllers
                     ModelState.AddModelError("", "Thêm chấm nhân viên công không thành công");
                 }
             }
+            SetTypeBag();
             SetAlert("Error", "error");
             return RedirectToAction("Index", "RevenueExpenditure");
         }
@@ -61,6 +69,7 @@ namespace WebApp.Areas.Admin.Controllers
         public ActionResult Edit(int id)
         {
             var revenueExpenditure = new RevenueExpenditureDao().ViewDetail(id);
+            SetTypeBag();
             return View(revenueExpenditure);
         }
 
@@ -86,6 +95,7 @@ namespace WebApp.Areas.Admin.Controllers
                     return RedirectToAction("Index", "RevenueExpenditure");
                 }
             }
+            SetTypeBag();
             SetAlert("Sửa thông tin nhân viên thất bại", "error");
             return RedirectToAction("Index", "RevenueExpenditure");
         }

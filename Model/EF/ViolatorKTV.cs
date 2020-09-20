@@ -11,6 +11,7 @@
     {
         public long ID { get; set; }
 
+        [Display(Name = "Mã nhân viên")]
         public long? Employee_ID { get; set; }
 
         [Display(Name = "Chi tiết")]

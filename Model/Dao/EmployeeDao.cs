@@ -249,9 +249,9 @@ namespace Model.Dao
 
         }
 
-        public List<Employee> ListAll()
+        public List<Employee> ListAll(string s)
         {
-            return db.Employees.Where(x => x.Status == true).ToList();
+            return db.Employees.Where(x => x.Status == true && x.Code.StartsWith(s) == true).ToList();
         }
     }
 }

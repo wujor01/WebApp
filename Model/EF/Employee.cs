@@ -52,7 +52,7 @@
         [StringLength(50)]
         public string ModifiedBy { get; set; }
 
-        [Display(Name ="Số ngày nghỉ")]
+        [Display(Name = "Số ngày nghỉ")]
         public int? NumberOfDayOff { get; set; }
 
         [Display(Name = "Trạng thái")]

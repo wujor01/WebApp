@@ -11,8 +11,8 @@
     {
         public long ID { get; set; }
 
-        [Display(Name = "Loại")]
-        public bool? Type { get; set; }
+        [Display(Name ="Loại")]
+        public int Type_ID { get; set; }
 
         [Display(Name = "Nội dung")]
         [StringLength(500)]
@@ -38,5 +38,7 @@
 
         [StringLength(50)]
         public string ModifiedBy { get; set; }
+
+        public virtual ReExType ReExType { get; set; }
     }
 }

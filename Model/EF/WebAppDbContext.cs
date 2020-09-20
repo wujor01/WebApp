@@ -17,11 +17,13 @@ namespace Model.EF
         public virtual DbSet<DailyList> DailyLists { get; set; }
         public virtual DbSet<DayOff> DayOffs { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<ReExType> ReExTypes { get; set; }
         public virtual DbSet<RevenueExpenditure> RevenueExpenditures { get; set; }
         public virtual DbSet<Taxi> Taxis { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
         public virtual DbSet<Violator> Violators { get; set; }
         public virtual DbSet<ViolatorKTV> ViolatorKTVs { get; set; }
+        public virtual DbSet<ViolatorType> ViolatorTypes { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -130,6 +132,12 @@ namespace Model.EF
                 .WithOptional(e => e.Employee)
                 .HasForeignKey(e => e.Employee_ID);
 
+            modelBuilder.Entity<ReExType>()
+                .HasMany(e => e.RevenueExpenditures)
+                .WithRequired(e => e.ReExType)
+                .HasForeignKey(e => e.Type_ID)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<RevenueExpenditure>()
                 .Property(e => e.Money)
                 .HasPrecision(18, 0);
@@ -186,6 +194,12 @@ namespace Model.EF
             modelBuilder.Entity<ViolatorKTV>()
                 .Property(e => e.ModifiedBy)
                 .IsUnicode(false);
+
+            modelBuilder.Entity<ViolatorType>()
+                .HasMany(e => e.Violators)
+                .WithRequired(e => e.ViolatorType)
+                .HasForeignKey(e => e.Type_ID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Role>()
                 .Property(e => e.ID)

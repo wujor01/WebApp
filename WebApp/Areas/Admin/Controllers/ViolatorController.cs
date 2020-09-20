@@ -27,13 +27,20 @@ namespace WebApp.Areas.Admin.Controllers
         public ActionResult Create()
         {
             SetViewBag();
+            SetTypeBag();
             return View();
         }
 
         public void SetViewBag(long? selectedId = null)
         {
             var dao = new EmployeeDao();
-            ViewBag.Employee_ID = new SelectList(dao.ListAll(), "ID", "Code", selectedId);
+            ViewBag.Employee_ID = new SelectList(dao.ListAll("NV"), "ID", "Code", selectedId);
+        }
+
+        public void SetTypeBag(int? selectedId = null)
+        {
+            var dao = new ViolatorDao();
+            ViewBag.Type_ID = new SelectList(dao.ListAll(), "ID", "Type", selectedId);
         }
 
         [HttpPost]
@@ -61,6 +68,7 @@ namespace WebApp.Areas.Admin.Controllers
                 }
             }
             SetViewBag();
+            SetTypeBag();
             SetAlert("Error", "error");
             return RedirectToAction("Index", "Violator");
         }
@@ -70,6 +78,7 @@ namespace WebApp.Areas.Admin.Controllers
         {
             var violator = new ViolatorDao().ViewDetail(id);
             SetViewBag();
+            SetTypeBag();
             return View(violator);
         }
 
@@ -95,6 +104,7 @@ namespace WebApp.Areas.Admin.Controllers
                     return RedirectToAction("Index", "Violator");
                 }
             }
+            SetTypeBag();
             SetViewBag();
             SetAlert("Sửa thông tin nhân viên thất bại", "error");
             return RedirectToAction("Index", "Violator");
