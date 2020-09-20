@@ -11,7 +11,7 @@ namespace WebApp.Areas.Admin.Controllers
 {
     public class ViolatorController : BaseController
     {
-        //[HasCredential(RoleID = "VIEW_USER")]
+        [HasCredential(RoleID = "VIEW_VIOLATOR")]
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
             var dao = new ViolatorDao();
@@ -23,7 +23,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        //[HasCredential(RoleID = "ADD_USER")]
+        [HasCredential(RoleID = "ADD_VIOLATOR")]
         public ActionResult Create()
         {
             SetViewBag();
@@ -44,7 +44,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        //[HasCredential(RoleID = "ADD_USER")]
+        [HasCredential(RoleID = "ADD_VIOLATOR")]
         public ActionResult Create(Violator violator)
         {
             if (ModelState.IsValid)
@@ -73,7 +73,7 @@ namespace WebApp.Areas.Admin.Controllers
             return RedirectToAction("Index", "Violator");
         }
 
-        //[HasCredential(RoleID = "EDIT_USER")]
+        [HasCredential(RoleID = "EDIT_VIOLATOR")]
         public ActionResult Edit(int id)
         {
             var violator = new ViolatorDao().ViewDetail(id);
@@ -83,7 +83,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        //[HasCredential(RoleID = "EDIT_USER")]
+        [HasCredential(RoleID = "EDIT_VIOLATOR")]
         public ActionResult Edit(Violator violator)
         {
             if (ModelState.IsValid)
@@ -111,7 +111,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpDelete]
-        //[HasCredential(RoleID = "DELETE_USER")]
+        [HasCredential(RoleID = "DELETE_VIOLATOR")]
         public ActionResult Delete(int id)
         {
             new ViolatorDao().Delete(id);

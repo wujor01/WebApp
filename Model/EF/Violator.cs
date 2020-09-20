@@ -21,7 +21,7 @@
         [StringLength(500)]
         public string Description { get; set; }
 
-        [Display(Name = "Ứng trước")]
+        [Display(Name = "Số tiền")]
         public decimal? Loan { get; set; }
 
         public DateTime? CreatedDate { get; set; }

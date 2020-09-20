@@ -10,8 +10,8 @@ using WebApp.Common;
 namespace WebApp.Areas.Admin.Controllers
 {
     public class DayOffController : BaseController
-    { 
-    //[HasCredential(RoleID = "VIEW_USER")]
+    {
+        [HasCredential(RoleID = "VIEW_DAYOFF")]
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
             var dao = new DayOffDao();
@@ -23,7 +23,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        //[HasCredential(RoleID = "ADD_USER")]
+        [HasCredential(RoleID = "ADD_DAYOFF")]
         public ActionResult Create()
         {
             SetViewBag();
@@ -31,7 +31,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        //[HasCredential(RoleID = "ADD_USER")]
+        [HasCredential(RoleID = "ADD_DAYOFF")]
         public ActionResult Create(DayOff dayOff)
         {
             if (ModelState.IsValid)
@@ -64,7 +64,7 @@ namespace WebApp.Areas.Admin.Controllers
             ViewBag.Employee_ID = new SelectList(dao.ListAll(""), "ID", "Code", selectedId);
         }
 
-        //[HasCredential(RoleID = "EDIT_USER")]
+        [HasCredential(RoleID = "EDIT_DAYOFF")]
         public ActionResult Edit(int id)
         {
             var dayOff = new DayOffDao().ViewDetail(id);
@@ -72,7 +72,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        //[HasCredential(RoleID = "EDIT_USER")]
+        [HasCredential(RoleID = "EDIT_DAYOFF")]
         public ActionResult Edit(DayOff dayOff)
         {
             if (ModelState.IsValid)
@@ -98,7 +98,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpDelete]
-        //[HasCredential(RoleID = "DELETE_USER")]
+        [HasCredential(RoleID = "DELETE_DAYOFF")]
         public ActionResult Delete(int id)
         {
             new DayOffDao().Delete(id);

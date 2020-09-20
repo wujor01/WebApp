@@ -11,7 +11,7 @@ namespace WebApp.Areas.Admin.Controllers
 {
     public class RevenueExpenditureController : BaseController
     {
-        //[HasCredential(RoleID = "VIEW_USER")]
+        [HasCredential(RoleID = "VIEW_REEX")]
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
             var dao = new RevenueExpenditureDao();
@@ -23,7 +23,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        //[HasCredential(RoleID = "ADD_USER")]
+        [HasCredential(RoleID = "ADD_REEX")]
         public ActionResult Create()
         {
             SetTypeBag();
@@ -37,7 +37,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        //[HasCredential(RoleID = "ADD_USER")]
+        [HasCredential(RoleID = "ADD_REEX")]
         public ActionResult Create(RevenueExpenditure revenueExpenditure)
         {
             if (ModelState.IsValid)
@@ -65,7 +65,7 @@ namespace WebApp.Areas.Admin.Controllers
             return RedirectToAction("Index", "RevenueExpenditure");
         }
 
-        //[HasCredential(RoleID = "EDIT_USER")]
+        [HasCredential(RoleID = "EDIT_REEX")]
         public ActionResult Edit(int id)
         {
             var revenueExpenditure = new RevenueExpenditureDao().ViewDetail(id);
@@ -74,7 +74,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        //[HasCredential(RoleID = "EDIT_USER")]
+        [HasCredential(RoleID = "EDIT_REEX")]
         public ActionResult Edit(RevenueExpenditure revenueExpenditure)
         {
             if (ModelState.IsValid)
@@ -101,7 +101,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpDelete]
-        //[HasCredential(RoleID = "DELETE_USER")]
+        [HasCredential(RoleID = "DELETE_REEX")]
         public ActionResult Delete(int id)
         {
             new RevenueExpenditureDao().Delete(id);

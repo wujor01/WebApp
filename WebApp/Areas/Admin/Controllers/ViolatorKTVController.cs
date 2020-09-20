@@ -11,7 +11,7 @@ namespace WebApp.Areas.Admin.Controllers
 {
     public class ViolatorKTVController : BaseController
     {
-        //[HasCredential(RoleID = "VIEW_USER")]
+        [HasCredential(RoleID = "VIEW_VIOLATORKTV")]
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
             var dao = new ViolatorKTVDao();
@@ -23,7 +23,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        //[HasCredential(RoleID = "ADD_USER")]
+        [HasCredential(RoleID = "ADD_VIOLATORKTV")]
         public ActionResult Create()
         {
             SetViewBag();
@@ -37,7 +37,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        //[HasCredential(RoleID = "ADD_USER")]
+        [HasCredential(RoleID = "ADD_VIOLATORKTV")]
         public ActionResult Create(ViolatorKTV violatorKTV)
         {
             if (ModelState.IsValid)
@@ -65,7 +65,7 @@ namespace WebApp.Areas.Admin.Controllers
             return RedirectToAction("Index", "ViolatorKTV");
         }
 
-        //[HasCredential(RoleID = "EDIT_USER")]
+        [HasCredential(RoleID = "EDIT_VIOLATORKTV")]
         public ActionResult Edit(int id)
         {
             var violatorKTV = new ViolatorKTVDao().ViewDetail(id);
@@ -74,7 +74,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        //[HasCredential(RoleID = "EDIT_USER")]
+        [HasCredential(RoleID = "EDIT_VIOLATORKTV")]
         public ActionResult Edit(ViolatorKTV violatorKTV)
         {
             if (ModelState.IsValid)
@@ -101,7 +101,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpDelete]
-        //[HasCredential(RoleID = "DELETE_USER")]
+        [HasCredential(RoleID = "DELETE_VIOLATORKTV")]
         public ActionResult Delete(int id)
         {
             new ViolatorKTVDao().Delete(id);
