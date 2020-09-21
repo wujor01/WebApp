@@ -23,7 +23,7 @@ namespace WebApp.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 var dao = new EmployeeDao();
-                var result = dao.Login(model.UserName, Encryptor.MD5Hash(model.PassWord));
+                var result = dao.Login(model.UserName, model.PassWord);
                 if (result == 1)
                 {
                     var user = dao.GetById(model.UserName);

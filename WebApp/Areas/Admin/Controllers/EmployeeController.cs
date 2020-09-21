@@ -49,12 +49,6 @@ namespace WebApp.Areas.Admin.Controllers
             {
                 var dao = new EmployeeDao();
 
-                //Băm mật khẩu bằng hàm MD5
-                if (!string.IsNullOrEmpty(employee.Password))
-                {
-                    var encryptedMd5Pas = Encryptor.MD5Hash(employee.Password);
-                    employee.Password = encryptedMd5Pas;
-                }
                 //mã nhân viên khi lưu vào db luôn là HOA
                 if (!string.IsNullOrEmpty(employee.Code))
                 {
@@ -108,12 +102,6 @@ namespace WebApp.Areas.Admin.Controllers
                 var dao = new EmployeeDao();
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
                 employee.ModifiedBy = session.UserName;
-
-                if (!string.IsNullOrEmpty(employee.Password))
-                {
-                    var encryptedMd5Pas = Encryptor.MD5Hash(employee.Password);
-                    employee.Password = encryptedMd5Pas;
-                }
 
                 long id = dao.Update(employee);
                 if (id > 0)

@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Helpers;
 
 namespace Model.Dao
 {
@@ -22,6 +24,11 @@ namespace Model.Dao
         {
             if (CheckUserName(entity.Username) == false && CheckCode(entity.Code) == false)
             {
+                // pass = pass + salt
+                string pass = entity.Password + Crypto.GenerateSalt();
+                //Lưu lại giá trị hash và salt vào db
+                entity.Password = Crypto.GenerateSalt();
+                entity.Hash = Crypto.HashPassword(pass);
                 db.Employees.Add(entity);
                 db.SaveChanges();               
             }
@@ -54,7 +61,11 @@ namespace Model.Dao
             //Tài khoản đăng nhập hệ thống
             if (!string.IsNullOrEmpty(entity.Password))
             {
-                employee.Password = entity.Password;
+                // pass = pass + salt
+                string salt = Crypto.GenerateSalt();
+                //Lưu lại giá trị hash và salt vào db
+                employee.Password = salt;
+                employee.Hash = Crypto.HashPassword(entity.Password + salt);
             }
             employee.TimeStart = entity.TimeStart;
             employee.TimeOut = entity.TimeOut;
@@ -158,7 +169,7 @@ namespace Model.Dao
                 }
                 else
                 {
-                    if (result.Password == passWord)
+                    if (Crypto.VerifyHashedPassword(result.Hash,passWord+result.Password))
                     {
                         if (DateTime.Now.TimeOfDay > result.TimeStart && DateTime.Now.TimeOfDay < result.TimeOut)
                         {
@@ -166,7 +177,7 @@ namespace Model.Dao
                         }
                         else if (result.TimeOut < result.TimeStart)
                         {
-                            if (DateTime.Now.TimeOfDay > result.TimeStart && DateTime.Now.TimeOfDay > result.TimeOut)
+                            if (DateTime.Now.TimeOfDay < result.TimeStart && DateTime.Now.TimeOfDay < result.TimeOut)
                             {
                                 return 1;
                             }

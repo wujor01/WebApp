@@ -18,7 +18,6 @@
             ViolatorKTVs = new HashSet<ViolatorKTV>();
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long ID { get; set; }
 
         [Display(Name = "Chi nhánh")]
@@ -99,6 +98,9 @@
         [DataType(DataType.Password)]
         [StringLength(150)]
         public string Password { get; set; }
+
+        [StringLength(200)]
+        public string Hash { get; set; }
 
         [Display(Name = "Trạng thái tài khoản")]
         public bool StatusAccount { get; set; }
