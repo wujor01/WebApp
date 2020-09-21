@@ -62,10 +62,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dao\CustomerDao.cs" />
     <Compile Include="Dao\DayOffDao.cs" />
+    <Compile Include="Dao\DeparmentDao.cs" />
     <Compile Include="Dao\EmployeeDao.cs" />
     <Compile Include="Dao\DailyListDao.cs" />
     <Compile Include="Dao\RevenueExpenditureDao.cs" />
+    <Compile Include="Dao\TicketDao.cs" />
     <Compile Include="Dao\ViolatorDao.cs" />
     <Compile Include="Dao\ViolatorKTVDao.cs" />
     <Compile Include="EF\Credential.cs" />
@@ -78,6 +81,7 @@
     <Compile Include="EF\RevenueExpenditure.cs" />
     <Compile Include="EF\Role.cs" />
     <Compile Include="EF\Taxi.cs" />
+    <Compile Include="EF\Ticket.cs" />
     <Compile Include="EF\UserGroup.cs" />
     <Compile Include="EF\Violator.cs" />
     <Compile Include="EF\ViolatorKTV.cs" />

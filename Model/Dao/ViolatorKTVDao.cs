@@ -58,7 +58,7 @@ namespace Model.Dao
             return db.ViolatorKTVs.Find(id);
         }
 
-        public IEnumerable<ViolatorKTV> ListAllPaging(string searchString, int page, int pageSize)
+        public IEnumerable<ViolatorKTV> ListAllPaging(string searchString, int page, int pageSize, int departmentId)
         {
             IQueryable<ViolatorKTV> model = db.ViolatorKTVs;
             if (!string.IsNullOrEmpty(searchString))
@@ -67,8 +67,14 @@ namespace Model.Dao
                     x => x.Employee.Code.Contains(searchString) || x.ID.ToString().Contains(searchString)
                 );
             }
-
-            return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+            if (departmentId == 0)
+            {
+                return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+            }
+            else
+            {
+                return model.OrderByDescending(x => x.CreatedDate).Where(x=>x.Employee.Department_ID == departmentId).ToPagedList(page, pageSize);
+            }
         }
     }
 }

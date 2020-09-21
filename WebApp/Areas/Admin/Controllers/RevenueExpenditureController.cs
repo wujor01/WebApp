@@ -11,11 +11,27 @@ namespace WebApp.Areas.Admin.Controllers
 {
     public class RevenueExpenditureController : BaseController
     {
+        public void SetViewBag(int? selectedId = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new DeparmentDao();
+            ViewBag.Department_ID = new SelectList(dao.ListDepartment(session.DepartmentID), "ID", "Name", selectedId);
+        }
+
+        public void SetTypeBag(int? selectedId = null)
+        {
+            var dao = new RevenueExpenditureDao();
+            ViewBag.Type_ID = new SelectList(dao.ListAll(), "ID", "Type", selectedId);
+        }
+
         [HasCredential(RoleID = "VIEW_REEX")]
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
             var dao = new RevenueExpenditureDao();
-            var model = dao.ListAllPaging(searchString, page, pageSize);
+            var model = dao.ListAllPaging(searchString, page, pageSize, session.DepartmentID);
 
             ViewBag.SearchString = searchString;
 
@@ -26,14 +42,9 @@ namespace WebApp.Areas.Admin.Controllers
         [HasCredential(RoleID = "ADD_REEX")]
         public ActionResult Create()
         {
+            SetViewBag();
             SetTypeBag();
             return View();
-        }
-
-        public void SetTypeBag(int? selectedId = null)
-        {
-            var dao = new RevenueExpenditureDao();
-            ViewBag.Type_ID = new SelectList(dao.ListAll(), "ID", "Type", selectedId);
         }
 
         [HttpPost]
@@ -60,6 +71,7 @@ namespace WebApp.Areas.Admin.Controllers
                     ModelState.AddModelError("", "Thêm chấm nhân viên công không thành công");
                 }
             }
+            SetViewBag();
             SetTypeBag();
             SetAlert("Error", "error");
             return RedirectToAction("Index", "RevenueExpenditure");
@@ -69,6 +81,7 @@ namespace WebApp.Areas.Admin.Controllers
         public ActionResult Edit(int id)
         {
             var revenueExpenditure = new RevenueExpenditureDao().ViewDetail(id);
+            SetViewBag();
             SetTypeBag();
             return View(revenueExpenditure);
         }
@@ -95,6 +108,7 @@ namespace WebApp.Areas.Admin.Controllers
                     return RedirectToAction("Index", "RevenueExpenditure");
                 }
             }
+            SetViewBag();
             SetTypeBag();
             SetAlert("Sửa thông tin nhân viên thất bại", "error");
             return RedirectToAction("Index", "RevenueExpenditure");

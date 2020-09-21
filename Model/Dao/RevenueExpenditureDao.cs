@@ -58,7 +58,7 @@ namespace Model.Dao
             return db.RevenueExpenditures.Find(id);
         }
 
-        public IEnumerable<RevenueExpenditure> ListAllPaging(string searchString, int page, int pageSize)
+        public IEnumerable<RevenueExpenditure> ListAllPaging(string searchString, int page, int pageSize, int departmentId)
         {
             IQueryable<RevenueExpenditure> model = db.RevenueExpenditures;
             if (!string.IsNullOrEmpty(searchString))
@@ -67,8 +67,14 @@ namespace Model.Dao
                     x => x.Contents.Contains(searchString) || x.Money.ToString().Contains(searchString)
                 );
             }
-
-            return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+            if (departmentId == 0)
+            {
+                return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+            }
+            else
+            {
+                return model.OrderByDescending(x => x.CreatedDate).Where(x=>x.Department_ID == departmentId).ToPagedList(page, pageSize);
+            }
         }
 
         public List<ReExType> ListAll()

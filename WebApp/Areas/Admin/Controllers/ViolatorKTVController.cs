@@ -14,8 +14,10 @@ namespace WebApp.Areas.Admin.Controllers
         [HasCredential(RoleID = "VIEW_VIOLATORKTV")]
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
             var dao = new ViolatorKTVDao();
-            var model = dao.ListAllPaging(searchString, page, pageSize);
+            var model = dao.ListAllPaging(searchString, page, pageSize,session.DepartmentID);
 
             ViewBag.SearchString = searchString;
 
@@ -32,8 +34,10 @@ namespace WebApp.Areas.Admin.Controllers
 
         public void SetViewBag(long? selectedId = null)
         {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
             var dao = new EmployeeDao();
-            ViewBag.Employee_ID = new SelectList(dao.ListAll("KTV"), "ID", "Code", selectedId);
+            ViewBag.Employee_ID = new SelectList(dao.ListAll("KTV", session.DepartmentID), "ID", "Code", selectedId);
         }
 
         [HttpPost]

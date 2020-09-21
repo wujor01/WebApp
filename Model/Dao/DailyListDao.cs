@@ -28,13 +28,16 @@ namespace Model.Dao
             {
                 list.Code = 0;
             }
-            if (list.Voucher == null)
+            if (list.Discount == null)
             {
-                list.Voucher = 0;
-            }
-            
+                list.Discount = 0;
+            }   
             if (list.Taxi.Code == null)
             {
+                if (list.Code == 0 && list.Discount == 0)
+                {
+                    list.Status = true;
+                }
                 //lưu vào db
                 db.DailyLists.Add(list);
                 db.SaveChanges();
@@ -47,9 +50,9 @@ namespace Model.Dao
             }
             else
             {
-                if (list.Taxi.Commission == null)
+                if (list.Code == 0 && list.Discount == 0 && list.Taxi.Price == null)
                 {
-                    list.Taxi.Commission = 0;
+                    list.Status = true;
                 }
                 if (list.Taxi.Price == null)
                 {
@@ -63,7 +66,20 @@ namespace Model.Dao
 
         public long Update(DailyList entity)
         {
+
             var dailyList = db.DailyLists.Find(entity.ID);
+            if (entity.Tip == null)
+            {
+                entity.Tip = 0;
+            }
+            if (entity.Code == null)
+            {
+                entity.Code = 0;
+            }
+            if (entity.Discount == null)
+            {
+                entity.Discount = 0;
+            }
             dailyList.Code = entity.Code;
             dailyList.Description = entity.Description;
             dailyList.Employee_ID = entity.Employee_ID;
@@ -74,7 +90,16 @@ namespace Model.Dao
             dailyList.TimeOut = entity.TimeOut;
             dailyList.Tip = entity.Tip;
             dailyList.Total = entity.Total;
-            dailyList.Voucher = entity.Voucher;
+            dailyList.Discount = entity.Discount;
+
+            if (entity.Taxi.Code != null)
+            {
+                if (entity.Taxi.Price == null)
+                {
+                    entity.Taxi.Price = 0;
+                }
+                dailyList.Taxi = entity.Taxi;
+            }
 
             //Ngày chỉnh sửa = Now
             dailyList.ModifiedDate = DateTime.Now;
@@ -88,20 +113,27 @@ namespace Model.Dao
         }
 
         //Phân trang quản lý user và thêm mục tìm kiếm theo username và email
-        public IEnumerable<DailyList> ListAllPaging(string searchString, int page, int pageSize)
+        public IEnumerable<DailyList> ListAllPaging(string searchString, int page, int pageSize, int departmentId)
         {
             IQueryable<DailyList> model = db.DailyLists;
             if (!string.IsNullOrEmpty(searchString))
             {
                 model = model.Where(
-                    x => x.Employee.Code.Contains(searchString) || x.Room.Contains(searchString)
+                    x => x.Employee.Code.Contains(searchString) || x.ID.ToString().Contains(searchString)
                 );
             }
+            if (departmentId == 0)
+            {
+                return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
 
-            return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+            }
+            else
+            {
+                return model.OrderByDescending(x => x.CreatedDate).Where(x => x.Employee.Department_ID == departmentId).ToPagedList(page, pageSize);
+            }
         }
 
-        public IEnumerable<DailyList> ListAllPagingTaxi(string searchString, int page, int pageSize)
+        public IEnumerable<DailyList> ListAllPagingTaxi(string searchString, int page, int pageSize, int departmentId)
         {
             IQueryable<DailyList> model = db.DailyLists;
             if (!string.IsNullOrEmpty(searchString))
@@ -110,8 +142,14 @@ namespace Model.Dao
                     x => x.Taxi.Code.Contains(searchString) || x.Taxi.Phone.ToString().Contains(searchString)
                 );
             }
-
-            return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+            if (true)
+            {
+                return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+            }
+            else
+            {
+                return model.OrderByDescending(x => x.CreatedDate).Where(x=>x.Employee.Department_ID == departmentId).ToPagedList(page, pageSize);
+            }
         }
 
         public bool Delete(int id)

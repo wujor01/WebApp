@@ -16,6 +16,7 @@ namespace Model.Dao
             db = new WebAppDbContext();
         }
 
+
         public long Insert(DayOff entity)
         {       
                 entity.Date = DateTime.Now;
@@ -59,7 +60,7 @@ namespace Model.Dao
             return db.DayOffs.Find(id);
         }
 
-        public IEnumerable<DayOff> ListAllPaging(string searchString, int page, int pageSize)
+        public IEnumerable<DayOff> ListAllPaging(string searchString, int page, int pageSize, int departmentId)
         {
             IQueryable<DayOff> model = db.DayOffs;
             if (!string.IsNullOrEmpty(searchString))
@@ -68,8 +69,14 @@ namespace Model.Dao
                     x => x.Employee.Code.Contains(searchString) || x.Date.ToString().Contains(searchString)
                 );
             }
-
-            return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+            if (departmentId == 0)
+            {
+                return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+            }
+            else
+            {
+                return model.OrderByDescending(x => x.CreatedDate).Where(x=>x.Employee.Department_ID == departmentId).ToPagedList(page, pageSize);
+            }
         }
     }
 }

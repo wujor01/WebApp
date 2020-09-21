@@ -13,6 +13,7 @@ namespace Model.EF
         public Department()
         {
             Employees = new HashSet<Employee>();
+            Tickets = new HashSet<Ticket>();
         }
 
         public int ID { get; set; }
@@ -25,5 +26,8 @@ namespace Model.EF
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Employee> Employees { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Ticket> Tickets { get; set; }
     }
 }

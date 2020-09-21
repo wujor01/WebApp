@@ -32,15 +32,15 @@
         [Display(Name = "Số khách")]
         public int? NumberOfCustomers { get; set; }
 
-        [Display(Name = "Hoa hồng")]
-        public decimal? Commission { get; set; }
+        [Display(Name = "% Hoa hồng")]
+        [StringLength(50)]
+        public string Commission { get; set; }
 
         [Display(Name = "Số tiền")]
         public decimal? Price { get; set; }
 
         [Display(Name = "SĐT")]
-        [DataType(DataType.PhoneNumber)]
-        [StringLength(10, ErrorMessage = "Số điện thoại chỉ được phép có 10 số")]
+        [StringLength(10)]
         public string Phone { get; set; }
 
         [Display(Name = "Ghi chú")]

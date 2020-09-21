@@ -11,11 +11,21 @@ namespace WebApp.Areas.Admin.Controllers
 {
     public class DayOffController : BaseController
     {
+        public void SetViewBag(long? selectedId = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new EmployeeDao();
+            ViewBag.Employee_ID = new SelectList(dao.ListAll("",session.DepartmentID), "ID", "Code", selectedId);
+        }
+
         [HasCredential(RoleID = "VIEW_DAYOFF")]
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
             var dao = new DayOffDao();
-            var model = dao.ListAllPaging(searchString, page, pageSize);
+            var model = dao.ListAllPaging(searchString, page, pageSize, session.DepartmentID);
 
             ViewBag.SearchString = searchString;
 
@@ -58,11 +68,6 @@ namespace WebApp.Areas.Admin.Controllers
             return RedirectToAction("Index", "DayOff");
         }
         //hiển thị dropdown chọn mã nhân viên từ id
-        public void SetViewBag(long? selectedId = null)
-        {
-            var dao = new EmployeeDao();
-            ViewBag.Employee_ID = new SelectList(dao.ListAll(""), "ID", "Code", selectedId);
-        }
 
         [HasCredential(RoleID = "EDIT_DAYOFF")]
         public ActionResult Edit(int id)

@@ -24,14 +24,16 @@ namespace Model.Dao
         {
             if (CheckUserName(entity.Username) == false && CheckCode(entity.Code) == false)
             {
+                entity.Status = true;
                 // pass = pass + salt
                 string pass = entity.Password + Crypto.GenerateSalt();
                 //Lưu lại giá trị hash và salt vào db
                 entity.Password = Crypto.GenerateSalt();
                 entity.Hash = Crypto.HashPassword(pass);
                 db.Employees.Add(entity);
-                db.SaveChanges();               
+                db.SaveChanges();
             }
+            
             return entity.ID;
         }
 
@@ -147,7 +149,14 @@ namespace Model.Dao
 
         public bool CheckUserName(string userName)
         {
-            return db.Employees.Count(x => x.Username == userName) > 0;
+            if (userName == null)
+            {
+                return false;
+            }
+            else
+            {
+                return db.Employees.Count(x => x.Username == userName) > 0;
+            }
         }
         public bool CheckCode(string code)
         {
@@ -224,13 +233,11 @@ namespace Model.Dao
         {
             var user = db.Employees.Single(x => x.Username == userName);
             var data = (from a in db.Credentials
-                        join b in db.UserGroups on a.UserGroupID equals b.GroupID
-                        join c in db.Roles on a.RoleID equals c.ID
-                        where b.GroupID == user.GroupID
+                        where a.UserGroupID == user.GroupID
                         select new
                         {
-                            RoleID = a.RoleID,
-                            UserGroupID = a.UserGroupID
+                            a.RoleID,
+                            a.UserGroupID
                         }).AsEnumerable().Select(x => new Credential()
                         {
                             RoleID = x.RoleID,
@@ -240,14 +247,17 @@ namespace Model.Dao
 
         }
 
-        public List<Employee> ListAll(string position)
+        public List<Employee> ListAll(string position, int departmentId)
         {
-            return db.Employees.Where(x => x.Status == true && x.Code.StartsWith(position) == true).ToList();
-        }
+            if (departmentId == 0)
+            {
+                return db.Employees.Where(x => x.Status == true && x.Code.StartsWith(position) == true).ToList();
 
-        public List<Department> ListDepartment()
-        {
-            return db.Departments.ToList();
+            }
+            else
+            {
+                return db.Employees.Where(x => x.Status == true && x.Code.StartsWith(position) == true && x.Department_ID == departmentId).ToList();
+            }
         }
     }
 }

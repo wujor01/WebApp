@@ -18,22 +18,26 @@
         [StringLength(10)]
         public string Room { get; set; }
 
+        [Display(Name = "Khách")]
+        public long? Customer_ID { get; set; }
+
         [Display(Name = "Giờ vào")]
         [DataType(DataType.Time)]
-        public TimeSpan? TimeIn { get; set; }
+        public DateTime? TimeIn { get; set; }
 
-        [Display(Name = "Giờ ra")]
+        [Display(Name = "Giờ vào")]
         [DataType(DataType.Time)]
-        public TimeSpan? TimeOut { get; set; }
+        public DateTime? TimeOut { get; set; }
 
-        [Display(Name = "Giá vé")]
-        public decimal? Ticket { get; set; }
+        [Display(Name = "Vé")]
+        public int? Ticket_ID { get; set; }
 
         public decimal? Tip { get; set; }
 
         public decimal? Code { get; set; }
 
-        public decimal? Voucher { get; set; }
+        [Display(Name = "Giảm trực tiếp")]
+        public decimal? Discount { get; set; }
 
         public long? Taxi_ID { get; set; }
 
@@ -43,6 +47,10 @@
         public bool Status { get; set; }
 
         [Display(Name = "Yêu cầu")]
+        [StringLength(500)]
+        public string Request { get; set; }
+
+        [Display(Name = "Ghi chú")]
         [StringLength(500)]
         public string Description { get; set; }
 
@@ -56,8 +64,12 @@
         [StringLength(50)]
         public string ModifiedBy { get; set; }
 
+        public virtual Customer Customer { get; set; }
+
         public virtual Employee Employee { get; set; }
 
         public virtual Taxi Taxi { get; set; }
+
+        public virtual Ticket Ticket { get; set; }
     }
 }

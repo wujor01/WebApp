@@ -15,36 +15,66 @@ namespace WebApp.Areas.Admin.Controllers
         [HasCredential(RoleID = "VIEW_LIST")]
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
             var dao = new DailyListDao();
-            var model = dao.ListAllPaging(searchString, page, pageSize);
+            var model = dao.ListAllPaging(searchString, page, pageSize, session.DepartmentID);
 
             ViewBag.SearchString = searchString;
 
             return View(model);
         }
 
+        [HasCredential(RoleID = "VIEW_LIST")]
         public ActionResult TaxiIndex(string searchString, int page = 1, int pageSize = 10)
         {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
             var dao = new DailyListDao();
-            var model = dao.ListAllPagingTaxi(searchString, page, pageSize);
+            var model = dao.ListAllPagingTaxi(searchString, page, pageSize, session.DepartmentID);
 
             ViewBag.SearchString = searchString;
 
             return View(model);
+        }
+        public void SetViewDepartment(int? selectedId = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new DeparmentDao();
+            ViewBag.Department_ID = new SelectList(dao.ListDepartment(session.DepartmentID), "ID", "Name", selectedId);
+        }
+
+        public void SetViewBag(long? selectedId = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new EmployeeDao();
+            ViewBag.Employee_ID = new SelectList(dao.ListAll("KTV",session.DepartmentID), "ID", "Code", selectedId);
+        }
+
+        public void SetViewCustomer(long? selectedId = null)
+        {
+            var dao = new CustomerDao();
+            ViewBag.Customer_ID = new SelectList(dao.ListAll(), "ID", "Name", selectedId);
+        }
+
+        public void SetViewTicket(long? selectedId = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new TicketDao();
+            ViewBag.Ticket_ID = new SelectList(dao.ListAll(session.DepartmentID), "ID", "Name", selectedId);
         }
 
         [HttpGet]
         [HasCredential(RoleID = "ADD_LIST")]
         public ActionResult Create()
         {
+            SetViewDepartment();
+            SetViewTicket();
             SetViewBag();
+            SetViewCustomer();
             return View();
-        }
-
-        public void SetViewBag(long? selectedId = null)
-        {
-            var dao = new EmployeeDao();
-            ViewBag.Employee_ID = new SelectList(dao.ListAll("KTV"), "ID", "Code", selectedId);
         }
 
         [HttpPost]
@@ -71,7 +101,10 @@ namespace WebApp.Areas.Admin.Controllers
                     ModelState.AddModelError("", "Thêm bảng kê không thành công");
                 }
             //}
+            SetViewDepartment();
+            SetViewCustomer();
             SetViewBag();
+            SetViewTicket();
             SetAlert("Error!", "error");
             return RedirectToAction("Index", "DailyList");
         }
@@ -80,7 +113,10 @@ namespace WebApp.Areas.Admin.Controllers
         public ActionResult Edit(int id)
         {
             var dailyList = new DailyListDao().ViewDetail(id);
+            SetViewDepartment();
+            SetViewCustomer();
             SetViewBag();
+            SetViewTicket();
             return View(dailyList);
         }
 
@@ -106,6 +142,9 @@ namespace WebApp.Areas.Admin.Controllers
                     return RedirectToAction("Index", "DailyList");
                 }
             }
+            SetViewDepartment();
+            SetViewTicket();
+            SetViewCustomer();
             SetViewBag();
             SetAlert("Error", "error");
             return RedirectToAction("Index", "DailyList");

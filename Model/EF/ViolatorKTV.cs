@@ -18,16 +18,20 @@
         [StringLength(500)]
         public string Description { get; set; }
 
+        [Display(Name ="Có phép")]
+        public bool? Request { get; set; }
+
         [Display(Name = "Tua")]
-        [StringLength(100)]
-        public string Tour { get; set; }
+        public decimal? Tour { get; set; }
 
         [Display(Name = "Trái cây")]
         public decimal? Fruit { get; set; }
 
+        [Display(Name = "VSCSVC Thang máy")]
+        public decimal? Elevator { get; set; }
+
         [Display(Name = "Thế chân")]
-        [StringLength(50)]
-        public string Substitution { get; set; }
+        public decimal? Substitution { get; set; }
 
         public DateTime? CreatedDate { get; set; }
 

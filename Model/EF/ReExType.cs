@@ -18,7 +18,7 @@
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ID { get; set; }
 
-        [Display(Name ="Loại")]
+        [Display(Name = "Loại")]
         [StringLength(50)]
         public string Type { get; set; }
 

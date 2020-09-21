@@ -21,6 +21,7 @@ namespace Model.EF
         public virtual DbSet<ReExType> ReExTypes { get; set; }
         public virtual DbSet<RevenueExpenditure> RevenueExpenditures { get; set; }
         public virtual DbSet<Taxi> Taxis { get; set; }
+        public virtual DbSet<Ticket> Tickets { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
         public virtual DbSet<Violator> Violators { get; set; }
         public virtual DbSet<ViolatorKTV> ViolatorKTVs { get; set; }
@@ -53,13 +54,14 @@ namespace Model.EF
                 .Property(e => e.ModifiedBy)
                 .IsUnicode(false);
 
+            modelBuilder.Entity<Customer>()
+                .HasMany(e => e.DailyLists)
+                .WithOptional(e => e.Customer)
+                .HasForeignKey(e => e.Customer_ID);
+
             modelBuilder.Entity<DailyList>()
                 .Property(e => e.Room)
                 .IsFixedLength();
-
-            modelBuilder.Entity<DailyList>()
-                .Property(e => e.Ticket)
-                .HasPrecision(18, 0);
 
             modelBuilder.Entity<DailyList>()
                 .Property(e => e.Tip)
@@ -70,7 +72,7 @@ namespace Model.EF
                 .HasPrecision(18, 0);
 
             modelBuilder.Entity<DailyList>()
-                .Property(e => e.Voucher)
+                .Property(e => e.Discount)
                 .HasPrecision(18, 0);
 
             modelBuilder.Entity<DailyList>()
@@ -95,6 +97,11 @@ namespace Model.EF
 
             modelBuilder.Entity<Department>()
                 .HasMany(e => e.Employees)
+                .WithOptional(e => e.Department)
+                .HasForeignKey(e => e.Department_ID);
+
+            modelBuilder.Entity<Department>()
+                .HasMany(e => e.Tickets)
                 .WithOptional(e => e.Department)
                 .HasForeignKey(e => e.Department_ID);
 
@@ -157,10 +164,6 @@ namespace Model.EF
                 .IsUnicode(false);
 
             modelBuilder.Entity<Taxi>()
-                .Property(e => e.Commission)
-                .HasPrecision(18, 0);
-
-            modelBuilder.Entity<Taxi>()
                 .Property(e => e.Price)
                 .HasPrecision(18, 0);
 
@@ -172,6 +175,23 @@ namespace Model.EF
                 .HasMany(e => e.DailyLists)
                 .WithOptional(e => e.Taxi)
                 .HasForeignKey(e => e.Taxi_ID);
+
+            modelBuilder.Entity<Ticket>()
+                .Property(e => e.Price)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<Ticket>()
+                .Property(e => e.CreatedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Ticket>()
+                .Property(e => e.ModifiedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Ticket>()
+                .HasMany(e => e.DailyLists)
+                .WithOptional(e => e.Ticket)
+                .HasForeignKey(e => e.Ticket_ID);
 
             modelBuilder.Entity<UserGroup>()
                 .Property(e => e.GroupID)
@@ -190,7 +210,19 @@ namespace Model.EF
                 .IsUnicode(false);
 
             modelBuilder.Entity<ViolatorKTV>()
+                .Property(e => e.Tour)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<ViolatorKTV>()
                 .Property(e => e.Fruit)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<ViolatorKTV>()
+                .Property(e => e.Elevator)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<ViolatorKTV>()
+                .Property(e => e.Substitution)
                 .HasPrecision(18, 0);
 
             modelBuilder.Entity<ViolatorKTV>()

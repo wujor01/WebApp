@@ -19,8 +19,8 @@ namespace WebApp.Areas.Admin.Controllers
         {
             var dao = new EmployeeDao();
             var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-            int departmentid = session.DepartmentID;
-            var model = dao.ListAllPaging(searchString, page, pageSize, departmentid);
+
+            var model = dao.ListAllPaging(searchString, page, pageSize, session.DepartmentID);
 
             ViewBag.SearchString = searchString;
 
@@ -29,8 +29,10 @@ namespace WebApp.Areas.Admin.Controllers
 
         public void SetViewBag(int? selectedId = null)
         {
-            var dao = new EmployeeDao();
-            ViewBag.Department_ID = new SelectList(dao.ListDepartment(), "ID", "Name", selectedId);
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new DeparmentDao();
+            ViewBag.Department_ID = new SelectList(dao.ListDepartment(session.DepartmentID), "ID", "Name", selectedId);
         }
 
         [HttpGet]

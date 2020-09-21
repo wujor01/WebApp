@@ -38,6 +38,7 @@
                     <table class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
+                                <th>Chi nhánh</th>
                                 <th>ID</th>
                                 <td>KTV</td>
                                 <td>Phòng</td>
@@ -46,43 +47,47 @@
                                 <td>Giá vé</td>
                                 <td>Tip</td>
                                 <td>Code</td>
-                                <td>Taxi-Grab: Hoa hồng</td>
-                                <td>Taxi-Grab: Số tiền</td>
+                                <td>GTT</td>
+                                <td>Taxi-Grab-CTV</td>
                                 <td>Tổng tiền</td>
                                 <td>Yêu cầu</td>
                                 <td>Xác nhận</td>
+                                <td>Ghi chú</td>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model)
                             {
                             <tr id="row_@item.ID">
-                                <th>@item.ID</th>
+
+                                <th>@item.Employee.Department.Name</th>
+                                <th>#@item.ID</th>
                                 <td>@item.Employee.Code</td>
                                 <td>@item.Room</td>
                                 <td>@item.TimeIn</td>
                                 <td>@item.TimeOut</td>
-                                <td>@item.Ticket</td>
-                                <td>@item.Tip</td>
-                                <td>@item.Code</td>
+                                <td>@(string.Format("{0:#,##0}", item.Ticket.Price))</td>
+                                <td>@(string.Format("{0:#,##0}", item.Tip))</td>
+                                <td>@(string.Format("{0:#,##0}", item.Code))</td>
+                                <td>@(string.Format("{0:#,##0}", item.Discount))</td>
 
                                 @{
                                     if (item.Taxi_ID != null)
                                     {
-                                        <td>@item.Taxi.Commission</td>
-                                        <td>@item.Taxi.Price</td>
-                                        <td>@(item.Ticket+item.Tip-item.Code-item.Taxi.Commission)</td>
+                                        @*<td>@item.Taxi.Commission</td>*@
+                                        <td>@(string.Format("{0:#,##0}", item.Taxi.Price))</td>
+                                        <td>@(string.Format("{0:#,##0}", item.Ticket.Price + item.Tip - item.Code - item.Discount - item.Taxi.Price))</td>
                                     }
                                     else
                                     {
                                         <td></td>
-                                        <td></td>
-                                        <td>@(item.Ticket+item.Tip-item.Code)</td>
+                                        <td>@(string.Format("{0:#,##0}", item.Ticket.Price + item.Tip-item.Code-item.Discount))</td>
                                     }
                                 }
 
+                                <td>@item.Request</td>
+                                <td>@Html.Raw(item.Status ? "<strong style=\"color:Green;\">Đã xác nhận</strong>" : "<strong style=\"color:Tomato;\">Đang chờ</strong>")</td>
                                 <td>@item.Description</td>
-                                <td>@item.Status</td>
                                 <td>
                                     <a href="/Admin/DailyList/Edit/@item.ID">Sửa</a>
                                     |

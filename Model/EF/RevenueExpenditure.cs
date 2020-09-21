@@ -11,7 +11,9 @@
     {
         public long ID { get; set; }
 
-        [Display(Name ="Loại")]
+        public int? Department_ID { get; set; }
+
+        [Display(Name = "Loại")]
         public int Type_ID { get; set; }
 
         [Display(Name = "Nội dung")]
