@@ -9,6 +9,33 @@
     Cập nhật vi phạm/tạm ứng
 }
 
+@section JsFooter{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("form").bind("keypress", function (e) {
+                if (e.keyCode == 13) {
+                    return false;
+                }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+
+        $(function () {
+
+            $('#Employee_ID').chosen({ width: $('.panel-collapse.collapse.in select').eq(0).width() + 'px' });
+
+        });
+    </script>
+    <script type="text/javascript">
+
+        $(function () {
+
+            $('#Type_ID').chosen({ width: $('.panel-collapse.collapse.in select').eq(0).width() + 'px' });
+        });
+    </script>
+}
+
 @using (Html.BeginForm("Edit", "Violator", FormMethod.Post))
 {
     @Html.AntiForgeryToken()

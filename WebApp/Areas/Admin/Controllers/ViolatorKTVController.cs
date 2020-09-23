@@ -85,9 +85,8 @@ namespace WebApp.Areas.Admin.Controllers
             {
                 var dao = new ViolatorKTVDao();
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-                violatorKTV.ModifiedBy = session.UserName;
 
-                long id = dao.Update(violatorKTV);
+                long id = dao.Update(violatorKTV, session.UserName);
                 if (id > 0)
                 {
                     SetAlert("Sửa thông tin nhân viên thành công", "success");

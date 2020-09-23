@@ -55,11 +55,11 @@
                                     if (item.Taxi_ID != null)
                                     {
                                         <tr id="row_@item.ID">
-                                            <th>@item.ID</th>
+                                            <th>#@item.ID</th>
                                             <td>@item.Taxi.Code</td>
                                             <td>@item.Taxi.Phone</td>
                                             <td>@item.Taxi.Commission</td>
-                                            <td>@item.Taxi.Price</td>
+                                            <td>@(string.Format("{0:#,##0}", item.Taxi.Price))</td>
                                             <td>@item.Taxi.Description</td>
                                         </tr>
                                     }

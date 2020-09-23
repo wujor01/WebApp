@@ -44,7 +44,7 @@
                                 <th>Mã nhân viên</th>
                                 <td>Loại</td>
                                 <td>Số tiền</td>
-                                <td>Ghi chú</td>
+                                <td>Chi tiết</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -55,7 +55,7 @@
                                     <td>@item.CreatedDate</td>
                                     <td>@item.Employee.Code</td>
                                     <td>@item.ViolatorType.Type</td>
-                                    <td>@item.Loan</td>
+                                    <td>@(string.Format("{0:#,##0}", item.Loan))</td>
                                     <td>@item.Description</td>
                                     <td>
                                         <a href="/Admin/Violator/Edit/@item.ID">Sửa</a>

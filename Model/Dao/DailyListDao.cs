@@ -18,31 +18,52 @@ namespace Model.Dao
             db = new WebAppDbContext();
         }
 
+        public List<Voucher> ListAll()
+        {
+                return db.Vouchers.OrderBy(x => x.Code).Where(x => x.Status == true).ToList();
+        }
+
         public long Insert(DailyList list)
         {
             if (list.Tip == null)
             {
                 list.Tip = 0;
             }
-            if (list.Code == null)
-            {
-                list.Code = 0;
-            }
             if (list.Discount == null)
             {
                 list.Discount = 0;
-            }   
+            }
+
+            var ticket = db.Tickets.Find(list.Ticket_ID);
+            var voucher = db.Vouchers.Find(list.Voucher_ID);
+
             if (list.Taxi.Code == null)
             {
-                if (list.Code == 0 && list.Discount == 0)
+                if (list.Discount == 0)
                 {
                     list.Status = true;
                 }
                 //lưu vào db
                 db.DailyLists.Add(list);
                 db.SaveChanges();
-                //tìm trong db để sửa lại Taxi.Code nề null và xóa bảng null taxi
+
+                if (voucher.DiscountPercent != 0)
+                {
+                    list.Total = ticket.Price * voucher.DiscountPercent / 100 - list.Discount + list.Tip;
+                }
+                else
+                {
+                    list.Total = ticket.Price - list.Discount - list.Taxi.Price + list.Tip;
+                }
+
                 var dailylist = db.DailyLists.Find(list.ID);
+                if (list.Voucher_ID != 0)
+                {
+                    voucher.Status = false;
+                    voucher.ModifiedBy = list.CreatedBy;
+                    voucher.ModifiedDate = list.CreatedDate;
+                }
+                //tìm trong db để sửa lại Taxi.Code nề null và xóa bảng null taxi
                 var taxi = db.Taxis.Find(dailylist.Taxi_ID);
                 db.Taxis.Remove(taxi);
                 dailylist.Taxi_ID = null;
@@ -50,7 +71,7 @@ namespace Model.Dao
             }
             else
             {
-                if (list.Code == 0 && list.Discount == 0 && list.Taxi.Price == null)
+                if (list.Discount == 0 && list.Taxi.Price == null)
                 {
                     list.Status = true;
                 }
@@ -58,13 +79,28 @@ namespace Model.Dao
                 {
                     list.Taxi.Price = 0;
                 }
+                if (voucher.DiscountPercent != 0)
+                {
+                    list.Total = ticket.Price * voucher.DiscountPercent / 100 - list.Discount - list.Taxi.Price + list.Tip;
+                }
+                else
+                {
+                    list.Total = ticket.Price - list.Discount - list.Taxi.Price + list.Tip;
+                }
+
+                if (list.Voucher_ID != 0)
+                {
+                    voucher.Status = false;
+                    voucher.ModifiedBy = list.CreatedBy;
+                    voucher.ModifiedDate = list.CreatedDate;
+                }
                 db.DailyLists.Add(list);
                 db.SaveChanges();
             }
             return list.ID;
         }
 
-        public long Update(DailyList entity)
+        public long Update(DailyList entity, string username)
         {
 
             var dailyList = db.DailyLists.Find(entity.ID);
@@ -72,15 +108,11 @@ namespace Model.Dao
             {
                 entity.Tip = 0;
             }
-            if (entity.Code == null)
-            {
-                entity.Code = 0;
-            }
+            
             if (entity.Discount == null)
             {
                 entity.Discount = 0;
             }
-            dailyList.Code = entity.Code;
             dailyList.Description = entity.Description;
             dailyList.Employee_ID = entity.Employee_ID;
             dailyList.Room = entity.Room;
@@ -91,6 +123,13 @@ namespace Model.Dao
             dailyList.Tip = entity.Tip;
             dailyList.Total = entity.Total;
             dailyList.Discount = entity.Discount;
+            dailyList.Customer_ID = entity.Customer_ID;
+            dailyList.Ticket_ID = entity.Ticket_ID;
+            dailyList.Voucher_ID = entity.Voucher_ID;
+
+            var ticket = db.Tickets.Find(entity.Ticket_ID);
+            var voucher = db.Vouchers.Find(entity.Voucher_ID);
+
 
             if (entity.Taxi.Code != null)
             {
@@ -98,10 +137,29 @@ namespace Model.Dao
                 {
                     entity.Taxi.Price = 0;
                 }
+                if (voucher.DiscountPercent != 0)
+                {
+                    dailyList.Total = ticket.Price * voucher.DiscountPercent / 100 - entity.Discount - entity.Taxi.Price + entity.Tip;
+                }
+                else
+                {
+                    dailyList.Total = ticket.Price - entity.Discount - entity.Taxi.Price + entity.Tip;
+                }
                 dailyList.Taxi = entity.Taxi;
             }
-
+            else
+            {
+                if (voucher.DiscountPercent != 0)
+                {
+                    dailyList.Total = ticket.Price * voucher.DiscountPercent / 100 - entity.Discount + entity.Tip;
+                }
+                else
+                {
+                    dailyList.Total = ticket.Price - entity.Discount + entity.Tip;
+                }
+            }
             //Ngày chỉnh sửa = Now
+            dailyList.ModifiedBy = username;
             dailyList.ModifiedDate = DateTime.Now;
             db.SaveChanges();
             return entity.ID;
@@ -150,6 +208,18 @@ namespace Model.Dao
             {
                 return model.OrderByDescending(x => x.CreatedDate).Where(x=>x.Employee.Department_ID == departmentId).ToPagedList(page, pageSize);
             }
+        }
+
+        public IEnumerable<Voucher> ListAllPagingCode(string searchString, int page, int pageSize)
+        {
+            IQueryable<Voucher> model = db.Vouchers;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                model = model.Where(
+                    x => x.Code.Contains(searchString) || x.ExpirationDate.ToString().Contains(searchString)
+                );
+            }
+                return model.OrderByDescending(x => x.Status).ToPagedList(page, pageSize);
         }
 
         public bool Delete(int id)

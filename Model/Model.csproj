@@ -86,6 +86,7 @@
     <Compile Include="EF\Violator.cs" />
     <Compile Include="EF\ViolatorKTV.cs" />
     <Compile Include="EF\ViolatorType.cs" />
+    <Compile Include="EF\Voucher.cs" />
     <Compile Include="EF\WebAppDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

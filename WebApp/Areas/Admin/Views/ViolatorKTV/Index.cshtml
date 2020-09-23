@@ -42,8 +42,8 @@
                                 <th>ID</th>
                                 <td>Ngày giờ</td>
                                 <th>Mã nhân viên</th>
-                                <td>Loại</td>
-                                <td>Số tiền</td>
+                                <td>Tua</td>
+                                <td>Trái cây</td>
                                 <td>Thế chân</td>
                                 <td>Ghi chú</td>
                             </tr>
@@ -52,12 +52,12 @@
                             @foreach (var item in Model)
                             {
                                 <tr id="row_@item.ID">
-                                    <th>@item.ID</th>
+                                    <th>#@item.ID</th>
                                     <td>@item.CreatedDate</td>
                                     <td>@item.Employee.Code</td>
-                                    <td>@item.Tour</td>
-                                    <td>@item.Fruit</td>
-                                    <td>@item.Substitution</td>
+                                    <td>@(string.Format("{0:#,##0}", item.Tour))</td>
+                                    <td>@(string.Format("{0:#,##0}", item.Fruit))</td>
+                                    <td>@(string.Format("{0:#,##0}", item.Substitution))</td>
                                     <td>@item.Description</td>
                                     <td>
                                         <a href="/Admin/ViolatorKTV/Edit/@item.ID">Sửa</a>

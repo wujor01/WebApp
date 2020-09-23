@@ -26,6 +26,7 @@ namespace Model.EF
         public virtual DbSet<Violator> Violators { get; set; }
         public virtual DbSet<ViolatorKTV> ViolatorKTVs { get; set; }
         public virtual DbSet<ViolatorType> ViolatorTypes { get; set; }
+        public virtual DbSet<Voucher> Vouchers { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -65,10 +66,6 @@ namespace Model.EF
 
             modelBuilder.Entity<DailyList>()
                 .Property(e => e.Tip)
-                .HasPrecision(18, 0);
-
-            modelBuilder.Entity<DailyList>()
-                .Property(e => e.Code)
                 .HasPrecision(18, 0);
 
             modelBuilder.Entity<DailyList>()
@@ -238,6 +235,27 @@ namespace Model.EF
                 .WithRequired(e => e.ViolatorType)
                 .HasForeignKey(e => e.Type_ID)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Voucher>()
+                .Property(e => e.Code)
+                .IsFixedLength();
+
+            modelBuilder.Entity<Voucher>()
+                .Property(e => e.Max)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<Voucher>()
+                .Property(e => e.CreatedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Voucher>()
+                .Property(e => e.ModifiedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Voucher>()
+                .HasMany(e => e.DailyLists)
+                .WithOptional(e => e.Voucher)
+                .HasForeignKey(e => e.Voucher_ID);
 
             modelBuilder.Entity<Role>()
                 .Property(e => e.ID)

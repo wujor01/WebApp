@@ -25,15 +25,20 @@ namespace Model.Dao
             return entity.ID;
         }
 
-        public long Update(DayOff entity)
+        public long Update(DayOff entity, string username)
         {
 
             var dayOff = db.DayOffs.Find(entity.ID);
+            dayOff.Employee_ID = entity.Employee_ID;
             dayOff.Description = entity.Description;
             dayOff.Status = entity.Status;
-            dayOff.Date = entity.Date;
+            if (entity.Date != null)
+            {
+                dayOff.Date = entity.Date;
 
+            }
             //Ngày chỉnh sửa = Now
+            dayOff.ModifiedBy = username;
             dayOff.ModifiedDate = DateTime.Now;
             db.SaveChanges();
             return entity.ID;

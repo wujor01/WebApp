@@ -37,7 +37,7 @@ namespace Model.Dao
             return entity.ID;
         }
 
-        public long Update(Employee entity)
+        public long Update(Employee entity,string username)
         {
             var employee = db.Employees.Find(entity.ID);
 
@@ -73,6 +73,7 @@ namespace Model.Dao
             employee.TimeOut = entity.TimeOut;
             employee.StatusAccount = entity.StatusAccount;
             //Ngày chỉnh sửa = Now
+            employee.ModifiedBy = username;
             employee.ModifiedDate = DateTime.Now;              
             db.SaveChanges();
                 return 1;

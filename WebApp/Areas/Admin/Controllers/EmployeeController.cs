@@ -103,9 +103,8 @@ namespace WebApp.Areas.Admin.Controllers
             {
                 var dao = new EmployeeDao();
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-                employee.ModifiedBy = session.UserName;
 
-                long id = dao.Update(employee);
+                long id = dao.Update(employee, session.UserName);
                 if (id > 0)
                 {
                     SetAlert("Sửa thông tin nhân viên thành công", "success");

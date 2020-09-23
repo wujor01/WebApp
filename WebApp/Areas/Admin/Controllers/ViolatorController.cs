@@ -94,9 +94,8 @@ namespace WebApp.Areas.Admin.Controllers
             {
                 var dao = new ViolatorDao();
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-                violator.ModifiedBy = session.UserName;
 
-                long id = dao.Update(violator);
+                long id = dao.Update(violator, session.UserName);
                 if (id > 0)
                 {
                     SetAlert("Sửa thông tin nhân viên thành công", "success");

@@ -23,7 +23,7 @@ namespace Model.Dao
             return entity.ID;
         }
 
-        public long Update(ViolatorKTV entity)
+        public long Update(ViolatorKTV entity,string username)
         {
             var violatorKTV = db.ViolatorKTVs.Find(entity.ID);
             violatorKTV.Employee_ID = entity.Employee_ID;
@@ -32,6 +32,7 @@ namespace Model.Dao
             violatorKTV.Description = entity.Description;
 
             //Ngày chỉnh sửa = Now
+            violatorKTV.ModifiedBy = username;
             violatorKTV.ModifiedDate = DateTime.Now;
             db.SaveChanges();
             return entity.ID;

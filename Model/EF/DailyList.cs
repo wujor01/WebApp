@@ -34,7 +34,8 @@
 
         public decimal? Tip { get; set; }
 
-        public decimal? Code { get; set; }
+        [Display(Name ="Code")]
+        public long? Voucher_ID { get; set; }
 
         [Display(Name = "Giảm trực tiếp")]
         public decimal? Discount { get; set; }
@@ -71,5 +72,7 @@
         public virtual Taxi Taxi { get; set; }
 
         public virtual Ticket Ticket { get; set; }
+
+        public virtual Voucher Voucher { get; set; }
     }
 }

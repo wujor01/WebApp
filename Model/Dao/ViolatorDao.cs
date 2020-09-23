@@ -23,7 +23,7 @@ namespace Model.Dao
             return entity.ID;
         }
 
-        public long Update(Violator entity)
+        public long Update(Violator entity,string username)
         {
             var violator = db.Violators.Find(entity.ID);
             violator.Employee_ID = entity.Employee_ID;
@@ -32,6 +32,7 @@ namespace Model.Dao
             violator.Description = entity.Description;
 
             //Ngày chỉnh sửa = Now
+            violator.ModifiedBy = username;
             violator.ModifiedDate = DateTime.Now;
             db.SaveChanges();
             return entity.ID;

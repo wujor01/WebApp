@@ -6,26 +6,32 @@
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("Ticket")]
-    public partial class Ticket
+    [Table("Voucher")]
+    public partial class Voucher
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Ticket()
+        public Voucher()
         {
             DailyLists = new HashSet<DailyList>();
         }
 
-        public int ID { get; set; }
+        public long ID { get; set; }
 
-        [Display(Name ="Loại vé")]
-        [StringLength(50)]
-        public string Name { get; set; }
+        [StringLength(10)]
+        public string Code { get; set; }
 
-        [Display(Name="Giá vé")]
-        public decimal? Price { get; set; }
+        [Display(Name ="% Giảm giá")]
+        public decimal? DiscountPercent { get; set; }
 
-        [Display(Name="Chi nhánh")]
-        public int? Department_ID { get; set; }
+        [Display(Name = "Giảm giá tối đa")]
+        public decimal? Max { get; set; }
+
+        [Display(Name = "Trạng thái")]
+        public bool Status { get; set; }
+
+        [Display(Name = "Ngày hết hạn")]
+        [DataType(DataType.Date)]
+        public DateTime? ExpirationDate { get; set; }
 
         public DateTime? CreatedDate { get; set; }
 
@@ -39,7 +45,5 @@
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DailyList> DailyLists { get; set; }
-
-        public virtual Department Department { get; set; }
     }
 }

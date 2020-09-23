@@ -1633,6 +1633,8 @@
     <Content Include="Areas\Admin\Views\DailyList\TaxiIndex.cshtml" />
     <Content Include="Content\bootstrap-chosen.scss" />
     <Content Include="Content\bootstrap-chosen.less" />
+    <Content Include="Areas\Admin\Views\DailyList\CodeIndex.cshtml" />
+    <Content Include="Areas\Admin\Views\DailyList\Detail.cshtml" />
     <None Include="Properties\PublishProfiles\registry.hub.docker.com_wujor01.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\chosen.jquery.js" />

@@ -23,15 +23,16 @@ namespace Model.Dao
             return entity.ID;
         }
 
-        public long Update(RevenueExpenditure entity)
+        public long Update(RevenueExpenditure entity,string username)
         {
             var revenueExpenditure = db.RevenueExpenditures.Find(entity.ID);
             revenueExpenditure.Contents = entity.Contents;
             revenueExpenditure.Type_ID = entity.Type_ID;
             revenueExpenditure.Description = entity.Description;
-            revenueExpenditure.Money = revenueExpenditure.Money;
+            revenueExpenditure.Money = entity.Money;
 
             //Ngày chỉnh sửa = Now
+            revenueExpenditure.ModifiedBy = username;
             revenueExpenditure.ModifiedDate = DateTime.Now;
             db.SaveChanges();
             return entity.ID;

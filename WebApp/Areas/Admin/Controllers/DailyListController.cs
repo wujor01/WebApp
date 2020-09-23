@@ -36,6 +36,20 @@ namespace WebApp.Areas.Admin.Controllers
 
             return View(model);
         }
+
+        [HasCredential(RoleID = "VIEW_CODE")]
+        public ActionResult CodeIndex(string searchString, int page = 1, int pageSize = 10)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new DailyListDao();
+            var model = dao.ListAllPagingCode(searchString, page, pageSize);
+
+            ViewBag.SearchString = searchString;
+
+            return View(model);
+        }
+
         public void SetViewDepartment(int? selectedId = null)
         {
             var session = (UserLogin)Session[CommonConstants.USER_SESSION];
@@ -66,12 +80,25 @@ namespace WebApp.Areas.Admin.Controllers
             ViewBag.Ticket_ID = new SelectList(dao.ListAll(session.DepartmentID), "ID", "Name", selectedId);
         }
 
+        public void SetViewVoucher(long? selectedId = null)
+        {
+            var dao = new DailyListDao();
+            ViewBag.Voucher_ID = new SelectList(dao.ListAll(), "ID", "Code", selectedId);
+        }
+
+        public ActionResult Detail(int id)
+        {
+            var dailyList = new DailyListDao().ViewDetail(id);
+            return View(dailyList);
+        }
+
         [HttpGet]
         [HasCredential(RoleID = "ADD_LIST")]
         public ActionResult Create()
         {
             SetViewDepartment();
             SetViewTicket();
+            SetViewVoucher();
             SetViewBag();
             SetViewCustomer();
             return View();
@@ -94,13 +121,14 @@ namespace WebApp.Areas.Admin.Controllers
                 if (id > 0)
                 {
                     SetAlert("Thêm bảng kê thành công", "success");
-                    return RedirectToAction("Index", "DailyList");
+                    return RedirectToAction("Detail/"+list.ID, "DailyList");
                 }
                 else
                 {
                     ModelState.AddModelError("", "Thêm bảng kê không thành công");
                 }
             //}
+            SetViewVoucher();
             SetViewDepartment();
             SetViewCustomer();
             SetViewBag();
@@ -109,6 +137,7 @@ namespace WebApp.Areas.Admin.Controllers
             return RedirectToAction("Index", "DailyList");
         }
 
+        [HttpGet]
         [HasCredential(RoleID = "EDIT_LIST")]
         public ActionResult Edit(int id)
         {
@@ -117,6 +146,7 @@ namespace WebApp.Areas.Admin.Controllers
             SetViewCustomer();
             SetViewBag();
             SetViewTicket();
+            SetViewVoucher();
             return View(dailyList);
         }
 
@@ -128,9 +158,8 @@ namespace WebApp.Areas.Admin.Controllers
             {
                 var dao = new DailyListDao();
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-                dailyList.ModifiedBy = session.UserName;
 
-                long id = dao.Update(dailyList);
+                long id = dao.Update(dailyList,session.UserName);
                 if (id > 0)
                 {
                     SetAlert("Sửa thông tin bảng kê thành công", "success");
@@ -146,6 +175,7 @@ namespace WebApp.Areas.Admin.Controllers
             SetViewTicket();
             SetViewCustomer();
             SetViewBag();
+            SetViewVoucher();
             SetAlert("Error", "error");
             return RedirectToAction("Index", "DailyList");
         }

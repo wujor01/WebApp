@@ -94,9 +94,8 @@ namespace WebApp.Areas.Admin.Controllers
             {
                 var dao = new RevenueExpenditureDao();
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-                revenueExpenditure.ModifiedBy = session.UserName;
 
-                long id = dao.Update(revenueExpenditure);
+                long id = dao.Update(revenueExpenditure, session.UserName);
                 if (id > 0)
                 {
                     SetAlert("Sửa thông tin nhân viên thành công", "success");

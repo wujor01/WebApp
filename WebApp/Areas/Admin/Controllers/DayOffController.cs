@@ -19,6 +19,8 @@ namespace WebApp.Areas.Admin.Controllers
             ViewBag.Employee_ID = new SelectList(dao.ListAll("",session.DepartmentID), "ID", "Code", selectedId);
         }
 
+
+
         [HasCredential(RoleID = "VIEW_DAYOFF")]
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
@@ -73,6 +75,7 @@ namespace WebApp.Areas.Admin.Controllers
         public ActionResult Edit(int id)
         {
             var dayOff = new DayOffDao().ViewDetail(id);
+            SetViewBag();
             return View(dayOff);
         }
 
@@ -84,9 +87,8 @@ namespace WebApp.Areas.Admin.Controllers
             {
                 var dao = new DayOffDao();
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-                dayOff.ModifiedBy = session.UserName;
 
-                long id = dao.Update(dayOff);
+                long id = dao.Update(dayOff, session.UserName);
                 if (id > 0)
                 {
                     SetAlert("Sửa thông tin nhân viên thành công", "success");
@@ -98,6 +100,7 @@ namespace WebApp.Areas.Admin.Controllers
                     return RedirectToAction("Index", "DayOff");
                 }
             }
+            SetViewBag();
             SetAlert("Sửa thông tin nhân viên thất bại", "error");
             return RedirectToAction("Index", "DayOff");
         }

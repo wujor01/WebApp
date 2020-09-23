@@ -43,16 +43,14 @@
 
                     <div class="row form-group">
                         <div class="col-lg-12">
-                            <input type="text" id="txtsearch" placeholder="Nhập vào mã KTV" />
-
-                            @*<div class="col-md-4">
-
+                            <div class="col-md-4">
+                                @*<input type="text" id="txtsearch" class="form-control" placeholder="Nhập vào mã KTV" />*@
                                 <input type="text" value="@ViewBag.SearchString" class="form-control" name="searchString" />
                             </div>
                             <div class="col-md-4">
                                 <button type="submit" class="btn btn-success">Tìm kiếm</button>
                                 <a class="btn btn-primary" href="/Admin/DailyList/Create">Thêm mới</a>
-                            </div>*@
+                            </div>
                         </div>
                     </div>
                 }
@@ -87,11 +85,11 @@
                                     <th>#@item.ID</th>
                                     <td>@item.Employee.Code</td>
                                     <td>@item.Room</td>
-                                    <td>@item.TimeIn</td>
-                                    <td>@item.TimeOut</td>
+                                    <td>@(string.Format("{0:HH:mm}", item.TimeIn))</td>
+                                    <td>@(string.Format("{0:HH:mm}", item.TimeOut))</td>
                                     <td>@(string.Format("{0:#,##0}", item.Ticket.Price))</td>
                                     <td>@(string.Format("{0:#,##0}", item.Tip))</td>
-                                    <td>@(string.Format("{0:#,##0}", item.Code))</td>
+                                    <td>@item.Voucher.Code</td>
                                     <td>@(string.Format("{0:#,##0}", item.Discount))</td>
 
                                     @{
@@ -99,12 +97,12 @@
                                         {
                                             @*<td>@item.Taxi.Commission</td>*@
                                             <td>@(string.Format("{0:#,##0}", item.Taxi.Price))</td>
-                                            <td>@(string.Format("{0:#,##0}", item.Ticket.Price + item.Tip - item.Code - item.Discount - item.Taxi.Price))</td>
+                                            <td>@(string.Format("{0:#,##0}", item.Total))</td>
                                         }
                                         else
                                         {
                                             <td></td>
-                                            <td>@(string.Format("{0:#,##0}", item.Ticket.Price + item.Tip-item.Code-item.Discount))</td>
+                                            <td>@(string.Format("{0:#,##0}", item.Total))</td>
                                         }
                                     }
 
