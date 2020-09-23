@@ -86,10 +86,50 @@ namespace WebApp.Areas.Admin.Controllers
             ViewBag.Voucher_ID = new SelectList(dao.ListAll(), "ID", "Code", selectedId);
         }
 
+        [HasCredential(RoleID = "VIEW_LIST")]
         public ActionResult Detail(int id)
         {
             var dailyList = new DailyListDao().ViewDetail(id);
             return View(dailyList);
+        }
+
+        [HasCredential(RoleID = "VIEW_CODE")]
+        public ActionResult CodeDetail(int id)
+        {
+            var dailyList = new DailyListDao().ViewCodeDetail(id);
+            return View(dailyList);
+        }
+
+        [HttpGet]
+        [HasCredential(RoleID = "ADD_CODE")]
+        public ActionResult CodeCreate()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [HasCredential(RoleID = "ADD_CODE")]
+        public ActionResult CodeCreate(Voucher voucher)
+        {
+            var dao = new DailyListDao();
+
+            //lấy id trong session đăng nhập của quản trị lưu vào phiên tạo mới user
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+            voucher.CreatedBy = session.UserName;
+            voucher.CreatedDate = DateTime.Now;
+
+            long id = dao.CodeInsert(voucher);
+            if (id > 0)
+            {
+                SetAlert("Tạo code thành công", "success");
+                return RedirectToAction("CodeDetail/"+voucher.ID, "DailyList");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Tạo code không thành công");
+            }
+            SetAlert("Error!", "error");
+            return RedirectToAction("Index", "DailyList");
         }
 
         [HttpGet]

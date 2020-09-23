@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.Entity.ModelConfiguration.Configuration;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +22,23 @@ namespace Model.Dao
         public List<Voucher> ListAll()
         {
                 return db.Vouchers.OrderBy(x => x.Code).Where(x => x.Status == true).ToList();
+        }
+
+        public long CodeInsert(Voucher voucher)
+        {           
+            var rand = new Random();
+            string r = rand.Next(100000, 1000000).ToString();
+            voucher.Status = true;
+            voucher.DiscountPercent = 20;
+            voucher.ExpirationDate = DateTime.Now.AddDays(7);
+            do
+            {              
+                voucher.Code = string.Concat("NV", r);
+                db.Vouchers.Add(voucher);
+            } while (db.Vouchers.Where(x => x.Code == voucher.Code).ToList().Count > 0);
+
+            db.SaveChanges();
+            return voucher.ID;
         }
 
         public long Insert(DailyList list)
@@ -170,6 +188,11 @@ namespace Model.Dao
             return db.DailyLists.Find(list_ID);
         }
 
+        public Voucher ViewCodeDetail(int ID)
+        {
+            return db.Vouchers.Find(ID);
+        }
+
         //Phân trang quản lý user và thêm mục tìm kiếm theo username và email
         public IEnumerable<DailyList> ListAllPaging(string searchString, int page, int pageSize, int departmentId)
         {
@@ -219,7 +242,7 @@ namespace Model.Dao
                     x => x.Code.Contains(searchString) || x.ExpirationDate.ToString().Contains(searchString)
                 );
             }
-                return model.OrderByDescending(x => x.Status).ToPagedList(page, pageSize);
+                return model.Where(x=>x.ID > 0).OrderByDescending(x => x.Status).ToPagedList(page, pageSize);
         }
 
         public bool Delete(int id)

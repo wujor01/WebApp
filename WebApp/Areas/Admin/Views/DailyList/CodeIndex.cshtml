@@ -58,7 +58,7 @@
                                 <td>@item.DiscountPercent%</td>
                                 <td>@item.Max</td>
                                 <td>@Html.Raw(item.Status ? "<strong style=\"color:Green;\">Chưa sử dụng</strong>" : "<strong style=\"color:Tomato;\">Đã sử dụng</strong>")</td>
-                                <td>@item.ExpirationDate</td>
+                                <td>@(string.Format("{0:dd/MM/yyyy}", item.ExpirationDate))</td>
                                 <td>@item.CreatedBy</td>
 
                                 <td>
