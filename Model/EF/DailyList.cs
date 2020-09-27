@@ -12,20 +12,20 @@
         public long ID { get; set; }
 
         [Display(Name = "Mã KTV")]
-        public long? Employee_ID { get; set; }
+        [StringLength(50)]
+        public string Employee_ID { get; set; }
+
+        [NotMapped]
+        public string[] SelectedIDArray { get; set; }
 
         [Display(Name = "Phòng")]
-        [StringLength(10)]
-        public string Room { get; set; }
-
-        [Display(Name = "Khách")]
-        public long? Customer_ID { get; set; }
+        public int? Room_ID { get; set; }
 
         [Display(Name = "Giờ vào")]
         [DataType(DataType.Time)]
         public DateTime? TimeIn { get; set; }
 
-        [Display(Name = "Giờ vào")]
+        [Display(Name = "Giờ ra")]
         [DataType(DataType.Time)]
         public DateTime? TimeOut { get; set; }
 
@@ -34,7 +34,7 @@
 
         public decimal? Tip { get; set; }
 
-        [Display(Name ="Code")]
+        [Display(Name = "Code")]
         public long? Voucher_ID { get; set; }
 
         [Display(Name = "Giảm trực tiếp")]
@@ -65,9 +65,7 @@
         [StringLength(50)]
         public string ModifiedBy { get; set; }
 
-        public virtual Customer Customer { get; set; }
-
-        public virtual Employee Employee { get; set; }
+        public virtual Room Room { get; set; }
 
         public virtual Taxi Taxi { get; set; }
 

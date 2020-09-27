@@ -12,7 +12,6 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Employee()
         {
-            DailyLists = new HashSet<DailyList>();
             DayOffs = new HashSet<DayOff>();
             Violators = new HashSet<Violator>();
             ViolatorKTVs = new HashSet<ViolatorKTV>();
@@ -27,7 +26,7 @@
         [StringLength(150)]
         public string Name { get; set; }
 
-        [Display(Name = "Mã nhân viên")]
+        [Display(Name = "Mã nhân viên",Prompt ="Bắt đầu bằng ký tự NV hoặc KTV(ví dụ: KTV1001)")]
         [StringLength(10)]
         public string Code { get; set; }
 
@@ -104,9 +103,6 @@
 
         [Display(Name = "Trạng thái tài khoản")]
         public bool StatusAccount { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DailyList> DailyLists { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DayOff> DayOffs { get; set; }

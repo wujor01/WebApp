@@ -1,13 +1,11 @@
-﻿@model PagedList.IPagedList<Model.EF.DayOff>
+﻿@model PagedList.IPagedList<Model.EF.Ticket>
 @using PagedList.Mvc;
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layouts.cshtml";
 }
 
-@section header{
-    Danh sách xin nghỉ
-}
+<h2>Danh sách vé</h2>
 
 <div class="row">
 
@@ -15,48 +13,55 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                Danh sách xin nghỉ
+                Danh sách vé
             </div>
 
             <!-- /.panel-heading -->
             <div class="panel-body">
-                @using (Html.BeginForm("Index", "DayOff", FormMethod.Get))
+                @using (Html.BeginForm("Index", "Ticket", FormMethod.Get))
                 {
+
                     <div class="row form-group">
                         <div class="col-lg-12">
                             <div class="col-md-4">
-                                <input type="text" value="@ViewBag.SearchString" class="form-control" name="searchString" placeholder="Nhập vào mã Nhân viên hoặc Ngày: yyyy-mm-dd" />
+                                @*<input type="text" id="txtsearch" class="form-control" placeholder="Nhập vào mã KTV" />*@
+                                <input type="text" value="@ViewBag.SearchString" class="form-control" name="searchString" placeholder="Nhập vào Tên vé hoặc Giá" />
                             </div>
                             <div class="col-md-4">
                                 <button type="submit" class="btn btn-success">Tìm kiếm</button>
-                                <a class="btn btn-primary" href="/Admin/DayOff/Create">Thêm mới</a>
+                                <a class="btn btn-primary" href="/Admin/Ticket/Create">Thêm mới</a>
                             </div>
                         </div>
                     </div>
                 }
-
+                <hr />
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>Ngày</th>
-                                <td>Mã nhân viên</td>
-                                <td>Lý do</td>
-                                <td>Trạng thái</td>
-                                <td>Tạo bởi</td>
+                                <th>Chi nhánh</th>
+                                <th>ID</th>
+                                <td>Tên vé</td>
+                                <td>Giá</td>
+                                <td>Tổng thời gian</td>
+                                <td>Tiêu đề</td>
+                                <td>Chi tiết</td>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model)
                             {
                             <tr id="row_@item.ID">
-                                <th>@(string.Format("{0:dd/MM/yyyy}", item.Date))</th>
-                                <td>@item.Employee.Code</td>
+
+                                <th>@item.Department.Name</th>
+                                <th>#@item.ID</th>
+                                <td>@item.Name</td>
+                                <td>@(string.Format("{0:#,##0}", item.Price))</td>
+                                <td>@item.TimeTotal phút</td>
+                                <td>@item.Header</td>
                                 <td>@item.Description</td>
-                                <td>@Html.Raw(item.Status ? "<strong style=\"color:Green;\">Đã xác nhận</strong>" : "<strong style=\"color:Tomato;\">Chờ xác nhận</strong>")</td>
-                                <td>@item.CreatedBy</td>
                                 <td>
-                                    <a href="/Admin/DayOff/Edit/@item.ID">Sửa</a>
+                                    <a href="/Admin/Ticket/Edit/@item.ID">Sửa</a>
                                     |
                                     @Ajax.ActionLink("Xoá", "Delete", new { @id = item.ID }, new AjaxOptions
                                {
@@ -79,4 +84,4 @@
         </div>
     </div>
 </div>
-<p>
+

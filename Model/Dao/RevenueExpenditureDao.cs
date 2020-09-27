@@ -65,7 +65,7 @@ namespace Model.Dao
             if (!string.IsNullOrEmpty(searchString))
             {
                 model = model.Where(
-                    x => x.Contents.Contains(searchString) || x.Money.ToString().Contains(searchString)
+                    x => x.Contents.Contains(searchString) || x.ID.ToString().Contains(searchString)
                 );
             }
             if (departmentId == 0)

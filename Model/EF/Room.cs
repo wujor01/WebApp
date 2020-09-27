@@ -1,4 +1,4 @@
-﻿namespace Model.EF
+namespace Model.EF
 {
     using System;
     using System.Collections.Generic;
@@ -6,35 +6,23 @@
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("Ticket")]
-    public partial class Ticket
+    [Table("Room")]
+    public partial class Room
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Ticket()
+        public Room()
         {
             DailyLists = new HashSet<DailyList>();
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ID { get; set; }
 
-        [Display(Name = "Tên vé")]
+        public int? Department_ID { get; set; }
+
         [StringLength(50)]
         public string Name { get; set; }
 
-        [Display(Name = "Giá vé")]
-        public decimal? Price { get; set; }
-
-        [Display(Name = "Chi nhánh")]
-        public int? Department_ID { get; set; }
-
-        [Display(Name = "Tổng thời gian")]
-        public double TimeTotal { get; set; }
-
-        [Display(Name = "Tiêu đề")]
-        [StringLength(500)]
-        public string Header { get; set; }
-
-        [Display(Name = "Chi tiết")]
         [StringLength(500)]
         public string Description { get; set; }
 

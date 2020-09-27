@@ -220,7 +220,7 @@
             </a>
             <ul class="dropdown-menu dropdown-user">
                 <li>
-                    <a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                    <a href="#"><i class="fa fa-user fa-fw"></i> @ViewBag.sessionUser</a>
                 </li>
                 <li>
                     <a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
@@ -267,7 +267,13 @@
                             <a href="/Admin/RevenueExpenditure/Index">Thu - Chi</a>
                         </li>
                         <li>
-                            <a href="/Admin/DailyList/CodeIndex"><i class="glyphicon glyphicon-qrcode"></i> Danh sách Code</a>
+                            <a href="/Admin/Customer/Index">Khách hàng</a>
+                        </li>
+                        <li>
+                            <a href="/Admin/Ticket"> Danh sách Vé</a>
+                        </li>
+                        <li>
+                            <a href="/Admin/Room"> Danh sách Phòng</a>
                         </li>
                     </ul>
                     <!-- /.nav-second-level -->
@@ -291,34 +297,19 @@
                     <!-- /.nav-second-level -->
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-bell fa-fw"></i> Khách hàng<span class="fa arrow"></span></a>
+                    <a href="#"><i class="glyphicon glyphicon-info-sign"></i> Tài khoản<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a href="/Admin/ProductCategory/Index">Khách hàng</a>
+                            <a href="/Admin/DailyList/CodeIndex"> Danh sách Code</a>
                         </li>
                         <li>
-                            <a href="/Admin/Product/Index">Sản phẩm</a>
-                        </li>
-                    </ul>
-                    <!-- /.nav-second-level -->
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Quản lý chung<span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a href="/Admin/About/Index">Giới thiệu</a>
+                            <a href="@Url.Action("Detail","Employee")">Thông tin</a>
                         </li>
                         <li>
-                            <a href="/Admin/Footer/Index">Foooter</a>
+                            <a href="#">Hỗ trợ</a>
                         </li>
                         <li>
-                            <a href="/Admin/Footer/Index">Menu</a>
-                        </li>
-                        <li>
-                            <a href="/Admin/Footer/Index">Slide</a>
-                        </li>
-                        <li>
-                            <a href="/Admin/Footer/Index">Phản hồi</a>
+                            <a href=@Url.Action("LogOut","Login")> Đăng xuất</a>
                         </li>
                     </ul>
                     <!-- /.nav-second-level -->

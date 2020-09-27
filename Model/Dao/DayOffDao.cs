@@ -2,6 +2,7 @@
 using PagedList;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,14 @@ namespace Model.Dao
             dayOff.Employee_ID = entity.Employee_ID;
             dayOff.Description = entity.Description;
             dayOff.Status = entity.Status;
+            
+            if (dayOff.Status == true)
+            {
+                var emp = db.Employees.Find(entity.Employee_ID);
+
+                emp.NumberOfDayOff = emp.NumberOfDayOff + 1;
+            }        
+
             if (entity.Date != null)
             {
                 dayOff.Date = entity.Date;
@@ -76,11 +85,11 @@ namespace Model.Dao
             }
             if (departmentId == 0)
             {
-                return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+                return model.OrderByDescending(x => x.Date).ToPagedList(page, pageSize);
             }
             else
             {
-                return model.OrderByDescending(x => x.CreatedDate).Where(x=>x.Employee.Department_ID == departmentId).ToPagedList(page, pageSize);
+                return model.OrderByDescending(x => x.Date).Where(x=>x.Employee.Department_ID == departmentId).ToPagedList(page, pageSize);
             }
         }
     }

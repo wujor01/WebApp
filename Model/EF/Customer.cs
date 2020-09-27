@@ -9,12 +9,6 @@
     [Table("Customer")]
     public partial class Customer
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Customer()
-        {
-            DailyLists = new HashSet<DailyList>();
-        }
-
         public long ID { get; set; }
 
         [Display(Name = "Tên khách hàng")]
@@ -42,8 +36,5 @@
 
         [StringLength(50)]
         public string ModifiedBy { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DailyList> DailyLists { get; set; }
     }
 }

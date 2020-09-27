@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace Model.Dao
 {
@@ -55,15 +56,16 @@ namespace Model.Dao
             var ticket = db.Tickets.Find(list.Ticket_ID);
             var voucher = db.Vouchers.Find(list.Voucher_ID);
 
+            list.TimeIn = DateTime.Now;
+            list.TimeOut = DateTime.Now.Add(TimeSpan.FromMinutes(ticket.TimeTotal));
+
+
             if (list.Taxi.Code == null)
             {
                 if (list.Discount == 0)
                 {
                     list.Status = true;
                 }
-                //lưu vào db
-                db.DailyLists.Add(list);
-                db.SaveChanges();
 
                 if (voucher.DiscountPercent != 0)
                 {
@@ -71,8 +73,12 @@ namespace Model.Dao
                 }
                 else
                 {
-                    list.Total = ticket.Price - list.Discount - list.Taxi.Price + list.Tip;
+                    list.Total = ticket.Price - list.Discount + list.Tip;
                 }
+
+                //lưu vào db
+                db.DailyLists.Add(list);
+                db.SaveChanges();
 
                 var dailylist = db.DailyLists.Find(list.ID);
                 if (list.Voucher_ID != 0)
@@ -141,7 +147,6 @@ namespace Model.Dao
             dailyList.Tip = entity.Tip;
             dailyList.Total = entity.Total;
             dailyList.Discount = entity.Discount;
-            dailyList.Customer_ID = entity.Customer_ID;
             dailyList.Ticket_ID = entity.Ticket_ID;
             dailyList.Voucher_ID = entity.Voucher_ID;
 
@@ -200,7 +205,7 @@ namespace Model.Dao
             if (!string.IsNullOrEmpty(searchString))
             {
                 model = model.Where(
-                    x => x.Employee.Code.Contains(searchString) || x.ID.ToString().Contains(searchString)
+                    x => x.Room.Name.Contains(searchString) || x.ID.ToString().Contains(searchString)
                 );
             }
             if (departmentId == 0)
@@ -210,7 +215,7 @@ namespace Model.Dao
             }
             else
             {
-                return model.OrderByDescending(x => x.CreatedDate).Where(x => x.Employee.Department_ID == departmentId).ToPagedList(page, pageSize);
+                return model.OrderByDescending(x => x.CreatedDate).Where(x => x.Room.Department_ID == departmentId).ToPagedList(page, pageSize);
             }
         }
 
@@ -220,16 +225,16 @@ namespace Model.Dao
             if (!string.IsNullOrEmpty(searchString))
             {
                 model = model.Where(
-                    x => x.Taxi.Code.Contains(searchString) || x.Taxi.Phone.ToString().Contains(searchString)
+                    x => x.ID.ToString().Contains(searchString) || x.Taxi.Phone.ToString().Contains(searchString)
                 );
             }
-            if (true)
+            if (departmentId == 0)
             {
                 return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
             }
             else
             {
-                return model.OrderByDescending(x => x.CreatedDate).Where(x=>x.Employee.Department_ID == departmentId).ToPagedList(page, pageSize);
+                return model.OrderByDescending(x => x.CreatedDate).Where(x=>x.Room.Department_ID == departmentId).ToPagedList(page, pageSize);
             }
         }
 
@@ -259,6 +264,34 @@ namespace Model.Dao
                 return false;
             }
 
+        }
+        public bool CodeDelete(int id)
+        {
+            try
+            {
+                var voucher = db.Vouchers.Find(id);
+                db.Vouchers.Remove(voucher);
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+        }
+
+        public List<Employee> ListAll(string position, int departmentId)
+        {
+            if (departmentId == 0)
+            {
+                return db.Employees.Where(x => x.Status == true && x.Code.StartsWith(position) == true).ToList();
+
+            }
+            else
+            {
+                return db.Employees.Where(x => x.Status == true && x.Code.StartsWith(position) == true && x.Department_ID == departmentId).ToList();
+            }
         }
     }
 }

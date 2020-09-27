@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Helpers;
+using System.Web.Mvc;
 
 namespace Model.Dao
 {
@@ -24,12 +25,15 @@ namespace Model.Dao
         {
             if (CheckUserName(entity.Username) == false && CheckCode(entity.Code) == false)
             {
+                if (!string.IsNullOrEmpty(entity.Password))
+                {
+                    // pass = pass + salt
+                    string pass = entity.Password + Crypto.GenerateSalt();
+                    //Lưu lại giá trị hash và salt vào db
+                    entity.Password = Crypto.GenerateSalt();
+                    entity.Hash = Crypto.HashPassword(pass);
+                }
                 entity.Status = true;
-                // pass = pass + salt
-                string pass = entity.Password + Crypto.GenerateSalt();
-                //Lưu lại giá trị hash và salt vào db
-                entity.Password = Crypto.GenerateSalt();
-                entity.Hash = Crypto.HashPassword(pass);
                 db.Employees.Add(entity);
                 db.SaveChanges();
             }
@@ -84,7 +88,7 @@ namespace Model.Dao
             return db.Employees.SingleOrDefault(x => x.Username == userName);
         }
 
-        public Employee ViewDetail(int id)
+        public Employee ViewDetail(long id)
         {
             return db.Employees.Find(id);
         }
@@ -258,6 +262,18 @@ namespace Model.Dao
             else
             {
                 return db.Employees.Where(x => x.Status == true && x.Code.StartsWith(position) == true && x.Department_ID == departmentId).ToList();
+            }
+        }
+        public List<Room> ListRoomAll(int departmentId)
+        {
+            if (departmentId == 0)
+            {
+                return db.Rooms.ToList();
+
+            }
+            else
+            {
+                return db.Rooms.Where(x=>x.Department_ID == departmentId).ToList();
             }
         }
     }

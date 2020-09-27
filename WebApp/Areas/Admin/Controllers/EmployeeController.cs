@@ -43,6 +43,58 @@ namespace WebApp.Areas.Admin.Controllers
             return View();        
         }
 
+        public ActionResult Detail()
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+            var employee = new EmployeeDao().ViewDetail(session.UserID);
+            return View(employee);
+        }
+
+        [HttpGet]
+        public ActionResult EditYourAccount(long Id)
+        {
+                var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+                var employee = new EmployeeDao().ViewDetail(session.UserID);
+                if (Id != session.UserID)
+                {
+                    return RedirectToAction("Error", "Employee");
+                }
+                else
+                {
+                    SetViewBag();
+                    return View(employee);
+                }
+        }
+
+        public ActionResult Error()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditYourAccount(Employee employee)
+        {
+            if (ModelState.IsValid)
+            {
+                var dao = new EmployeeDao();
+                var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+                    long id = dao.Update(employee, session.UserName);
+                    if (id > 0)
+                    {
+                        SetAlert("Sửa thông tin nhân viên thành công", "success");
+                        return RedirectToAction("Index", "Employee");
+                    }
+                    else
+                    {
+                        SetAlert("Tài khoản hoặc mã nhân viên đã tồn tại!", "error");
+                        return RedirectToAction("Index", "Employee");
+                    }
+            }
+            SetViewBag();
+            SetAlert("Sửa thông tin nhân viên thất bại", "error");
+            return RedirectToAction("Detail", "Employee");
+        }
+
         [HttpPost]
         [HasCredential(RoleID = "ADD_USER")]
         public ActionResult Create(Employee employee)

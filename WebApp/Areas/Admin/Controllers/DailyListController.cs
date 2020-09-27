@@ -12,6 +12,50 @@ namespace WebApp.Areas.Admin.Controllers
 {
     public class DailyListController : BaseController
     {
+        public void SetViewDepartment(int? selectedId = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new DeparmentDao();
+            ViewBag.Department_ID = new SelectList(dao.ListDepartment(session.DepartmentID), "ID", "Name", selectedId);
+        }
+
+        public void SetViewBag(string[] selectedlist = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new EmployeeDao();
+            ViewBag.SelectedIDArray = new MultiSelectList(dao.ListAll("KTV",session.DepartmentID), "ID", "Code",selectedlist);
+        }
+
+        public void SetViewRoom(int? selectedID = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new EmployeeDao();
+            ViewBag.Room_ID = new SelectList(dao.ListRoomAll(session.DepartmentID), "ID", "Name", selectedID);
+        }
+
+        public void SetViewCustomer(long? selectedId = null)
+        {
+            var dao = new CustomerDao();
+            ViewBag.Customer_ID = new SelectList(dao.ListAll(), "ID", "Name", selectedId);
+        }
+
+        public void SetViewTicket(long? selectedId = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new TicketDao();
+            ViewBag.Ticket_ID = new SelectList(dao.ListAll(session.DepartmentID), "ID", "Name", selectedId);
+        }
+
+        public void SetViewVoucher(long? selectedId = null)
+        {
+            var dao = new DailyListDao();
+            ViewBag.Voucher_ID = new SelectList(dao.ListAll(), "ID", "Code", selectedId);
+        }
+
         [HasCredential(RoleID = "VIEW_LIST")]
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
@@ -48,42 +92,6 @@ namespace WebApp.Areas.Admin.Controllers
             ViewBag.SearchString = searchString;
 
             return View(model);
-        }
-
-        public void SetViewDepartment(int? selectedId = null)
-        {
-            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-
-            var dao = new DeparmentDao();
-            ViewBag.Department_ID = new SelectList(dao.ListDepartment(session.DepartmentID), "ID", "Name", selectedId);
-        }
-
-        public void SetViewBag(long? selectedId = null)
-        {
-            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-
-            var dao = new EmployeeDao();
-            ViewBag.Employee_ID = new SelectList(dao.ListAll("KTV",session.DepartmentID), "ID", "Code", selectedId);
-        }
-
-        public void SetViewCustomer(long? selectedId = null)
-        {
-            var dao = new CustomerDao();
-            ViewBag.Customer_ID = new SelectList(dao.ListAll(), "ID", "Name", selectedId);
-        }
-
-        public void SetViewTicket(long? selectedId = null)
-        {
-            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-
-            var dao = new TicketDao();
-            ViewBag.Ticket_ID = new SelectList(dao.ListAll(session.DepartmentID), "ID", "Name", selectedId);
-        }
-
-        public void SetViewVoucher(long? selectedId = null)
-        {
-            var dao = new DailyListDao();
-            ViewBag.Voucher_ID = new SelectList(dao.ListAll(), "ID", "Code", selectedId);
         }
 
         [HasCredential(RoleID = "VIEW_LIST")]
@@ -141,6 +149,7 @@ namespace WebApp.Areas.Admin.Controllers
             SetViewVoucher();
             SetViewBag();
             SetViewCustomer();
+            SetViewRoom();
             return View();
         }
 
@@ -150,6 +159,7 @@ namespace WebApp.Areas.Admin.Controllers
         {
             //if (ModelState.IsValid)
             //{
+            list.Employee_ID = string.Join(",", list.SelectedIDArray);
                 var dao = new DailyListDao();
 
             //lấy id trong session đăng nhập của quản trị lưu vào phiên tạo mới user
@@ -173,6 +183,7 @@ namespace WebApp.Areas.Admin.Controllers
             SetViewCustomer();
             SetViewBag();
             SetViewTicket();
+            SetViewRoom();
             SetAlert("Error!", "error");
             return RedirectToAction("Index", "DailyList");
         }
@@ -187,6 +198,7 @@ namespace WebApp.Areas.Admin.Controllers
             SetViewBag();
             SetViewTicket();
             SetViewVoucher();
+            SetViewRoom();
             return View(dailyList);
         }
 
@@ -216,6 +228,7 @@ namespace WebApp.Areas.Admin.Controllers
             SetViewCustomer();
             SetViewBag();
             SetViewVoucher();
+            SetViewRoom();
             SetAlert("Error", "error");
             return RedirectToAction("Index", "DailyList");
         }
@@ -227,6 +240,15 @@ namespace WebApp.Areas.Admin.Controllers
             new DailyListDao().Delete(id);
 
             return RedirectToAction("Index");
+        }
+
+        [HttpDelete]
+        [HasCredential(RoleID = "DELETE_CODE")]
+        public ActionResult CodeDelete(int id)
+        {
+            new DailyListDao().CodeDelete(id);
+
+            return RedirectToAction("CodeIndex");
         }
     }
 

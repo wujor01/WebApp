@@ -5,14 +5,13 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layouts.cshtml";
 }
 
-<h2>CodeCreate</h2>
+<h2>Tạo code</h2>
 
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>Voucher</h4>
         <hr />
 
         <div class="form-group">
@@ -24,5 +23,5 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "CodeIndex")
 </div>

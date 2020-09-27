@@ -8,52 +8,49 @@ using System.Threading.Tasks;
 
 namespace Model.Dao
 {
-    public class TicketDao
+    public class RoomDao
     {
         WebAppDbContext db = null;
-        public TicketDao()
+        public RoomDao()
         {
             db = new WebAppDbContext();
         }
 
-        public long Insert(Ticket entity)
+        public long Insert(Room entity)
         {
-            db.Tickets.Add(entity);
+            db.Rooms.Add(entity);
             db.SaveChanges();
             return entity.ID;
         }
 
-        public Ticket ViewDetail(int id)
+        public Room ViewDetail(int id)
         {
-            return db.Tickets.Find(id);
+            return db.Rooms.Find(id);
         }
 
-        public long Update(Ticket entity, string username)
+        public long Update(Room entity, string username)
         {
-            var ticket = db.Tickets.Find(entity.ID);
-            ticket.Department_ID = entity.Department_ID;
-            ticket.Name = entity.Name;
-            ticket.Price = entity.Price;
-            ticket.Header = entity.Header;
-            ticket.Description = entity.Description;
-            ticket.TimeTotal = ticket.TimeTotal;
+            var room = db.Rooms.Find(entity.ID);
+            room.Department_ID = entity.Department_ID;
+            room.Name = entity.Name;
+            room.Description = entity.Description;
 
             //Ngày chỉnh sửa = Now
-            ticket.ModifiedBy = username;
-            ticket.ModifiedDate = DateTime.Now;
+            room.ModifiedBy = username;
+            room.ModifiedDate = DateTime.Now;
             db.SaveChanges();
             return entity.ID;
         }
 
-        public List<Ticket> ListAll(int departmentId)
+        public List<Room> ListAll(int departmentId)
         {
             if (departmentId == 0)
             {
-                return db.Tickets.OrderBy(x => x.ID).ToList();
+                return db.Rooms.OrderBy(x => x.ID).ToList();
             }
             else
             {
-                return db.Tickets.OrderBy(x => x.ID).Where(x => x.Department_ID == departmentId).ToList();
+                return db.Rooms.OrderBy(x => x.ID).Where(x => x.Department_ID == departmentId).ToList();
             }
         }
 
@@ -61,8 +58,8 @@ namespace Model.Dao
         {
             try
             {
-                var ticket = db.Tickets.Find(id);
-                db.Tickets.Remove(ticket);
+                var room = db.Rooms.Find(id);
+                db.Rooms.Remove(room);
                 db.SaveChanges();
                 return true;
             }
@@ -73,9 +70,9 @@ namespace Model.Dao
 
         }
 
-        public IEnumerable<Ticket> ListAllPaging(string searchString, int page, int pageSize, int departmentId)
+        public IEnumerable<Room> ListAllPaging(string searchString, int page, int pageSize, int departmentId)
         {
-            IQueryable<Ticket> model = db.Tickets;
+            IQueryable<Room> model = db.Rooms;
             if (!string.IsNullOrEmpty(searchString))
             {
                 model = model.Where(

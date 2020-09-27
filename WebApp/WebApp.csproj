@@ -162,6 +162,8 @@
     <Compile Include="Areas\Admin\Controllers\DailyListController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\RevenueExpenditureController.cs" />
+    <Compile Include="Areas\Admin\Controllers\RoomController.cs" />
+    <Compile Include="Areas\Admin\Controllers\TicketController.cs" />
     <Compile Include="Areas\Admin\Controllers\ViolatorKTVController.cs" />
     <Compile Include="Areas\Admin\Controllers\ViolatorController.cs" />
     <Compile Include="Areas\Admin\Models\LoginModel.cs" />
@@ -1637,6 +1639,19 @@
     <Content Include="Areas\Admin\Views\DailyList\Detail.cshtml" />
     <Content Include="Areas\Admin\Views\DailyList\CodeCreate.cshtml" />
     <Content Include="Areas\Admin\Views\DailyList\CodeDetail.cshtml" />
+    <Content Include="Areas\Admin\Views\Customer\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Customer\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Customer\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\UserGroup\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Employee\Detail.cshtml" />
+    <Content Include="Areas\Admin\Views\Employee\EditYourAccount.cshtml" />
+    <Content Include="Areas\Admin\Views\Employee\Error.cshtml" />
+    <Content Include="Areas\Admin\Views\Ticket\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Ticket\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Ticket\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Room\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Room\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Room\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\registry.hub.docker.com_wujor01.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\chosen.jquery.js" />
@@ -1672,7 +1687,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\Employee\img\" />
     <Folder Include="Areas\Admin\Views\Base\" />
-    <Folder Include="Areas\Admin\Views\Customer\" />
+    <Folder Include="Areas\Admin\Views\MultiList\" />
     <Folder Include="Data\" />
     <Folder Include="Models\" />
   </ItemGroup>
