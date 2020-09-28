@@ -1,4 +1,4 @@
-﻿namespace Model.EF
+namespace Model.EF
 {
     using System;
     using System.Collections.Generic;
@@ -17,18 +17,14 @@
 
         public long ID { get; set; }
 
-        [Display(Name = "Code/Voucher")]
-        [StringLength(10)]
+        [StringLength(50)]
         public string Code { get; set; }
 
-        [Display(Name = "% Giảm giá")]
-        public decimal? DiscountPercent { get; set; }
+        public decimal DiscountPercent { get; set; }
 
-        [Display(Name = "Trạng thái")]
         public bool Status { get; set; }
 
-        [Display(Name = "Ngày hết hạn")]
-        [DataType(DataType.Date)]
+        [Column(TypeName = "date")]
         public DateTime ExpirationDate { get; set; }
 
         public DateTime? CreatedDate { get; set; }

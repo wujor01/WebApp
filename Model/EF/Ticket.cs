@@ -1,4 +1,4 @@
-﻿namespace Model.EF
+namespace Model.EF
 {
     using System;
     using System.Collections.Generic;
@@ -17,24 +17,18 @@
 
         public int ID { get; set; }
 
-        [Display(Name = "Tên vé")]
         [StringLength(50)]
         public string Name { get; set; }
 
-        [Display(Name = "Giá vé")]
-        public decimal? Price { get; set; }
+        public decimal Price { get; set; }
 
-        [Display(Name = "Chi nhánh")]
         public int? Department_ID { get; set; }
 
-        [Display(Name = "Tổng thời gian")]
         public double TimeTotal { get; set; }
 
-        [Display(Name = "Tiêu đề")]
         [StringLength(500)]
         public string Header { get; set; }
 
-        [Display(Name = "Chi tiết")]
         [StringLength(500)]
         public string Description { get; set; }
 

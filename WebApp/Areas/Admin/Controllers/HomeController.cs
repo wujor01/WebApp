@@ -24,12 +24,23 @@ namespace WebApp.Areas.Admin.Controllers
         public ActionResult GetDataDailyList()
         {
             var list = db.DailyLists.ToList();
+            List<int> sove = new List<int>();
+            List<decimal> tongtien = new List<decimal>();
 
-            var query = db.DailyLists.Include("Ticket")
-                .GroupBy(p => p.Ticket.Name)
-                .Select(g => new { name = g.Key, count = g.SingleOrDefault().Total });
-            
-            return Json(query,JsonRequestBehavior.AllowGet);
+            var ve = list.Select(x => x.Ticket_ID).Distinct();
+            var ve1 = list.Select(x => x.Ticket.Name).Distinct();
+
+            foreach (var item in ve)
+            {
+                sove.Add(list.Count(x => x.Ticket_ID == item));
+                tongtien.Add(list.Where(x=>x.Ticket_ID == item).Sum(x => x.Total));
+            }
+
+            var so = sove;
+            ViewBag.VE = ve1;
+            ViewBag.SO = sove.ToList();
+            ViewBag.TONGTIEN = tongtien.ToList();
+            return View();
         }
     }
 }

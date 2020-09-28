@@ -157,8 +157,8 @@ namespace WebApp.Areas.Admin.Controllers
         [HasCredential(RoleID = "ADD_LIST")]
         public ActionResult Create(DailyList list)
         {
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 list.Employee_ID = string.Join(",", list.SelectedIDArray);
 
 
@@ -179,7 +179,7 @@ namespace WebApp.Areas.Admin.Controllers
                 {
                     ModelState.AddModelError("", "Thêm bảng kê không thành công");
                 }
-            }
+            //}
             SetViewVoucher();
             SetViewDepartment();
             SetViewCustomer();

@@ -33,22 +33,18 @@
                         <dd class=".col-md-9 .col-md-push-3">@Html.DisplayFor(model => model.Ticket.Name)</dd>
 
                         <dt class=".col-md-3 .col-md-pull-9">@Html.DisplayNameFor(model => model.Ticket.Price)</dt>
-                        <dd class=".col-md-9 .col-md-push-3">@Model.Ticket.Price.Value.ToString("0#,##")</dd>
+                        <dd class=".col-md-9 .col-md-push-3">@Html.DisplayFor(model => model.Ticket.Price)@*@Model.Ticket.Price.Value.ToString("0#,##")*@</dd>
 
                         <dt class=".col-md-3 .col-md-pull-9">@Html.DisplayNameFor(model => model.Voucher.Code)</dt>
                         <dd class=".col-md-9 .col-md-push-3">@Html.DisplayFor(model => model.Voucher.DiscountPercent)%</dd>
 
-                        @if (Model.Tip.HasValue)
-                        {
                             <dt class=".col-md-3 .col-md-pull-9">@Html.DisplayNameFor(model => model.Tip)</dt>
-                            <dd class=".col-md-9 .col-md-push-3">@Model.Tip.Value.ToString("0#,##")</dd>
-
-                        }
+                            <dd class=".col-md-9 .col-md-push-3">@Html.DisplayFor(model => model.Tip)</dd>
 
                         @if (Model.Taxi_ID.HasValue)
                         {
                             <dt class=".col-md-3 .col-md-pull-9">Hoa hồng CTV</dt>
-                            <dd class=".col-md-9 .col-md-push-3">@Model.Taxi.Price.Value.ToString("0#,##")</dd>
+                            <dd class=".col-md-9 .col-md-push-3">@Html.DisplayFor(model => model.Taxi.Price)</dd>
                         }
 
 
@@ -63,11 +59,8 @@
                         <dd class=".col-md-9 .col-md-push-3">@Html.DisplayFor(model => model.Description)</dd>
 
                         <hr />
-                        @if (Model.Total.HasValue)
-                        {
                             <dt class=".col-md-3 .col-md-pull-9">@Html.DisplayNameFor(model => model.Total)</dt>
-                            <dd class=".col-md-9 .col-md-push-3">@Model.Total.Value.ToString("0#,##")</dd>
-                        }
+                            <dd class=".col-md-9 .col-md-push-3">@Html.DisplayFor(model => model.Total)</dd>
                     </dl>  
                 </table>
             </div>
