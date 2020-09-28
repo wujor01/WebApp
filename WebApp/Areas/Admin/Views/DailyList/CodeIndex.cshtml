@@ -43,7 +43,6 @@
                                 <th>ID</th>
                                 <th>Code</th>
                                 <td>Giảm giá</td>
-                                <td>Giảm Tối đa</td>
                                 <td>Tình trạng</td>
                                 <td>Ngày hết hạn</td>
                                 <td>Tạo bởi</td>
@@ -56,7 +55,6 @@
                                 <th>#@item.ID</th>
                                 <td>@item.Code</td>
                                 <td>@item.DiscountPercent%</td>
-                                <td>@item.Max</td>
                                 <td>@Html.Raw(item.Status ? "<strong style=\"color:Green;\">Chưa sử dụng</strong>" : "<strong style=\"color:Tomato;\">Đã sử dụng</strong>")</td>
                                 <td>@(string.Format("{0:dd/MM/yyyy}", item.ExpirationDate))</td>
                                 <td>@item.CreatedBy</td>

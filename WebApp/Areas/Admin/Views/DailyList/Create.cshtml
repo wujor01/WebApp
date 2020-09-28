@@ -37,7 +37,7 @@
 
         $(function () {
 
-            $('#Voucher_ID').chosen({ width: $('.panel-collapse.collapse.in select').eq(0).width() + 'px' });
+            $('#Voucher_ID').chosen({ allow_single_deselect: true });
 
         });
     </script>
@@ -120,18 +120,11 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Voucher_ID, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.Voucher_ID, null, new { htmlAttributes = new { @class = "form-control" }, placeholder = "Nhập vào mã KTV" })
+                @Html.DropDownListFor(model => model.Voucher_ID, null, new { htmlAttributes = new { @class = "form-control"} })
                 @Html.ValidationMessageFor(model => model.Voucher_ID, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Discount, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Discount, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.Request, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -148,11 +141,16 @@
                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
             </div>
         </div>
-        <p>
-            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                Thông tin Grab-Taxi-CTV
-            </button>
-        </p>
+        <div class="form-group">
+            <div class="control-label col-md-2"></div>
+            <div class="col-md-10">
+                <p>
+                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        Thông tin Grab-Taxi-CTV
+                    </button>
+                </p>
+            </div>
+        </div>
         <div class="collapse" id="collapseExample">
             <div class="form-group">
                 @Html.LabelFor(model => model.Taxi.Code, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -175,14 +173,6 @@
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.Taxi.NumberOfCustomers, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Taxi.NumberOfCustomers, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Taxi.Commission, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Taxi.Commission, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Taxi.Commission, "", new { @class = "text-danger" })
                 </div>
             </div>
 

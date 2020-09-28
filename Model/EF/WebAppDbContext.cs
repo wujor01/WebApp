@@ -65,10 +65,6 @@ namespace Model.EF
                 .HasPrecision(18, 0);
 
             modelBuilder.Entity<DailyList>()
-                .Property(e => e.Discount)
-                .HasPrecision(18, 0);
-
-            modelBuilder.Entity<DailyList>()
                 .Property(e => e.Total)
                 .HasPrecision(18, 0);
 
@@ -250,15 +246,7 @@ namespace Model.EF
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Voucher>()
-                .Property(e => e.Code)
-                .IsFixedLength();
-
-            modelBuilder.Entity<Voucher>()
                 .Property(e => e.DiscountPercent)
-                .HasPrecision(18, 0);
-
-            modelBuilder.Entity<Voucher>()
-                .Property(e => e.Max)
                 .HasPrecision(18, 0);
 
             modelBuilder.Entity<Voucher>()

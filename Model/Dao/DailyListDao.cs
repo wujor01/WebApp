@@ -22,7 +22,19 @@ namespace Model.Dao
 
         public List<Voucher> ListAll()
         {
-                return db.Vouchers.OrderBy(x => x.Code).Where(x => x.Status == true).ToList();
+                return db.Vouchers.OrderByDescending(x => x.ExpirationDate).Where(x => x.Status == true && x.ExpirationDate > DateTime.Today).ToList();
+        }
+
+        public List<DailyList> DailyListAll(int departmentId)
+        {
+            if (departmentId == 0)
+            {
+                return db.DailyLists.ToList();
+            }
+            else
+            {
+                return db.DailyLists.Where(x => x.Room.Department_ID == departmentId).ToList();
+            }
         }
 
         public long CodeInsert(Voucher voucher)
@@ -31,10 +43,10 @@ namespace Model.Dao
             string r = rand.Next(100000, 1000000).ToString();
             voucher.Status = true;
             voucher.DiscountPercent = 20;
-            voucher.ExpirationDate = DateTime.Now.AddDays(7);
+            voucher.ExpirationDate = DateTime.Now.AddDays(14);
             do
             {              
-                voucher.Code = string.Concat("NV", r);
+                voucher.Code = string.Concat("MV ", r);
                 db.Vouchers.Add(voucher);
             } while (db.Vouchers.Where(x => x.Code == voucher.Code).ToList().Count > 0);
 
@@ -48,10 +60,6 @@ namespace Model.Dao
             {
                 list.Tip = 0;
             }
-            if (list.Discount == null)
-            {
-                list.Discount = 0;
-            }
 
             var ticket = db.Tickets.Find(list.Ticket_ID);
             var voucher = db.Vouchers.Find(list.Voucher_ID);
@@ -60,20 +68,17 @@ namespace Model.Dao
             list.TimeOut = DateTime.Now.Add(TimeSpan.FromMinutes(ticket.TimeTotal));
 
 
-            if (list.Taxi.Code == null)
+            if (list.Taxi.Price == null)
             {
-                if (list.Discount == 0)
-                {
-                    list.Status = true;
-                }
 
-                if (voucher.DiscountPercent != 0)
+                if (voucher.DiscountPercent !=0)
                 {
-                    list.Total = ticket.Price * voucher.DiscountPercent / 100 - list.Discount + list.Tip;
+                    list.Status = false;
+                    list.Total = ticket.Price * voucher.DiscountPercent / 100 + list.Tip;
                 }
                 else
                 {
-                    list.Total = ticket.Price - list.Discount + list.Tip;
+                    list.Total = ticket.Price + list.Tip;
                 }
 
                 //lưu vào db
@@ -81,13 +86,13 @@ namespace Model.Dao
                 db.SaveChanges();
 
                 var dailylist = db.DailyLists.Find(list.ID);
-                if (list.Voucher_ID != 0)
+                if (voucher.ID > 99)
                 {
                     voucher.Status = false;
                     voucher.ModifiedBy = list.CreatedBy;
                     voucher.ModifiedDate = list.CreatedDate;
                 }
-                //tìm trong db để sửa lại Taxi.Code nề null và xóa bảng null taxi
+                //tìm trong db để sửa lại Taxi.Code về null và xóa bảng null taxi
                 var taxi = db.Taxis.Find(dailylist.Taxi_ID);
                 db.Taxis.Remove(taxi);
                 dailylist.Taxi_ID = null;
@@ -95,24 +100,21 @@ namespace Model.Dao
             }
             else
             {
-                if (list.Discount == 0 && list.Taxi.Price == null)
-                {
-                    list.Status = true;
-                }
                 if (list.Taxi.Price == null)
                 {
                     list.Taxi.Price = 0;
                 }
                 if (voucher.DiscountPercent != 0)
                 {
-                    list.Total = ticket.Price * voucher.DiscountPercent / 100 - list.Discount - list.Taxi.Price + list.Tip;
+                    list.Status = false;
+                    list.Total = ticket.Price * voucher.DiscountPercent / 100 - list.Taxi.Price + list.Tip;
                 }
                 else
                 {
-                    list.Total = ticket.Price - list.Discount - list.Taxi.Price + list.Tip;
+                    list.Total = ticket.Price - list.Taxi.Price + list.Tip;
                 }
 
-                if (list.Voucher_ID != 0)
+                if (voucher.ID > 99 )
                 {
                     voucher.Status = false;
                     voucher.ModifiedBy = list.CreatedBy;
@@ -133,20 +135,11 @@ namespace Model.Dao
                 entity.Tip = 0;
             }
             
-            if (entity.Discount == null)
-            {
-                entity.Discount = 0;
-            }
             dailyList.Description = entity.Description;
-            dailyList.Employee_ID = entity.Employee_ID;
-            dailyList.Room = entity.Room;
+            //dailyList.Employee_ID = entity.Employee_ID;
+            dailyList.Room_ID = entity.Room_ID;
             dailyList.Status = entity.Status;
-            dailyList.Ticket = entity.Ticket;
-            dailyList.TimeIn = entity.TimeIn;
-            dailyList.TimeOut = entity.TimeOut;
             dailyList.Tip = entity.Tip;
-            dailyList.Total = entity.Total;
-            dailyList.Discount = entity.Discount;
             dailyList.Ticket_ID = entity.Ticket_ID;
             dailyList.Voucher_ID = entity.Voucher_ID;
 
@@ -154,19 +147,19 @@ namespace Model.Dao
             var voucher = db.Vouchers.Find(entity.Voucher_ID);
 
 
-            if (entity.Taxi.Code != null)
+            if (entity.Taxi.Price != null)
             {
                 if (entity.Taxi.Price == null)
                 {
                     entity.Taxi.Price = 0;
                 }
-                if (voucher.DiscountPercent != 0)
+                if (voucher.ID != 0)
                 {
-                    dailyList.Total = ticket.Price * voucher.DiscountPercent / 100 - entity.Discount - entity.Taxi.Price + entity.Tip;
+                    dailyList.Total = ticket.Price * voucher.DiscountPercent / 100 - entity.Taxi.Price + entity.Tip;
                 }
                 else
                 {
-                    dailyList.Total = ticket.Price - entity.Discount - entity.Taxi.Price + entity.Tip;
+                    dailyList.Total = ticket.Price - entity.Taxi.Price + entity.Tip;
                 }
                 dailyList.Taxi = entity.Taxi;
             }
@@ -174,11 +167,11 @@ namespace Model.Dao
             {
                 if (voucher.DiscountPercent != 0)
                 {
-                    dailyList.Total = ticket.Price * voucher.DiscountPercent / 100 - entity.Discount + entity.Tip;
+                    dailyList.Total = ticket.Price * voucher.DiscountPercent / 100 + entity.Tip;
                 }
                 else
                 {
-                    dailyList.Total = ticket.Price - entity.Discount + entity.Tip;
+                    dailyList.Total = ticket.Price + entity.Tip;
                 }
             }
             //Ngày chỉnh sửa = Now
@@ -201,7 +194,8 @@ namespace Model.Dao
         //Phân trang quản lý user và thêm mục tìm kiếm theo username và email
         public IEnumerable<DailyList> ListAllPaging(string searchString, int page, int pageSize, int departmentId)
         {
-            IQueryable<DailyList> model = db.DailyLists;
+            IQueryable<DailyList> model = db.DailyLists; 
+
             if (!string.IsNullOrEmpty(searchString))
             {
                 model = model.Where(
@@ -241,13 +235,23 @@ namespace Model.Dao
         public IEnumerable<Voucher> ListAllPagingCode(string searchString, int page, int pageSize)
         {
             IQueryable<Voucher> model = db.Vouchers;
+
+            foreach (var item in model)
+            {
+                if (item.ExpirationDate < DateTime.Now)
+                {
+                    CodeDelete(item.ID);
+                }
+                    
+            }
+
             if (!string.IsNullOrEmpty(searchString))
             {
                 model = model.Where(
                     x => x.Code.Contains(searchString) || x.ExpirationDate.ToString().Contains(searchString)
                 );
             }
-                return model.Where(x=>x.ID > 0).OrderByDescending(x => x.Status).ToPagedList(page, pageSize);
+                return model.Where(x=> DateTime.Today < x.ExpirationDate && x.ID > 99).OrderByDescending(x => x.ExpirationDate).ToPagedList(page, pageSize);
         }
 
         public bool Delete(int id)
@@ -265,7 +269,8 @@ namespace Model.Dao
             }
 
         }
-        public bool CodeDelete(int id)
+
+        public bool CodeDelete(long id)
         {
             try
             {
@@ -293,5 +298,23 @@ namespace Model.Dao
                 return db.Employees.Where(x => x.Status == true && x.Code.StartsWith(position) == true && x.Department_ID == departmentId).ToList();
             }
         }
+
+        //public List<string> GetDailyList()
+        //{
+        //    var list = db.DailyLists.ToList();
+        //    var data = (from a in db.DailyLists
+        //                join b in db.Rooms on a.Room_ID equals b.ID
+        //                join c in db.Departments on b.Department_ID equals c.ID
+        //                join d in db.Tickets on a.Ticket_ID equals d.ID
+        //                where a.Status == true
+        //                select new()
+        //                {
+        //                    Department_Name = c.Name,
+        //                    Ticket_Name = d.Name,
+        //                    Ticket_quality = d.ID.count
+        //                }
+                
+        //        );
+        //}
     }
 }

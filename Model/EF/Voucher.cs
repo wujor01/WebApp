@@ -17,21 +17,19 @@
 
         public long ID { get; set; }
 
+        [Display(Name = "Code/Voucher")]
         [StringLength(10)]
         public string Code { get; set; }
 
-        [Display(Name ="% Giảm giá")]
+        [Display(Name = "% Giảm giá")]
         public decimal? DiscountPercent { get; set; }
-
-        [Display(Name = "Giảm giá tối đa")]
-        public decimal? Max { get; set; }
 
         [Display(Name = "Trạng thái")]
         public bool Status { get; set; }
 
         [Display(Name = "Ngày hết hạn")]
         [DataType(DataType.Date)]
-        public DateTime? ExpirationDate { get; set; }
+        public DateTime ExpirationDate { get; set; }
 
         public DateTime? CreatedDate { get; set; }
 

@@ -166,7 +166,13 @@
     <Compile Include="Areas\Admin\Controllers\TicketController.cs" />
     <Compile Include="Areas\Admin\Controllers\ViolatorKTVController.cs" />
     <Compile Include="Areas\Admin\Controllers\ViolatorController.cs" />
+    <Compile Include="Areas\Admin\Models\DailyListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\LoginModel.cs" />
+    <Compile Include="Areas\Admin\Models\ReexViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\TaxiViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\ViolatorKTVViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\ViolatorViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\VoucherViewModel.cs" />
     <Compile Include="Common\CommonConstants.cs" />
     <Compile Include="Common\Encryptor.cs" />
     <Compile Include="Common\HasCredentialAttribute.cs" />
@@ -178,6 +184,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Admin\Data\System\logo.png" />
     <Content Include="assets\admin\bower_components\bootstrap-social\bootstrap-social.css" />
     <Content Include="assets\admin\bower_components\bootstrap\dist\css\bootstrap-theme.css" />
     <Content Include="assets\admin\bower_components\bootstrap\dist\css\bootstrap-theme.min.css" />

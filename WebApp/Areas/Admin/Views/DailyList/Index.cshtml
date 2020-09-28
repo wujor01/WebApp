@@ -68,58 +68,51 @@
                                 <td>Giá vé</td>
                                 <td>Tip</td>
                                 <td>Code</td>
-                                <td>GTT</td>
-                                <td>Taxi-Grab-CTV</td>
+                                <td>CTV</td>
                                 <td>Tổng tiền</td>
-                                <td>Yêu cầu</td>
                                 <td>Xác nhận</td>
-                                <td>Ghi chú</td>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr id="row_@item.ID">
+                            <tr id="row_@item.ID">
 
-                                    <th>@item.Room.Department.Name</th>
-                                    <th>#@item.ID</th>
-                                    <td>@item.Employee_ID</td>
-                                    <td>@item.Room.Name</td>
-                                    <td>@(string.Format("{0:HH:mm}", item.TimeIn))</td>
-                                    <td>@(string.Format("{0:HH:mm}", item.TimeOut))</td>
-                                    <td>@(string.Format("{0:#,##0}", item.Ticket.Price))</td>
-                                    <td>@(string.Format("{0:#,##0}", item.Tip))</td>
-                                    <td>@item.Voucher.Code</td>
-                                    <td>@(string.Format("{0:#,##0}", item.Discount))</td>
+                                <th>@item.Room.Department.Name</th>
+                                <th>#@item.ID</th>
+                                <td>@item.Employee_ID</td>
+                                <td>@item.Room.Name</td>
+                                <td>@(string.Format("{0:HH:mm}", item.TimeIn))</td>
+                                <td>@(string.Format("{0:HH:mm}", item.TimeOut))</td>
+                                <td>@(string.Format("{0:#,##0}", item.Ticket.Price))</td>
+                                <td>@(string.Format("{0:#,##0}", item.Tip))</td>
+                            <td>@item.Voucher.Code</td>
 
-                                    @{
-                                        if (item.Taxi_ID != null)
-                                        {
-                                            @*<td>@item.Taxi.Commission</td>*@
-                                            <td>@(string.Format("{0:#,##0}", item.Taxi.Price))</td>
-                                            <td>@(string.Format("{0:#,##0}", item.Total))</td>
-                                        }
-                                        else
-                                        {
-                                            <td></td>
-                                            <td>@(string.Format("{0:#,##0}", item.Total))</td>
-                                        }
+                                @{
+                                    if (item.Taxi_ID != null)
+                                    {
+                                        <td>@(string.Format("{0:#,##0}", item.Taxi.Price))</td>
+                                        <td>@(string.Format("{0:#,##0}", item.Total))</td>
                                     }
-
-                                    <td>@item.Request</td>
-                                    <td>@Html.Raw(item.Status ? "<strong style=\"color:Green;\">Đã xác nhận</strong>" : "<strong style=\"color:Tomato;\">Đang chờ</strong>")</td>
-                                    <td>@item.Description</td>
-                                    <td>
-                                        <a href="/Admin/DailyList/Edit/@item.ID">Sửa</a>
-                                        |
-                                        @Ajax.ActionLink("Xoá", "Delete", new { @id = item.ID }, new AjaxOptions
-                                   {
-                                       Confirm = "Bạn có muốn xoá bản ghi này?",
-                                       OnComplete = "$('#row_" + @item.ID + "').remove()",
-                                       HttpMethod = "Delete"
-                                   })
-                                    </td>
-                                </tr>
+                                    else
+                                    {
+                                        <td></td>
+                                        <td>@(string.Format("{0:#,##0}", item.Total))</td>
+                                    }
+                                }
+                                <td>@Html.Raw(item.Status ? "<strong style=\"color:Green;\">Đã xác nhận</strong>" : "<strong style=\"color:Tomato;\">Đang chờ</strong>")</td>
+                                <td>
+                                    <a href="/Admin/DailyList/Edit/@item.ID">Sửa</a>
+                                    |
+                                    <a href="/Admin/DailyList/Detail/@item.ID">Chi tiết</a>
+                                    @*@Ajax.ActionLink("Xoá", "Delete", new { @id = item.ID }, new AjaxOptions
+                               {
+                                   Confirm = "Bạn có muốn xoá bản ghi này?",
+                                   OnComplete = "$('#row_" + @item.ID + "').remove()",
+                                   HttpMethod = "Delete"
+                               })*@
+                                </td>
+                            </tr>
                             }
 
 

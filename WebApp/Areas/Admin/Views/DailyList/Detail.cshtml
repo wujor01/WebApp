@@ -12,12 +12,16 @@
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-hover">
                     <dl class="dl-horizontal">
-                        <dt class=".col-md-3 .col-md-pull-9">@Html.DisplayNameFor(model => model.Employee_ID)</dt>
-                        <dd class=".col-md-9 .col-md-push-3">@Html.DisplayFor(model => model.Employee_ID)</dd>
+
+                        <dt class=".col-md-3 .col-md-pull-9">@Html.DisplayNameFor(model => model.Room.Department.Name)</dt>
+                        <dd class=".col-md-9 .col-md-push-3">@Html.DisplayFor(model => model.Room.Department.Name)</dd>
 
 
                         <dt class=".col-md-3 .col-md-pull-9">@Html.DisplayNameFor(model => model.Room.Name)</dt>
                         <dd class=".col-md-9 .col-md-push-3">@Html.DisplayFor(model => model.Room.Name)</dd>
+
+                        <dt class=".col-md-3 .col-md-pull-9">@Html.DisplayNameFor(model => model.Employee_ID)</dt>
+                        <dd class=".col-md-9 .col-md-push-3">@Html.DisplayFor(model => model.Employee_ID)</dd>
 
                         <dt class=".col-md-3 .col-md-pull-9">@Html.DisplayNameFor(model => model.TimeIn)</dt>
                         <dd class=".col-md-9 .col-md-push-3">@Html.DisplayFor(model => model.TimeIn)</dd>
@@ -31,20 +35,14 @@
                         <dt class=".col-md-3 .col-md-pull-9">@Html.DisplayNameFor(model => model.Ticket.Price)</dt>
                         <dd class=".col-md-9 .col-md-push-3">@Model.Ticket.Price.Value.ToString("0#,##")</dd>
 
-                        <dt class=".col-md-3 .col-md-pull-9">Code</dt>
+                        <dt class=".col-md-3 .col-md-pull-9">@Html.DisplayNameFor(model => model.Voucher.Code)</dt>
                         <dd class=".col-md-9 .col-md-push-3">@Html.DisplayFor(model => model.Voucher.DiscountPercent)%</dd>
 
                         @if (Model.Tip.HasValue)
                         {
                             <dt class=".col-md-3 .col-md-pull-9">@Html.DisplayNameFor(model => model.Tip)</dt>
-                            <dd class=".col-md-9 .col-md-push-3">@Model.Discount.Value.ToString("0#,##")</dd>
+                            <dd class=".col-md-9 .col-md-push-3">@Model.Tip.Value.ToString("0#,##")</dd>
 
-                        }
-
-                        @if (Model.Discount.HasValue)
-                        {
-                            <dt class=".col-md-3 .col-md-pull-9">@Html.DisplayNameFor(model => model.Discount)</dt>
-                            <dd class=".col-md-9 .col-md-push-3">@Model.Discount.Value.ToString("0#,##")</dd>
                         }
 
                         @if (Model.Taxi_ID.HasValue)

@@ -37,9 +37,6 @@
         [Display(Name = "Code")]
         public long? Voucher_ID { get; set; }
 
-        [Display(Name = "Giảm trực tiếp")]
-        public decimal? Discount { get; set; }
-
         public long? Taxi_ID { get; set; }
 
         public decimal? Total { get; set; }
