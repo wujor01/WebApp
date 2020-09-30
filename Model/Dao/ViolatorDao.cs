@@ -23,15 +23,16 @@ namespace Model.Dao
             return entity.ID;
         }
 
-        public long Update(Violator entity)
+        public long Update(Violator entity,string username)
         {
             var violator = db.Violators.Find(entity.ID);
-            violator.Code = entity.Code;
-            violator.Type = entity.Type;
+            violator.Employee_ID = entity.Employee_ID;
+            violator.Type_ID = entity.Type_ID;
             violator.Loan = entity.Loan;
             violator.Description = entity.Description;
 
             //Ngày chỉnh sửa = Now
+            violator.ModifiedBy = username;
             violator.ModifiedDate = DateTime.Now;
             db.SaveChanges();
             return entity.ID;
@@ -58,17 +59,28 @@ namespace Model.Dao
             return db.Violators.Find(id);
         }
 
-        public IEnumerable<Violator> ListAllPaging(string searchString, int page, int pageSize)
+        public IEnumerable<Violator> ListAllPaging(string searchString, int page, int pageSize, int departmentId)
         {
             IQueryable<Violator> model = db.Violators;
             if (!string.IsNullOrEmpty(searchString))
             {
                 model = model.Where(
-                    x => x.Code.Contains(searchString) || x.Type.Contains(searchString)
+                    x => x.Employee.Code.Contains(searchString) || x.ID.ToString().Contains(searchString)
                 );
             }
+            if (departmentId == 0)
+            {
+                return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+            }
+            else
+            {
+                return model.OrderByDescending(x => x.CreatedDate).Where(x=>x.Employee.Department_ID == departmentId).ToPagedList(page, pageSize);
+            }
+        }
 
-            return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+        public List<ViolatorType> ListAll()
+        {
+            return db.ViolatorTypes.ToList();
         }
     }
 }

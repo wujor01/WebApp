@@ -1,0 +1,187 @@
+﻿@model Model.EF.Employee
+
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Areas/Admin/Views/Shared/_Layouts.cshtml";
+}
+
+<h2>Detail</h2>
+
+<div>
+    <h4>Employee</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Department_ID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Department_ID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Code)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Code)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Birthday)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Birthday)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Image)
+        </dt>
+
+        <dd>
+            <td><img src="@Html.DisplayFor(model => model.Image)" width="100px" /></td>
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Phone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NumberOfDayOff)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NumberOfDayOff)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ApplicationForm)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApplicationForm)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CV)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CV)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HouseholdBook)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HouseholdBook)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CardID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CardID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Certificate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Certificate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TimeStart)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TimeStart)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TimeOut)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TimeOut)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GroupID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GroupID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Username)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Username)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StatusAccount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StatusAccount)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "EditYourAccount", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

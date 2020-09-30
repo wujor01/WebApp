@@ -1,0 +1,84 @@
+﻿@model PagedList.IPagedList<Model.EF.Voucher>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "CodeIndex";
+    Layout = "~/Areas/Admin/Views/Shared/_Layouts.cshtml";
+}
+
+@section header{
+    Danh sách Code
+}
+
+<div class="row">
+
+    <div class="col-lg-12">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Danh sách Code
+            </div>
+
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                @using (Html.BeginForm("CodeIndex", "DailyList", FormMethod.Get))
+                {
+
+                    <div class="row form-group">
+                        <div class="col-lg-12">
+                            <div class="col-md-4">
+                                <input type="text" value="@ViewBag.SearchString" class="form-control" name="searchString" placeholder="Nhập vào Code" />
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-success">Tìm kiếm</button>
+                                <a class="btn btn-primary" href="/Admin/DailyList/CodeCreate">Thêm mới</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <hr />
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Code</th>
+                                <td>Giảm giá</td>
+                                <td>Tình trạng</td>
+                                <td>Ngày hết hạn</td>
+                                <td>Tạo bởi</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                            <tr id="row_@item.ID">
+                                <th>#@item.ID</th>
+                                <td>@item.Code</td>
+                                <td>@item.DiscountPercent%</td>
+                                <td>@Html.Raw(item.Status ? "<strong style=\"color:Green;\">Chưa sử dụng</strong>" : "<strong style=\"color:Tomato;\">Đã sử dụng</strong>")</td>
+                                <td>@(string.Format("{0:dd/MM/yyyy}", item.ExpirationDate))</td>
+                                <td>@item.CreatedBy</td>
+
+                                <td>
+                                    @Ajax.ActionLink("Xoá", "CodeDelete", new { @id = item.ID }, new AjaxOptions
+                               {
+                                   Confirm = "Bạn có muốn xoá bản ghi này?",
+                                   OnComplete = "$('#row_" + @item.ID + "').remove()",
+                                   HttpMethod = "Delete"
+                               })
+                                </td>
+                            </tr>
+                            }
+
+
+                        </tbody>
+                    </table>
+                    @Html.PagedListPager(Model, page => Url.Action("CodeIndex", new { page, @searchString = @ViewBag.SearchString }))
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div>
+</div>
+

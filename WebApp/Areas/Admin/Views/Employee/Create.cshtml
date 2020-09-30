@@ -6,8 +6,21 @@
 }
 @section header{
     Thêm mới người dùng
+    <style>
+        .MakeWide {
+            width: 200px;
+        }
+    </style>
 }
 @section jsFooter{
+    <script type="text/javascript">
+
+        $(function () {
+
+            $('#Department_ID').chosen();
+
+        });
+    </script>
     <script>
         $('#btnSelectImage').on('click', function (e) {
             e.preventDefault();
@@ -22,20 +35,36 @@
             customConfig: '/assets/admin/js/plugins/ckeditor/config.js',
         });
     </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("form").bind("keypress", function (e) {
+                if (e.keyCode == 13) {
+                    return false;
+                }
+            });
+        });
+    </script>
 }
 
 @using (Html.BeginForm("Create", "Employee", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-
     <div class="form-horizontal">
         <h4>Employee</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
+            @Html.LabelFor(model => model.Department_ID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Department_ID, null, new { htmlAttributes = new { @class = "MakeWide" } })
+                @Html.ValidationMessageFor(model => model.Department_ID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -43,7 +72,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Code, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", placeholder = "Mã nhân viên bắt đầu bởi ký tự NV hoặc KTV (ví dụ: KTV1001)" } })
                 @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -59,7 +88,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Image, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Image, new { htmlAttributes = new { @class = "form-control", @id = "txtImage" }, id = "txtImage" })
+                @Html.EditorFor(model => model.Image, new { htmlAttributes = new { @class = "form-control", @id = "txtImage" }, id = "txtImage" })
                 <a id="btnSelectImage" href="#">Chọn ảnh</a>
                 @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
             </div>
@@ -68,14 +97,14 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextAreaFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -114,7 +143,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Certificate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextAreaFor(model => model.Certificate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.Certificate, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Certificate, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -122,7 +151,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.TimeStart, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.TimeStart, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.TimeStart, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.TimeStart, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -130,7 +159,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.TimeOut, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.TimeOut, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.TimeOut, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.TimeOut, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -138,7 +167,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -146,7 +175,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.PasswordFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -166,6 +195,8 @@
         </div>
     </div>
 }
+
+
 
 <div>
     @Html.ActionLink("Back to List", "Index")

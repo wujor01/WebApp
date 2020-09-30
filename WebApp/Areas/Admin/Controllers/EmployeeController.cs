@@ -18,18 +18,81 @@ namespace WebApp.Areas.Admin.Controllers
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
             var dao = new EmployeeDao();
-            var model = dao.ListAllPaging(searchString, page, pageSize);
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var model = dao.ListAllPaging(searchString, page, pageSize, session.DepartmentID);
 
             ViewBag.SearchString = searchString;
 
             return View(model);
         }
 
+        public void SetViewBag(int? selectedId = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new DepartmentDao();
+            ViewBag.Department_ID = new SelectList(dao.ListDepartment(session.DepartmentID), "ID", "Name", selectedId);
+        }
+
         [HttpGet]
         [HasCredential(RoleID = "ADD_USER")]
         public ActionResult Create()
         {
+            SetViewBag();
+            return View();        
+        }
+
+        public ActionResult Detail()
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+            var employee = new EmployeeDao().ViewDetail(session.UserID);
+            return View(employee);
+        }
+
+        [HttpGet]
+        public ActionResult EditYourAccount(long Id)
+        {
+                var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+                var employee = new EmployeeDao().ViewDetail(session.UserID);
+                if (Id != session.UserID)
+                {
+                    return RedirectToAction("Error", "Employee");
+                }
+                else
+                {
+                    SetViewBag();
+                    return View(employee);
+                }
+        }
+
+        public ActionResult Error()
+        {
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditYourAccount(Employee employee)
+        {
+            if (ModelState.IsValid)
+            {
+                var dao = new EmployeeDao();
+                var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+                    long id = dao.Update(employee, session.UserName);
+                    if (id > 0)
+                    {
+                        SetAlert("Sửa thông tin nhân viên thành công", "success");
+                        return RedirectToAction("Index", "Employee");
+                    }
+                    else
+                    {
+                        SetAlert("Tài khoản hoặc mã nhân viên đã tồn tại!", "error");
+                        return RedirectToAction("Index", "Employee");
+                    }
+            }
+            SetViewBag();
+            SetAlert("Sửa thông tin nhân viên thất bại", "error");
+            return RedirectToAction("Detail", "Employee");
         }
 
         [HttpPost]
@@ -40,12 +103,6 @@ namespace WebApp.Areas.Admin.Controllers
             {
                 var dao = new EmployeeDao();
 
-                //Băm mật khẩu bằng hàm MD5
-                if (!string.IsNullOrEmpty(employee.Password))
-                {
-                    var encryptedMd5Pas = Encryptor.MD5Hash(employee.Password);
-                    employee.Password = encryptedMd5Pas;
-                }
                 //mã nhân viên khi lưu vào db luôn là HOA
                 if (!string.IsNullOrEmpty(employee.Code))
                 {
@@ -64,6 +121,7 @@ namespace WebApp.Areas.Admin.Controllers
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
                 employee.CreatedBy = session.UserName;
                 employee.CreatedDate = DateTime.Now;
+                int deparmentId = session.DepartmentID;
                 
                 long id = dao.Insert(employee);
                 if (id > 0)
@@ -76,6 +134,7 @@ namespace WebApp.Areas.Admin.Controllers
                     ModelState.AddModelError("", "Thêm nhân viên không thành công");
                 }
             }
+            SetViewBag();
             SetAlert("Tài khoản hoặc mã nhân viên đã tồn tại!", "error");
             return RedirectToAction("Index", "Employee");
         }
@@ -84,6 +143,7 @@ namespace WebApp.Areas.Admin.Controllers
         public ActionResult Edit(int id)
         {
             var employee = new EmployeeDao().ViewDetail(id);
+            SetViewBag();
             return View(employee);
         }
 
@@ -95,15 +155,8 @@ namespace WebApp.Areas.Admin.Controllers
             {
                 var dao = new EmployeeDao();
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-                employee.ModifiedBy = session.UserName;
 
-                if (!string.IsNullOrEmpty(employee.Password))
-                {
-                    var encryptedMd5Pas = Encryptor.MD5Hash(employee.Password);
-                    employee.Password = encryptedMd5Pas;
-                }
-
-                long id = dao.Update(employee);
+                long id = dao.Update(employee, session.UserName);
                 if (id > 0)
                 {
                     SetAlert("Sửa thông tin nhân viên thành công", "success");
@@ -115,6 +168,7 @@ namespace WebApp.Areas.Admin.Controllers
                     return RedirectToAction("Index", "Employee");
                 }
             }
+            SetViewBag();
             SetAlert("Sửa thông tin nhân viên thất bại", "error");
             return RedirectToAction("Index", "Employee");
         }
@@ -123,8 +177,17 @@ namespace WebApp.Areas.Admin.Controllers
         [HasCredential(RoleID = "DELETE_USER")]
         public ActionResult Delete(int id)
         {
-            new EmployeeDao().Delete(id);
+            var dao = new EmployeeDao();
 
+            bool status = dao.Delete(id);
+            if (status)
+            {
+                SetAlert("Xóa nhân viên thành công", "success");
+            }
+            else
+            {
+                SetAlert("Xóa nhân viên thất bại", "error");
+            }
             return RedirectToAction("Index");
         }
 

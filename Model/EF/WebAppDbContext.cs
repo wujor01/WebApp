@@ -16,11 +16,22 @@ namespace Model.EF
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<DailyList> DailyLists { get; set; }
         public virtual DbSet<DayOff> DayOffs { get; set; }
+        public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<ReExType> ReExTypes { get; set; }
+        public virtual DbSet<RevenueExpenditure> RevenueExpenditures { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<Room> Rooms { get; set; }
+        public virtual DbSet<StatisticDepartment> StatisticDepartments { get; set; }
+        public virtual DbSet<StatisticEmployee> StatisticEmployees { get; set; }
+        public virtual DbSet<StatisticTicket> StatisticTickets { get; set; }
         public virtual DbSet<Taxi> Taxis { get; set; }
+        public virtual DbSet<Ticket> Tickets { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
         public virtual DbSet<Violator> Violators { get; set; }
-        public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<ViolatorKTV> ViolatorKTVs { get; set; }
+        public virtual DbSet<ViolatorType> ViolatorTypes { get; set; }
+        public virtual DbSet<Voucher> Vouchers { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -49,27 +60,11 @@ namespace Model.EF
                 .IsUnicode(false);
 
             modelBuilder.Entity<DailyList>()
-                .Property(e => e.Employee_Code)
-                .IsFixedLength();
-
-            modelBuilder.Entity<DailyList>()
-                .Property(e => e.Room)
-                .IsFixedLength();
-
-            modelBuilder.Entity<DailyList>()
-                .Property(e => e.Ticket)
-                .HasPrecision(18, 0);
+                .Property(e => e.Employee_ID)
+                .IsUnicode(false);
 
             modelBuilder.Entity<DailyList>()
                 .Property(e => e.Tip)
-                .HasPrecision(18, 0);
-
-            modelBuilder.Entity<DailyList>()
-                .Property(e => e.Code)
-                .HasPrecision(18, 0);
-
-            modelBuilder.Entity<DailyList>()
-                .Property(e => e.Voucher)
                 .HasPrecision(18, 0);
 
             modelBuilder.Entity<DailyList>()
@@ -91,6 +86,31 @@ namespace Model.EF
             modelBuilder.Entity<DayOff>()
                 .Property(e => e.ModifiedBy)
                 .IsUnicode(false);
+
+            modelBuilder.Entity<Department>()
+                .HasMany(e => e.Employees)
+                .WithOptional(e => e.Department)
+                .HasForeignKey(e => e.Department_ID);
+
+            modelBuilder.Entity<Department>()
+                .HasMany(e => e.RevenueExpenditures)
+                .WithOptional(e => e.Department)
+                .HasForeignKey(e => e.Department_ID);
+
+            modelBuilder.Entity<Department>()
+                .HasMany(e => e.Rooms)
+                .WithOptional(e => e.Department)
+                .HasForeignKey(e => e.Department_ID);
+
+            modelBuilder.Entity<Department>()
+                .HasMany(e => e.StatisticDepartments)
+                .WithOptional(e => e.Department)
+                .HasForeignKey(e => e.Deparment_ID);
+
+            modelBuilder.Entity<Department>()
+                .HasMany(e => e.Tickets)
+                .WithOptional(e => e.Department)
+                .HasForeignKey(e => e.Department_ID);
 
             modelBuilder.Entity<Employee>()
                 .Property(e => e.Code)
@@ -117,8 +137,90 @@ namespace Model.EF
                 .WithOptional(e => e.Employee)
                 .HasForeignKey(e => e.Employee_ID);
 
-            modelBuilder.Entity<Taxi>()
-                .Property(e => e.Commission)
+            modelBuilder.Entity<Employee>()
+                .HasMany(e => e.StatisticEmployees)
+                .WithOptional(e => e.Employee)
+                .HasForeignKey(e => e.Employee_ID);
+
+            modelBuilder.Entity<Employee>()
+                .HasMany(e => e.Violators)
+                .WithOptional(e => e.Employee)
+                .HasForeignKey(e => e.Employee_ID);
+
+            modelBuilder.Entity<Employee>()
+                .HasMany(e => e.ViolatorKTVs)
+                .WithOptional(e => e.Employee)
+                .HasForeignKey(e => e.Employee_ID);
+
+            modelBuilder.Entity<ReExType>()
+                .HasMany(e => e.RevenueExpenditures)
+                .WithRequired(e => e.ReExType)
+                .HasForeignKey(e => e.Type_ID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<RevenueExpenditure>()
+                .Property(e => e.Money)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<RevenueExpenditure>()
+                .Property(e => e.CreatedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<RevenueExpenditure>()
+                .Property(e => e.ModifiedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Role>()
+                .Property(e => e.ID)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Room>()
+                .Property(e => e.CreatedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Room>()
+                .Property(e => e.ModifiedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Room>()
+                .HasMany(e => e.DailyLists)
+                .WithOptional(e => e.Room)
+                .HasForeignKey(e => e.Room_ID);
+
+            modelBuilder.Entity<StatisticDepartment>()
+                .Property(e => e.TotalListinDate)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticDepartment>()
+                .Property(e => e.TicketPriceinDate)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticDepartment>()
+                .Property(e => e.TipinDate)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticDepartment>()
+                .Property(e => e.RevenueinDate)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticDepartment>()
+                .Property(e => e.ExpenditureinDate)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticDepartment>()
+                .Property(e => e.RevenueinDatefromEmployee)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticEmployee>()
+                .Property(e => e.TipinDate)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticEmployee>()
+                .Property(e => e.RevenueinDatefromEmployee)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticTicket>()
+                .Property(e => e.TicketPriceinDate)
                 .HasPrecision(18, 0);
 
             modelBuilder.Entity<Taxi>()
@@ -134,13 +236,31 @@ namespace Model.EF
                 .WithOptional(e => e.Taxi)
                 .HasForeignKey(e => e.Taxi_ID);
 
+            modelBuilder.Entity<Ticket>()
+                .Property(e => e.Price)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<Ticket>()
+                .Property(e => e.CreatedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Ticket>()
+                .Property(e => e.ModifiedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Ticket>()
+                .HasMany(e => e.DailyLists)
+                .WithOptional(e => e.Ticket)
+                .HasForeignKey(e => e.Ticket_ID);
+
+            modelBuilder.Entity<Ticket>()
+                .HasMany(e => e.StatisticTickets)
+                .WithOptional(e => e.Ticket)
+                .HasForeignKey(e => e.Ticket_ID);
+
             modelBuilder.Entity<UserGroup>()
                 .Property(e => e.GroupID)
                 .IsUnicode(false);
-
-            modelBuilder.Entity<Violator>()
-                .Property(e => e.Code)
-                .IsFixedLength();
 
             modelBuilder.Entity<Violator>()
                 .Property(e => e.Loan)
@@ -154,9 +274,56 @@ namespace Model.EF
                 .Property(e => e.ModifiedBy)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Role>()
-                .Property(e => e.ID)
+            modelBuilder.Entity<ViolatorKTV>()
+                .Property(e => e.Tour)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<ViolatorKTV>()
+                .Property(e => e.Fruit)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<ViolatorKTV>()
+                .Property(e => e.Elevator)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<ViolatorKTV>()
+                .Property(e => e.Substitution)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<ViolatorKTV>()
+                .Property(e => e.TipinDate)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<ViolatorKTV>()
+                .Property(e => e.CreatedBy)
                 .IsUnicode(false);
+
+            modelBuilder.Entity<ViolatorKTV>()
+                .Property(e => e.ModifiedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<ViolatorType>()
+                .HasMany(e => e.Violators)
+                .WithRequired(e => e.ViolatorType)
+                .HasForeignKey(e => e.Type_ID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Voucher>()
+                .Property(e => e.DiscountPercent)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<Voucher>()
+                .Property(e => e.CreatedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Voucher>()
+                .Property(e => e.ModifiedBy)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Voucher>()
+                .HasMany(e => e.DailyLists)
+                .WithOptional(e => e.Voucher)
+                .HasForeignKey(e => e.Voucher_ID);
         }
     }
 }

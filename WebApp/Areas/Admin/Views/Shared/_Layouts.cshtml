@@ -8,14 +8,17 @@
     <meta name="author" content="">
     <title>MassageVua</title>
     <!-- Bootstrap Core CSS -->
+
     <link href="/assets/admin/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/client/css/font-awesome.min.css" rel="stylesheet" />
+
+    @*<link href="/assets/client/css/font-awesome.min.css" rel="stylesheet" />*@
     <!-- MetisMenu CSS -->
     <link href="/assets/admin/bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="/assets/admin/dist/css/sb-admin-2.css" rel="stylesheet">
     <!-- Custom Fonts -->
     <link href="/assets/admin/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/bootstrap-chosen.css" rel="stylesheet" />
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -32,7 +35,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">@RenderSection("header", required: true)</h1>
+                        <h3 class="page-header">@RenderSection("header", required: false)</h3>
                     </div>
                     <!-- /.col-lg-12 -->
                 </div>
@@ -54,13 +57,14 @@
     <!-- jQuery -->
     <script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/chosen.jquery.js"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
     <!-- Metis Menu Plugin JavaScript -->
     <script src="/assets/admin/bower_components/metisMenu/dist/metisMenu.min.js"></script>
     <script src="/assets/admin/js/plugins/ckfinder/ckfinder.js"></script>
-    <script src="/assets/admin/js/plugins/ckeditor/ckeditor.js"></script>
+    @*<script src="/assets/admin/js/plugins/ckeditor/ckeditor.js"></script>*@
     <!-- Custom Theme JavaScript -->
     <script src="/assets/admin/dist/js/sb-admin-2.js"></script>
     @RenderSection("jsFooter", required: false)

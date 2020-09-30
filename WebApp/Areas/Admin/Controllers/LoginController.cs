@@ -23,7 +23,7 @@ namespace WebApp.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 var dao = new EmployeeDao();
-                var result = dao.Login(model.UserName, Encryptor.MD5Hash(model.PassWord));
+                var result = dao.Login(model.UserName, model.PassWord);
                 if (result == 1)
                 {
                     var user = dao.GetById(model.UserName);
@@ -31,6 +31,8 @@ namespace WebApp.Areas.Admin.Controllers
                     userSession.UserName = user.Username;
                     userSession.UserID = user.ID;
                     userSession.GroupID = user.GroupID;
+                    userSession.DepartmentID = user.Department.ID;
+
                     var listCredentials = dao.GetListCredential(model.UserName);
 
                     Session.Add(CommonConstants.SESSION_CREDENTIALS, listCredentials);
@@ -39,23 +41,23 @@ namespace WebApp.Areas.Admin.Controllers
                 }
                 else if (result == 0)
                 {
-                    ModelState.AddModelError("", "Account not exist!");
+                    ModelState.AddModelError("", "Tài khoản không tồn tại!");
                 }
                 else if (result == -1)
                 {
-                    ModelState.AddModelError("", "Account was  blocked!");
+                    ModelState.AddModelError("", "Tài khoản đang bị khóa!");
                 }
                 else if (result == -2)
                 {
-                    ModelState.AddModelError("", "Time Out!");
+                    ModelState.AddModelError("", "Ngoài ca làm việc!");
                 }
                 else if (result == -3)
                 {
-                    ModelState.AddModelError("", "Wrong Password!");
+                    ModelState.AddModelError("", "Sai mật khẩu hoặc tài khoản!");
                 }
                 else
                 {
-                    ModelState.AddModelError("","Login unsuccessful!");
+                    ModelState.AddModelError("","Đăng nhập không thành công!");
                 }
             }
             return View("Index");

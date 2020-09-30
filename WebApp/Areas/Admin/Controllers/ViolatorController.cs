@@ -11,11 +11,13 @@ namespace WebApp.Areas.Admin.Controllers
 {
     public class ViolatorController : BaseController
     {
-        //[HasCredential(RoleID = "VIEW_USER")]
+        [HasCredential(RoleID = "VIEW_VIOLATOR")]
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
             var dao = new ViolatorDao();
-            var model = dao.ListAllPaging(searchString, page, pageSize);
+            var model = dao.ListAllPaging(searchString, page, pageSize, session.DepartmentID);
 
             ViewBag.SearchString = searchString;
 
@@ -23,14 +25,30 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        //[HasCredential(RoleID = "ADD_USER")]
+        [HasCredential(RoleID = "ADD_VIOLATOR")]
         public ActionResult Create()
         {
+            SetViewBag();
+            SetTypeBag();
             return View();
         }
 
+        public void SetViewBag(long? selectedId = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new EmployeeDao();
+            ViewBag.Employee_ID = new SelectList(dao.ListAll("NV",session.DepartmentID), "ID", "Code", selectedId);
+        }
+
+        public void SetTypeBag(int? selectedId = null)
+        {
+            var dao = new ViolatorDao();
+            ViewBag.Type_ID = new SelectList(dao.ListAll(), "ID", "Type", selectedId);
+        }
+
         [HttpPost]
-        //[HasCredential(RoleID = "ADD_USER")]
+        [HasCredential(RoleID = "ADD_VIOLATOR")]
         public ActionResult Create(Violator violator)
         {
             if (ModelState.IsValid)
@@ -45,36 +63,39 @@ namespace WebApp.Areas.Admin.Controllers
                 long id = dao.Insert(violator);
                 if (id > 0)
                 {
-                    SetAlert("Thêm chấm công thành công", "success");
+                    SetAlert("Thêm chấm công nhân viên thành công", "success");
                     return RedirectToAction("Index", "Violator");
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Thêm chấm công không thành công");
+                    ModelState.AddModelError("", "Thêm chấm nhân viên công không thành công");
                 }
             }
+            SetViewBag();
+            SetTypeBag();
             SetAlert("Error", "error");
             return RedirectToAction("Index", "Violator");
         }
 
-        //[HasCredential(RoleID = "EDIT_USER")]
+        [HasCredential(RoleID = "EDIT_VIOLATOR")]
         public ActionResult Edit(int id)
         {
             var violator = new ViolatorDao().ViewDetail(id);
+            SetViewBag();
+            SetTypeBag();
             return View(violator);
         }
 
         [HttpPost]
-        //[HasCredential(RoleID = "EDIT_USER")]
+        [HasCredential(RoleID = "EDIT_VIOLATOR")]
         public ActionResult Edit(Violator violator)
         {
             if (ModelState.IsValid)
             {
                 var dao = new ViolatorDao();
                 var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-                violator.ModifiedBy = session.UserName;
 
-                long id = dao.Update(violator);
+                long id = dao.Update(violator, session.UserName);
                 if (id > 0)
                 {
                     SetAlert("Sửa thông tin nhân viên thành công", "success");
@@ -86,12 +107,14 @@ namespace WebApp.Areas.Admin.Controllers
                     return RedirectToAction("Index", "Violator");
                 }
             }
+            SetTypeBag();
+            SetViewBag();
             SetAlert("Sửa thông tin nhân viên thất bại", "error");
             return RedirectToAction("Index", "Violator");
         }
 
         [HttpDelete]
-        //[HasCredential(RoleID = "DELETE_USER")]
+        [HasCredential(RoleID = "DELETE_VIOLATOR")]
         public ActionResult Delete(int id)
         {
             new ViolatorDao().Delete(id);

@@ -7,7 +7,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.html">MassageVua WebApp v1.0</a>
+        <a class="navbar-brand" href="#">MassageVua v1.0</a>
     </div>
     <!-- /.navbar-header -->
     <ul class="nav navbar-top-links navbar-right">
@@ -220,7 +220,7 @@
             </a>
             <ul class="dropdown-menu dropdown-user">
                 <li>
-                    <a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                    <a href="#"><i class="fa fa-user fa-fw"></i> @ViewBag.sessionUser</a>
                 </li>
                 <li>
                     <a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
@@ -252,19 +252,69 @@
                     <!-- /input-group -->
                 </li>
                 <li>
-                    <a href="/Admin/Home/Index"><i class="fa fa-dashboard fa-fw"></i> Trang chủ</a>
+                    <a href="/Admin/Home/Index"><i class="glyphicon glyphicon-home"></i> Trang chủ</a>
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-user fa-fw"></i> Hệ thống<span class="fa arrow"></span></a>
+                    <a href="#"><i class="fa fa-dashboard fa-fw"></i> Thống kê<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="/Admin/Home/Index/GetDataDailyList">Biểu đồ thống kê</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="glyphicon glyphicon-th-list"></i> Danh sách thống kê<span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+                                <li>
+                                    <a href="/Admin/Statistic/TicketIndex">Doanh số bán vé</a>
+                                </li>
+                                <li>
+                                    <a href="#">Tip của KTV</a>
+                                </li>
+                                <li>
+                                    <a href="#">Doanh số bán vé</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+                <li>
+                    <a href="#"><i class="glyphicon glyphicon-list-alt"></i> Hệ thống<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li>
                             <a href="/Admin/DailyList/Index">Bảng kê</a>
                         </li>
                         <li>
+                            <a href="/Admin/DailyList/TaxiIndex">Thông tin Grab-Taxi</a>
+                        </li>
+                        <li>
+                            <a href="/Admin/RevenueExpenditure/Index">Thu - Chi</a>
+                        </li>
+                        <li>
+                            <a href="/Admin/Customer/Index">Khách hàng</a>
+                        </li>
+                        <li>
+                            <a href="/Admin/Ticket"> Danh sách Vé</a>
+                        </li>
+                        <li>
+                            <a href="/Admin/Room"> Danh sách Phòng</a>
+                        </li>
+                        <li>
+                            <a href="/Admin/Department">Chi nhánh</a>
+                        </li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+                <li>
+                    <a href="#"><i class="glyphicon glyphicon-user"></i> Quản lý nhân viên<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li>
                             <a href="/Admin/Employee/Index">Nhân viên</a>
                         </li>
                         <li>
-                            <a href="/Admin/Violator/Index">Vi phạm/Tạm ứng</a>
+                            <a href="/Admin/Violator/Index">Chấm công nhân viên</a>
+                        </li>
+                        <li>
+                            <a href="/Admin/ViolatorKTV/Index">Chấm công KTV</a>
                         </li>
                         <li>
                             <a href="/Admin/DayOff/Index">Xin nghỉ phép</a>
@@ -273,46 +323,19 @@
                     <!-- /.nav-second-level -->
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-comment fa-fw"></i> Tin tức<span class="fa arrow"></span></a>
+                    <a href="#"><i class="glyphicon glyphicon-info-sign"></i> Tài khoản<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a href="/Admin/Category/Index">Danh mục</a>
+                            <a href="/Admin/DailyList/CodeIndex"> Danh sách Code</a>
                         </li>
                         <li>
-                            <a href="/Admin/Content/Index">Tin tức</a>
-                        </li>
-                    </ul>
-                    <!-- /.nav-second-level -->
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-bell fa-fw"></i> Sản phẩm<span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a href="/Admin/ProductCategory/Index">Danh mục</a>
+                            <a href="@Url.Action("Detail","Employee")">Thông tin</a>
                         </li>
                         <li>
-                            <a href="/Admin/Product/Index">Sản phẩm</a>
-                        </li>
-                    </ul>
-                    <!-- /.nav-second-level -->
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Quản lý chung<span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a href="/Admin/About/Index">Giới thiệu</a>
+                            <a href="#">Hỗ trợ</a>
                         </li>
                         <li>
-                            <a href="/Admin/Footer/Index">Foooter</a>
-                        </li>
-                        <li>
-                            <a href="/Admin/Footer/Index">Menu</a>
-                        </li>
-                        <li>
-                            <a href="/Admin/Footer/Index">Slide</a>
-                        </li>
-                        <li>
-                            <a href="/Admin/Footer/Index">Phản hồi</a>
+                            <a href=@Url.Action("LogOut","Login")> Đăng xuất</a>
                         </li>
                     </ul>
                     <!-- /.nav-second-level -->

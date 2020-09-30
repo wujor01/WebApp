@@ -1,0 +1,83 @@
+﻿@model PagedList.IPagedList<Model.EF.RevenueExpenditure>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layouts.cshtml";
+}
+
+@section header{
+    Danh sách Thu-Chi
+}
+
+<div class="row">
+
+    <div class="col-lg-12">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Danh sách Thu-Chi
+            </div>
+
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                @using (Html.BeginForm("Index", "RevenueExpenditure", FormMethod.Get))
+                {
+                    <div class="row form-group">
+                        <div class="col-lg-12">
+                            <div class="col-md-4">
+                                <input type="text" value="@ViewBag.SearchString" class="form-control" placeholder="Nhập vào ID hoặc Nội dung" name="searchString" />
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-success">Tìm kiếm</button>
+                                <a class="btn btn-primary" href="/Admin/RevenueExpenditure/Create">Thêm mới</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <td>Ngày</td>
+                                <th>Loại</th>
+                                <td>Nội dung</td>
+                                <td>Số tiền</td>
+                                <td>Ghi chú</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr id="row_@item.ID">
+                                    <th>#@item.ID</th>
+                                    <td>@(string.Format("{0:dd/MM/yyyy}", item.Date))</td>
+                                    <td>@item.ReExType.Type</td>
+                                    <td>@item.Contents</td>
+                                    <td>@(string.Format("{0:#,##0}", item.Money))</td>
+                                    <td>@item.Description</td>
+                                    <td>
+                                        <a href="/Admin/RevenueExpenditure/Edit/@item.ID">Sửa</a>
+                                        |
+                                        @Ajax.ActionLink("Xoá", "Delete", new { @id = item.ID }, new AjaxOptions
+                                   {
+                                       Confirm = "Bạn có muốn xoá bản ghi này?",
+                                       OnComplete = "$('#row_" + @item.ID + "').remove()",
+                                       HttpMethod = "Delete"
+                                   })
+                                    </td>
+                                </tr>
+                            }
+
+
+                        </tbody>
+                    </table>
+                    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, @searchString = @ViewBag.SearchString }))
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div>
+</div>

@@ -9,6 +9,7 @@ namespace WebApp.Common
     public class UserLogin
     {
         public long UserID { set; get; }
+        public int DepartmentID { set; get; }
         public string UserName { set; get; }
         public string GroupID { set; get; }
     }
