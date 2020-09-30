@@ -36,7 +36,8 @@ namespace Model.Dao
             ticket.Price = entity.Price;
             ticket.Header = entity.Header;
             ticket.Description = entity.Description;
-            ticket.TimeTotal = ticket.TimeTotal;
+            ticket.TimeTotal = entity.TimeTotal;
+            ticket.Status = entity.Status;
 
             //Ngày chỉnh sửa = Now
             ticket.ModifiedBy = username;
@@ -49,11 +50,11 @@ namespace Model.Dao
         {
             if (departmentId == 0)
             {
-                return db.Tickets.OrderBy(x => x.ID).ToList();
+                return db.Tickets.Where(x => x.Status == true).OrderBy(x => x.ID).ToList();
             }
             else
             {
-                return db.Tickets.OrderBy(x => x.ID).Where(x => x.Department_ID == departmentId).ToList();
+                return db.Tickets.Where(x => x.Status == true).OrderBy(x => x.ID).Where(x => x.Department_ID == departmentId).ToList();
             }
         }
 
@@ -62,7 +63,7 @@ namespace Model.Dao
             try
             {
                 var ticket = db.Tickets.Find(id);
-                db.Tickets.Remove(ticket);
+                ticket.Status = false;
                 db.SaveChanges();
                 return true;
             }
@@ -84,12 +85,12 @@ namespace Model.Dao
             }
             if (departmentId == 0)
             {
-                return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+                return model.Where(x => x.Status == true).OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
 
             }
             else
             {
-                return model.OrderByDescending(x => x.CreatedDate).Where(x => x.Department_ID == departmentId).ToPagedList(page, pageSize);
+                return model.Where(x => x.Status == true).OrderByDescending(x => x.CreatedDate).Where(x => x.Department_ID == departmentId).ToPagedList(page, pageSize);
             }
         }
     }

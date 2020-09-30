@@ -1,4 +1,4 @@
-namespace Model.EF
+﻿namespace Model.EF
 {
     using System;
     using System.Collections.Generic;
@@ -19,11 +19,16 @@ namespace Model.EF
 
         public int ID { get; set; }
 
+        [Display(Name = "Chi nhánh")]
         [StringLength(50)]
         public string Name { get; set; }
 
+        [Display(Name = "Địa chỉ")]
         [StringLength(200)]
         public string Address { get; set; }
+
+        [Display(Name = "Trạng thái")]
+        public bool Status { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Employee> Employees { get; set; }

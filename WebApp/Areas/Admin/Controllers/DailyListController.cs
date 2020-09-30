@@ -16,7 +16,7 @@ namespace WebApp.Areas.Admin.Controllers
         {
             var session = (UserLogin)Session[CommonConstants.USER_SESSION];
 
-            var dao = new DeparmentDao();
+            var dao = new DepartmentDao();
             ViewBag.Department_ID = new SelectList(dao.ListDepartment(session.DepartmentID), "ID", "Name", selectedId);
         }
 
@@ -248,7 +248,7 @@ namespace WebApp.Areas.Admin.Controllers
         [HasCredential(RoleID = "DELETE_CODE")]
         public ActionResult CodeDelete(int id)
         {
-            new DailyListDao().CodeDelete(id);
+            new DailyListDao().CodeExpirated(id);
 
             return RedirectToAction("CodeIndex");
         }

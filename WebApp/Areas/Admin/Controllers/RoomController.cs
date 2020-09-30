@@ -11,7 +11,15 @@ namespace WebApp.Areas.Admin.Controllers
 {
     public class RoomController : BaseController
     {
-        [HasCredential(RoleID = "VIEW_TICKET")]
+        public void SetViewDepartment(int? selectedId = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new DepartmentDao();
+            ViewBag.Department_ID = new SelectList(dao.ListDepartment(session.DepartmentID), "ID", "Name", selectedId);
+        }
+
+        [HasCredential(RoleID = "VIEW_ROOM")]
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
             var session = (UserLogin)Session[CommonConstants.USER_SESSION];
@@ -24,23 +32,15 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [HasCredential(RoleID = "ADD_TICKET")]
+        [HasCredential(RoleID = "ADD_ROOM")]
         public ActionResult Create()
         {
             SetViewDepartment();
             return View();
         }
 
-        public void SetViewDepartment(int? selectedId = null)
-        {
-            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-
-            var dao = new DeparmentDao();
-            ViewBag.Department_ID = new SelectList(dao.ListDepartment(session.DepartmentID), "ID", "Name", selectedId);
-        }
-
         [HttpPost]
-        [HasCredential(RoleID = "ADD_TICKET")]
+        [HasCredential(RoleID = "ADD_ROOM")]
         public ActionResult Create(Room room)
         {
             if (ModelState.IsValid)
@@ -68,7 +68,7 @@ namespace WebApp.Areas.Admin.Controllers
             return RedirectToAction("Index", "Room");
         }
 
-        [HasCredential(RoleID = "EDIT_TICKET")]
+        [HasCredential(RoleID = "EDIT_ROOM")]
         public ActionResult Edit(int id)
         {
             var room = new RoomDao().ViewDetail(id);
@@ -77,7 +77,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [HasCredential(RoleID = "EDIT_TICKET")]
+        [HasCredential(RoleID = "EDIT_ROOM")]
         public ActionResult Edit(Room room)
         {
             if (ModelState.IsValid)
@@ -103,7 +103,7 @@ namespace WebApp.Areas.Admin.Controllers
         }
 
         [HttpDelete]
-        [HasCredential(RoleID = "DELETE_TICKET")]
+        [HasCredential(RoleID = "DELETE_ROOM")]
         public ActionResult Delete(int id)
         {
             new RoomDao().Delete(id);

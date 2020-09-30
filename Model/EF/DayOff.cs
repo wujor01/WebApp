@@ -1,4 +1,4 @@
-namespace Model.EF
+﻿namespace Model.EF
 {
     using System;
     using System.Collections.Generic;
@@ -11,14 +11,18 @@ namespace Model.EF
     {
         public long ID { get; set; }
 
-        [Column(TypeName = "date")]
+        [Display(Name = "Ngày")]
+        [DataType(DataType.Date)]
         public DateTime? Date { get; set; }
 
+        [Display(Name = "Lý do")]
         [StringLength(500)]
         public string Description { get; set; }
 
+        [Display(Name = "Nhân viên")]
         public long? Employee_ID { get; set; }
 
+        [Display(Name = "Trạng thái")]
         public bool Status { get; set; }
 
         public DateTime? CreatedDate { get; set; }

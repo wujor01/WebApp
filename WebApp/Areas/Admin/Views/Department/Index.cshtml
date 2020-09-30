@@ -1,11 +1,11 @@
-﻿@model PagedList.IPagedList<Model.EF.Room>
+﻿@model PagedList.IPagedList<Model.EF.Department>
 @using PagedList.Mvc;
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layouts.cshtml";
 }
 
-<h2>Danh sách phòng</h2>
+<h2>Danh sách chi nhánh</h2>
 
 <div class="row">
 
@@ -13,23 +13,23 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                Danh sách phòng
+                Danh sách chi nhánh
             </div>
 
             <!-- /.panel-heading -->
             <div class="panel-body">
-                @using (Html.BeginForm("Index", "Room", FormMethod.Get))
+                @using (Html.BeginForm("Index", "Department", FormMethod.Get))
                 {
 
                     <div class="row form-group">
                         <div class="col-lg-12">
                             <div class="col-md-4">
                                 @*<input type="text" id="txtsearch" class="form-control" placeholder="Nhập vào mã KTV" />*@
-                                <input type="text" value="@ViewBag.SearchString" class="form-control" name="searchString" placeholder="Nhập vào tên Phòng hoặc tên Chi nhánh" />
+                                <input type="text" value="@ViewBag.SearchString" class="form-control" name="searchString" placeholder="Nhập vào Tên chi nhánh hoặc địa chỉ" />
                             </div>
                             <div class="col-md-4">
                                 <button type="submit" class="btn btn-success">Tìm kiếm</button>
-                                <a class="btn btn-primary" href="/Admin/Room/Create">Thêm mới</a>
+                                <a class="btn btn-primary" href="/Admin/Department/Create">Thêm mới</a>
                             </div>
                         </div>
                     </div>
@@ -39,32 +39,30 @@
                     <table class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>Chi nhánh</th>
                                 <th>ID</th>
-                                <td>Tên phòng</td>
+                                <td>Tên Chi nhánh</td>
                                 <td>Chi tiết</td>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr id="row_@item.ID">
+                            <tr id="row_@item.ID">
 
-                                    <th>@item.Department.Name</th>
-                                    <th>#@item.ID</th>
-                                    <td>@item.Name</td>
-                                    <td>@item.Description</td>
-                                    <td>
-                                        <a href="/Admin/Room/Edit/@item.ID">Sửa</a>
-                                        |
-                                        @Ajax.ActionLink("Xoá", "Delete", new { @id = item.ID }, new AjaxOptions
-                                   {
-                                       Confirm = "Bạn có muốn xoá bản ghi này?",
-                                       OnComplete = "$('#row_" + @item.ID + "').remove()",
-                                       HttpMethod = "Delete"
-                                   })
-                                    </td>
-                                </tr>
+                                <th>#@item.ID</th>
+                                <td>@item.Name</td>
+                                <td>@item.Address</td>
+                                <td>
+                                    <a href="/Admin/Department/Edit/@item.ID">Sửa</a>
+                                    |
+                                    @Ajax.ActionLink("Xoá", "Delete", new { @id = item.ID }, new AjaxOptions
+                               {
+                                   Confirm = "Bạn có muốn xoá bản ghi này?",
+                                   OnComplete = "$('#row_" + @item.ID + "').remove()",
+                                   HttpMethod = "Delete"
+                               })
+                                </td>
+                            </tr>
                             }
 
 

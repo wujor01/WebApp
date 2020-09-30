@@ -56,10 +56,6 @@ namespace Model.Dao
 
         public long Insert(DailyList list)
         {
-            if (list.Tip == null)
-            {
-                list.Tip = 0;
-            }
 
             var ticket = db.Tickets.Find(list.Ticket_ID);
             var voucher = db.Vouchers.Find(list.Voucher_ID);
@@ -68,7 +64,7 @@ namespace Model.Dao
             list.TimeOut = DateTime.Now.Add(TimeSpan.FromMinutes(ticket.TimeTotal));
 
 
-            if (list.Taxi.Price == null)
+            if (list.Taxi.Price == 0)
             {
 
                 if (voucher.DiscountPercent !=0)
@@ -100,10 +96,6 @@ namespace Model.Dao
             }
             else
             {
-                if (list.Taxi.Price == null)
-                {
-                    list.Taxi.Price = 0;
-                }
                 if (voucher.DiscountPercent != 0)
                 {
                     list.Status = false;
@@ -130,10 +122,6 @@ namespace Model.Dao
         {
 
             var dailyList = db.DailyLists.Find(entity.ID);
-            if (entity.Tip == null)
-            {
-                entity.Tip = 0;
-            }
             
             dailyList.Description = entity.Description;
             //dailyList.Employee_ID = entity.Employee_ID;
@@ -147,12 +135,8 @@ namespace Model.Dao
             var voucher = db.Vouchers.Find(entity.Voucher_ID);
 
 
-            if (entity.Taxi.Price != null)
+            if (entity.Taxi.Price != 0)
             {
-                if (entity.Taxi.Price == null)
-                {
-                    entity.Taxi.Price = 0;
-                }
                 if (voucher.ID != 0)
                 {
                     dailyList.Total = ticket.Price * voucher.DiscountPercent / 100 - entity.Taxi.Price + entity.Tip;
@@ -240,7 +224,7 @@ namespace Model.Dao
             {
                 if (item.ExpirationDate < DateTime.Now)
                 {
-                    CodeDelete(item.ID);
+                    CodeExpirated(item.ID);
                 }
                     
             }
@@ -270,12 +254,12 @@ namespace Model.Dao
 
         }
 
-        public bool CodeDelete(long id)
+        public bool CodeExpirated(long id)
         {
             try
             {
                 var voucher = db.Vouchers.Find(id);
-                db.Vouchers.Remove(voucher);
+                voucher.Expirated = true;
                 db.SaveChanges();
                 return true;
             }

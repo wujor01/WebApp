@@ -46,11 +46,11 @@ namespace Model.Dao
         {
             if (departmentId == 0)
             {
-                return db.Rooms.OrderBy(x => x.ID).ToList();
+                return db.Rooms.Where(x => x.Status == true).OrderBy(x => x.ID).ToList();
             }
             else
             {
-                return db.Rooms.OrderBy(x => x.ID).Where(x => x.Department_ID == departmentId).ToList();
+                return db.Rooms.Where(x => x.Status == true).OrderBy(x => x.ID).Where(x => x.Department_ID == departmentId).ToList();
             }
         }
 
@@ -59,7 +59,7 @@ namespace Model.Dao
             try
             {
                 var room = db.Rooms.Find(id);
-                db.Rooms.Remove(room);
+                room.Status = false;
                 db.SaveChanges();
                 return true;
             }

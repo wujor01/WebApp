@@ -1,4 +1,4 @@
-namespace Model.EF
+﻿namespace Model.EF
 {
     using System;
     using System.Collections.Generic;
@@ -17,13 +17,19 @@ namespace Model.EF
 
         public int ID { get; set; }
 
+        [Display(Name = "Chi nhánh")]
         public int? Department_ID { get; set; }
 
+        [Display(Name = "Tên phòng")]
         [StringLength(50)]
         public string Name { get; set; }
 
+        [Display(Name = "Chi tiết")]
         [StringLength(500)]
         public string Description { get; set; }
+
+        [Display(Name = "Trạng thái")]
+        public bool Status { get; set; }
 
         public DateTime? CreatedDate { get; set; }
 
