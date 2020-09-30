@@ -11,7 +11,7 @@
     {
         public long ID { get; set; }
 
-        [Display(Name ="Chi nhánh")]
+        [Display(Name = "Chi nhánh")]
         public int? Department_ID { get; set; }
 
         [Display(Name = "Loại")]
@@ -25,7 +25,7 @@
         [DataType(DataType.Currency)]
         public decimal Money { get; set; }
 
-        [Display(Name ="Ghi chú")]
+        [Display(Name = "Ghi chú")]
         [StringLength(500)]
         public string Description { get; set; }
 
@@ -42,6 +42,8 @@
 
         [StringLength(50)]
         public string ModifiedBy { get; set; }
+
+        public virtual Department Department { get; set; }
 
         public virtual ReExType ReExType { get; set; }
     }

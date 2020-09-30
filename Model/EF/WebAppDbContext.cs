@@ -22,6 +22,9 @@ namespace Model.EF
         public virtual DbSet<RevenueExpenditure> RevenueExpenditures { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Room> Rooms { get; set; }
+        public virtual DbSet<StatisticDepartment> StatisticDepartments { get; set; }
+        public virtual DbSet<StatisticEmployee> StatisticEmployees { get; set; }
+        public virtual DbSet<StatisticTicket> StatisticTickets { get; set; }
         public virtual DbSet<Taxi> Taxis { get; set; }
         public virtual DbSet<Ticket> Tickets { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
@@ -90,9 +93,19 @@ namespace Model.EF
                 .HasForeignKey(e => e.Department_ID);
 
             modelBuilder.Entity<Department>()
+                .HasMany(e => e.RevenueExpenditures)
+                .WithOptional(e => e.Department)
+                .HasForeignKey(e => e.Department_ID);
+
+            modelBuilder.Entity<Department>()
                 .HasMany(e => e.Rooms)
                 .WithOptional(e => e.Department)
                 .HasForeignKey(e => e.Department_ID);
+
+            modelBuilder.Entity<Department>()
+                .HasMany(e => e.StatisticDepartments)
+                .WithOptional(e => e.Department)
+                .HasForeignKey(e => e.Deparment_ID);
 
             modelBuilder.Entity<Department>()
                 .HasMany(e => e.Tickets)
@@ -121,6 +134,11 @@ namespace Model.EF
 
             modelBuilder.Entity<Employee>()
                 .HasMany(e => e.DayOffs)
+                .WithOptional(e => e.Employee)
+                .HasForeignKey(e => e.Employee_ID);
+
+            modelBuilder.Entity<Employee>()
+                .HasMany(e => e.StatisticEmployees)
                 .WithOptional(e => e.Employee)
                 .HasForeignKey(e => e.Employee_ID);
 
@@ -169,6 +187,42 @@ namespace Model.EF
                 .WithOptional(e => e.Room)
                 .HasForeignKey(e => e.Room_ID);
 
+            modelBuilder.Entity<StatisticDepartment>()
+                .Property(e => e.TotalListinDate)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticDepartment>()
+                .Property(e => e.TicketPriceinDate)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticDepartment>()
+                .Property(e => e.TipinDate)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticDepartment>()
+                .Property(e => e.RevenueinDate)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticDepartment>()
+                .Property(e => e.ExpenditureinDate)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticDepartment>()
+                .Property(e => e.RevenueinDatefromEmployee)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticEmployee>()
+                .Property(e => e.TipinDate)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticEmployee>()
+                .Property(e => e.RevenueinDatefromEmployee)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<StatisticTicket>()
+                .Property(e => e.TicketPriceinDate)
+                .HasPrecision(18, 0);
+
             modelBuilder.Entity<Taxi>()
                 .Property(e => e.Price)
                 .HasPrecision(18, 0);
@@ -196,6 +250,11 @@ namespace Model.EF
 
             modelBuilder.Entity<Ticket>()
                 .HasMany(e => e.DailyLists)
+                .WithOptional(e => e.Ticket)
+                .HasForeignKey(e => e.Ticket_ID);
+
+            modelBuilder.Entity<Ticket>()
+                .HasMany(e => e.StatisticTickets)
                 .WithOptional(e => e.Ticket)
                 .HasForeignKey(e => e.Ticket_ID);
 
@@ -229,6 +288,10 @@ namespace Model.EF
 
             modelBuilder.Entity<ViolatorKTV>()
                 .Property(e => e.Substitution)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<ViolatorKTV>()
+                .Property(e => e.TipinDate)
                 .HasPrecision(18, 0);
 
             modelBuilder.Entity<ViolatorKTV>()

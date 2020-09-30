@@ -11,6 +11,10 @@
     {
         public long ID { get; set; }
 
+        [Display(Name ="Ngày")]
+        [DataType(DataType.Date)]
+        public DateTime? Datetime { get; set; }
+
         [Display(Name = "Mã KTV")]
         public long? Employee_ID { get; set; }
 
@@ -36,6 +40,10 @@
         [Display(Name = "Thế chân")]
         [DataType(DataType.Currency)]
         public decimal Substitution { get; set; }
+
+        [Display(Name = "Tip trong ngày")]
+        [DataType(DataType.Currency)]
+        public decimal? TipinDate { get; set; }
 
         public DateTime? CreatedDate { get; set; }
 

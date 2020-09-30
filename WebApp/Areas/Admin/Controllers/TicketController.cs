@@ -36,7 +36,7 @@ namespace WebApp.Areas.Admin.Controllers
         {
             var session = (UserLogin)Session[CommonConstants.USER_SESSION];
 
-            var dao = new DeparmentDao();
+            var dao = new DepartmentDao();
             ViewBag.Department_ID = new SelectList(dao.ListDepartment(session.DepartmentID), "ID", "Name", selectedId);
         }
 

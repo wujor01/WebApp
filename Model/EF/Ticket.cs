@@ -13,6 +13,7 @@
         public Ticket()
         {
             DailyLists = new HashSet<DailyList>();
+            StatisticTickets = new HashSet<StatisticTicket>();
         }
 
         public int ID { get; set; }
@@ -57,5 +58,8 @@
         public virtual ICollection<DailyList> DailyLists { get; set; }
 
         public virtual Department Department { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<StatisticTicket> StatisticTickets { get; set; }
     }
 }

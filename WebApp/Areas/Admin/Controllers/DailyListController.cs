@@ -208,31 +208,26 @@ namespace WebApp.Areas.Admin.Controllers
         [HasCredential(RoleID = "EDIT_LIST")]
         public ActionResult Edit(DailyList dailyList)
         {
-            if (ModelState.IsValid)
-            {
-                var dao = new DailyListDao();
-                var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-
-                long id = dao.Update(dailyList,session.UserName);
-                if (id > 0)
-                {
-                    SetAlert("Sửa thông tin bảng kê thành công", "success");
-                    return RedirectToAction("Index", "DailyList");
-                }
-                else
-                {
-                    SetAlert("Error!", "error");
-                    return RedirectToAction("Index", "DailyList");
-                }
-            }
+            var dao = new DailyListDao();
             SetViewDepartment();
             SetViewTicket();
             SetViewCustomer();
             SetViewBag();
             SetViewVoucher();
             SetViewRoom();
-            SetAlert("Error", "error");
-            return RedirectToAction("Index", "DailyList");
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            long id = dao.Update(dailyList,session.UserName);
+            if (id > 0)
+            {
+                SetAlert("Sửa thông tin bảng kê thành công", "success");
+                return RedirectToAction("Index", "DailyList");
+            }
+            else
+            {
+                SetAlert("Error!", "error");
+                return RedirectToAction("Index", "DailyList");
+            }
         }
 
         [HttpDelete]

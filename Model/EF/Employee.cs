@@ -13,6 +13,7 @@
         public Employee()
         {
             DayOffs = new HashSet<DayOff>();
+            StatisticEmployees = new HashSet<StatisticEmployee>();
             Violators = new HashSet<Violator>();
             ViolatorKTVs = new HashSet<ViolatorKTV>();
         }
@@ -109,6 +110,9 @@
         public virtual ICollection<DayOff> DayOffs { get; set; }
 
         public virtual Department Department { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<StatisticEmployee> StatisticEmployees { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Violator> Violators { get; set; }

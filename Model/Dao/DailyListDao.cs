@@ -63,14 +63,13 @@ namespace Model.Dao
             list.TimeIn = DateTime.Now;
             list.TimeOut = DateTime.Now.Add(TimeSpan.FromMinutes(ticket.TimeTotal));
 
-
             if (list.Taxi.Price == 0)
             {
 
                 if (voucher.DiscountPercent !=0)
                 {
                     list.Status = false;
-                    list.Total = ticket.Price * voucher.DiscountPercent / 100 + list.Tip;
+                    list.Total = ticket.Price * (1 - voucher.DiscountPercent / 100) + list.Tip;
                 }
                 else
                 {
@@ -99,7 +98,7 @@ namespace Model.Dao
                 if (voucher.DiscountPercent != 0)
                 {
                     list.Status = false;
-                    list.Total = ticket.Price * voucher.DiscountPercent / 100 - list.Taxi.Price + list.Tip;
+                    list.Total = ticket.Price * (1 - voucher.DiscountPercent / 100) - list.Taxi.Price + list.Tip;
                 }
                 else
                 {
@@ -139,7 +138,7 @@ namespace Model.Dao
             {
                 if (voucher.ID != 0)
                 {
-                    dailyList.Total = ticket.Price * voucher.DiscountPercent / 100 - entity.Taxi.Price + entity.Tip;
+                    dailyList.Total = ticket.Price * (1 - voucher.DiscountPercent / 100) - entity.Taxi.Price + entity.Tip;
                 }
                 else
                 {
@@ -151,7 +150,7 @@ namespace Model.Dao
             {
                 if (voucher.DiscountPercent != 0)
                 {
-                    dailyList.Total = ticket.Price * voucher.DiscountPercent / 100 + entity.Tip;
+                    dailyList.Total = ticket.Price * (1 - voucher.DiscountPercent / 100) + entity.Tip;
                 }
                 else
                 {
@@ -282,23 +281,5 @@ namespace Model.Dao
                 return db.Employees.Where(x => x.Status == true && x.Code.StartsWith(position) == true && x.Department_ID == departmentId).ToList();
             }
         }
-
-        //public List<string> GetDailyList()
-        //{
-        //    var list = db.DailyLists.ToList();
-        //    var data = (from a in db.DailyLists
-        //                join b in db.Rooms on a.Room_ID equals b.ID
-        //                join c in db.Departments on b.Department_ID equals c.ID
-        //                join d in db.Tickets on a.Ticket_ID equals d.ID
-        //                where a.Status == true
-        //                select new()
-        //                {
-        //                    Department_Name = c.Name,
-        //                    Ticket_Name = d.Name,
-        //                    Ticket_quality = d.ID.count
-        //                }
-                
-        //        );
-        //}
     }
 }

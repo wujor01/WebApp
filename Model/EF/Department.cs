@@ -13,7 +13,9 @@
         public Department()
         {
             Employees = new HashSet<Employee>();
+            RevenueExpenditures = new HashSet<RevenueExpenditure>();
             Rooms = new HashSet<Room>();
+            StatisticDepartments = new HashSet<StatisticDepartment>();
             Tickets = new HashSet<Ticket>();
         }
 
@@ -34,7 +36,13 @@
         public virtual ICollection<Employee> Employees { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<RevenueExpenditure> RevenueExpenditures { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Room> Rooms { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<StatisticDepartment> StatisticDepartments { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Ticket> Tickets { get; set; }

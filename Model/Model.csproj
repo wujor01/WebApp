@@ -87,9 +87,11 @@
     <Compile Include="Dao\DailyListDao.cs" />
     <Compile Include="Dao\RevenueExpenditureDao.cs" />
     <Compile Include="Dao\RoomDao.cs" />
+    <Compile Include="Dao\StatisticDao.cs" />
     <Compile Include="Dao\TicketDao.cs" />
     <Compile Include="Dao\ViolatorDao.cs" />
     <Compile Include="Dao\ViolatorKTVDao.cs" />
+    <Compile Include="EFView\DailyListViews.cs" />
     <Compile Include="EF\Credential.cs" />
     <Compile Include="EF\Customer.cs" />
     <Compile Include="EF\DailyList.cs" />
@@ -100,6 +102,9 @@
     <Compile Include="EF\RevenueExpenditure.cs" />
     <Compile Include="EF\Role.cs" />
     <Compile Include="EF\Room.cs" />
+    <Compile Include="EF\StatisticDepartment.cs" />
+    <Compile Include="EF\StatisticEmployee.cs" />
+    <Compile Include="EF\StatisticTicket.cs" />
     <Compile Include="EF\Taxi.cs" />
     <Compile Include="EF\Ticket.cs" />
     <Compile Include="EF\UserGroup.cs" />
