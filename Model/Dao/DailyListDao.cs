@@ -63,16 +63,20 @@ namespace Model.Dao
             list.TimeIn = DateTime.Now;
             list.TimeOut = DateTime.Now.Add(TimeSpan.FromMinutes(ticket.TimeTotal));
 
+            list.Status = true;
+
             if (list.Taxi.Price == 0)
             {
 
                 if (voucher.DiscountPercent !=0)
                 {
                     list.Status = false;
-                    list.Total = ticket.Price * (1 - voucher.DiscountPercent / 100) + list.Tip;
+                    list.PricewithVoucher = ticket.Price * (1 - voucher.DiscountPercent / 100);
+                    list.Total = list.PricewithVoucher + list.Tip;
                 }
                 else
                 {
+                    list.PricewithVoucher = ticket.Price;
                     list.Total = ticket.Price + list.Tip;
                 }
 
@@ -98,10 +102,12 @@ namespace Model.Dao
                 if (voucher.DiscountPercent != 0)
                 {
                     list.Status = false;
-                    list.Total = ticket.Price * (1 - voucher.DiscountPercent / 100) - list.Taxi.Price + list.Tip;
+                    list.PricewithVoucher = ticket.Price * (1 - voucher.DiscountPercent / 100);
+                    list.Total = list.PricewithVoucher - list.Taxi.Price + list.Tip;
                 }
                 else
                 {
+                    list.PricewithVoucher = ticket.Price;
                     list.Total = ticket.Price - list.Taxi.Price + list.Tip;
                 }
 
@@ -121,7 +127,12 @@ namespace Model.Dao
         {
 
             var dailyList = db.DailyLists.Find(entity.ID);
-            
+
+            if (entity.SelectedIDArray != null)
+            {
+                dailyList.Employee_ID = string.Join(",", entity.SelectedIDArray).Replace(" ", "");
+            }
+
             dailyList.Description = entity.Description;
             //dailyList.Employee_ID = entity.Employee_ID;
             dailyList.Room_ID = entity.Room_ID;
@@ -136,12 +147,14 @@ namespace Model.Dao
 
             if (entity.Taxi.Price != 0)
             {
-                if (voucher.ID != 0)
+                if (voucher.DiscountPercent != 0)
                 {
-                    dailyList.Total = ticket.Price * (1 - voucher.DiscountPercent / 100) - entity.Taxi.Price + entity.Tip;
+                    dailyList.PricewithVoucher = ticket.Price * (1 - voucher.DiscountPercent / 100);
+                    dailyList.Total = dailyList.PricewithVoucher - entity.Taxi.Price + entity.Tip;
                 }
                 else
                 {
+                    dailyList.PricewithVoucher = ticket.Price;
                     dailyList.Total = ticket.Price - entity.Taxi.Price + entity.Tip;
                 }
                 dailyList.Taxi = entity.Taxi;
@@ -177,7 +190,7 @@ namespace Model.Dao
         //Phân trang quản lý user và thêm mục tìm kiếm theo username và email
         public IEnumerable<DailyList> ListAllPaging(string searchString, int page, int pageSize, int departmentId)
         {
-            IQueryable<DailyList> model = db.DailyLists; 
+            IQueryable<DailyList> model = db.DailyLists;
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -243,6 +256,29 @@ namespace Model.Dao
             {
                 var dailyList = db.DailyLists.Find(id);
                 db.DailyLists.Remove(dailyList);
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+        }
+
+        public bool Comfirm(int id)
+        {
+            try
+            {
+                var dailyList = db.DailyLists.Find(id);
+                if (dailyList.Status == false)
+                {
+                    dailyList.Status = true;
+                }
+                else
+                {
+                    dailyList.Status = false;
+                }
                 db.SaveChanges();
                 return true;
             }

@@ -36,6 +36,9 @@
 
         public long? Taxi_ID { get; set; }
 
+        [Display(Name ="Giá trừ Code/Voucher")]
+        public decimal PricewithVoucher { get; set; }
+
         [Display(Name = "Tổng tiền")]
         public decimal Total { get; set; }
 

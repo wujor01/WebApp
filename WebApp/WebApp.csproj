@@ -168,13 +168,8 @@
     <Compile Include="Areas\Admin\Controllers\TicketController.cs" />
     <Compile Include="Areas\Admin\Controllers\ViolatorKTVController.cs" />
     <Compile Include="Areas\Admin\Controllers\ViolatorController.cs" />
-    <Compile Include="Areas\Admin\Models\DailyListViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\ListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\LoginModel.cs" />
-    <Compile Include="Areas\Admin\Models\ReexViewModel.cs" />
-    <Compile Include="Areas\Admin\Models\TaxiViewModel.cs" />
-    <Compile Include="Areas\Admin\Models\ViolatorKTVViewModel.cs" />
-    <Compile Include="Areas\Admin\Models\ViolatorViewModel.cs" />
-    <Compile Include="Areas\Admin\Models\VoucherViewModel.cs" />
     <Compile Include="Common\CommonConstants.cs" />
     <Compile Include="Common\Encryptor.cs" />
     <Compile Include="Common\HasCredentialAttribute.cs" />
@@ -1667,6 +1662,7 @@
     <Content Include="Areas\Admin\Views\Department\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Statistic\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Statistic\TicketIndex.cshtml" />
+    <Content Include="Areas\Admin\Views\Statistic\GetDataDailyList.cshtml" />
     <None Include="Properties\PublishProfiles\registry.hub.docker.com_wujor01.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\chosen.jquery.js" />

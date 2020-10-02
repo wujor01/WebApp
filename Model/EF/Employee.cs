@@ -97,6 +97,7 @@
         public string Username { get; set; }
 
         [Display(Name = "Mật khẩu")]
+        [DataType(DataType.Password)]
         [StringLength(150)]
         public string Password { get; set; }
 

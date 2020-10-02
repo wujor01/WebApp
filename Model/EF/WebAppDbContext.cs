@@ -68,6 +68,10 @@ namespace Model.EF
                 .HasPrecision(18, 0);
 
             modelBuilder.Entity<DailyList>()
+                .Property(e => e.PricewithVoucher)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<DailyList>()
                 .Property(e => e.Total)
                 .HasPrecision(18, 0);
 
@@ -255,8 +259,9 @@ namespace Model.EF
 
             modelBuilder.Entity<Ticket>()
                 .HasMany(e => e.StatisticTickets)
-                .WithOptional(e => e.Ticket)
-                .HasForeignKey(e => e.Ticket_ID);
+                .WithRequired(e => e.Ticket)
+                .HasForeignKey(e => e.Ticket_ID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<UserGroup>()
                 .Property(e => e.GroupID)

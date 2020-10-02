@@ -25,7 +25,7 @@ namespace WebApp.Areas.Admin.Controllers
             var session = (UserLogin)Session[CommonConstants.USER_SESSION];
 
             var dao = new EmployeeDao();
-            ViewBag.SelectedIDArray = new MultiSelectList(dao.ListAll("KTV",session.DepartmentID), "ID", "Code",selectedlist);
+            ViewBag.SelectedIDArray = new MultiSelectList(dao.ListAll("KTV",session.DepartmentID), "Code", "Code",selectedlist);
         }
 
         public void SetViewRoom(int? selectedID = null)
@@ -97,6 +97,7 @@ namespace WebApp.Areas.Admin.Controllers
         [HasCredential(RoleID = "VIEW_LIST")]
         public ActionResult Detail(int id)
         {
+
             var dailyList = new DailyListDao().ViewDetail(id);
             return View(dailyList);
         }
@@ -159,8 +160,7 @@ namespace WebApp.Areas.Admin.Controllers
         {
             //if (ModelState.IsValid)
             //{
-                list.Employee_ID = string.Join(",", list.SelectedIDArray);
-
+                list.Employee_ID = string.Join(",",list.SelectedIDArray).Replace(" ", "");
 
                 var dao = new DailyListDao();
 
@@ -190,6 +190,12 @@ namespace WebApp.Areas.Admin.Controllers
             return RedirectToAction("Index", "DailyList");
         }
 
+        [HasCredential(RoleID = "EDIT_LIST")]
+        public ActionResult Comfirm(int id)
+        {
+            new DailyListDao().Comfirm(id);
+            return RedirectToAction("Index");
+        }
         [HttpGet]
         [HasCredential(RoleID = "EDIT_LIST")]
         public ActionResult Edit(int id)

@@ -20,6 +20,13 @@ namespace Model.Dao
 
         public int InsertStatisticTicketDate()
         {
+            if (db.StatisticTickets.Count() != 0)
+            {
+                var all = from c in db.StatisticTickets select c;
+                db.StatisticTickets.RemoveRange(all);
+                db.SaveChanges();
+            }
+
             var list = db.DailyLists.ToList();
             
             foreach (var item in list)
@@ -30,9 +37,9 @@ namespace Model.Dao
                 if (s.Count == 0)
                 {
                     StatisticTicket sta = new StatisticTicket();
-                    sta.Datetime = item.CreatedDate;
+                    sta.Datetime = (DateTime)item.CreatedDate;
                     sta.TicketinDate = 1;
-                    sta.DailyList_ID = item.ID.ToString();
+                    sta.Employee_ID = "'" + item.Employee_ID + "'";
                     if (item.Taxi == null)
                     {
                         sta.TicketPriceinDate = item.Total - item.Tip;
@@ -41,7 +48,7 @@ namespace Model.Dao
                     {
                         sta.TicketPriceinDate = item.Total - item.Tip + item.Taxi.Price;
                     }    
-                    sta.Ticket_ID = item.Ticket_ID;
+                    sta.Ticket_ID = (int)item.Ticket_ID;
                     db.StatisticTickets.Add(sta);
                     db.SaveChanges();
                 }
@@ -51,10 +58,10 @@ namespace Model.Dao
                     foreach (var itemid in sta)
                     {
                         var statistic = db.StatisticTickets.Find(itemid);
-                        if (statistic.DailyList_ID.Contains(item.ID.ToString()) != true)
+                        if (statistic.Employee_ID.Contains(item.ID.ToString()) != true)
                         {
-                            statistic.TicketinDate = statistic.TicketinDate + 1;
-                            statistic.DailyList_ID = statistic.DailyList_ID + "," + item.ID.ToString();
+                            statistic.TicketinDate = statistic.TicketinDate+ 1;
+                            statistic.Employee_ID = statistic.Employee_ID + ",'" + item.Employee_ID + "'";
                             if (item.Taxi == null)
                             {
                                 statistic.TicketPriceinDate = statistic.TicketPriceinDate + (item.Total - item.Tip);
@@ -71,9 +78,9 @@ namespace Model.Dao
             return 1;
         }
 
-
         public IEnumerable<StatisticTicket> ListAllPaging(string searchString, int page, int pageSize)
         {
+
             IQueryable<StatisticTicket> model = db.StatisticTickets;
 
             if (!string.IsNullOrEmpty(searchString))
@@ -83,7 +90,7 @@ namespace Model.Dao
                     || x.Ticket.Department.Name.Contains(searchString)
                 );
             }
-                return model.OrderBy(x => x.Datetime).ToPagedList(page, pageSize);
+                return model.OrderByDescending(x => x.ID).ToPagedList(page, pageSize);
         }
 
     }

@@ -8,51 +8,14 @@
 }
 
 @section JsFooter{
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script>
-
         var ticketName = @Html.Raw(Json.Encode(ViewBag.ticketName));
         var ticketCount = @Html.Raw(Json.Encode(ViewBag.ticketCount));
         var ticketPrice = @Html.Raw(Json.Encode(ViewBag.ticketPrice));
-
-        var ctx = document.getElementById('myChart').getContext('2d');
-
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ticketName,
-                datasets: [{
-                    label: '# of Votes',
-                    data: ticketPrice,
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
-            }
-        });    </script>
+        var deparmentName = @Html.Raw(Json.Encode(ViewBag.deparmentName));
+    </script>  
     <script>
         new Chart(document.getElementById("line-chart"), {
             type: 'line',
@@ -98,17 +61,17 @@
         new Chart(document.getElementById("pie-chart"), {
             type: 'pie',
             data: {
-                labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+                labels: ticketName,
                 datasets: [{
-                    label: "Population (millions)",
+                    label: "Số lượng vé",
                     backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
-                    data: [2478, 5267, 734, 784, 433]
+                    data: ticketCount
                 }]
             },
             options: {
                 title: {
                     display: true,
-                    text: 'Predicted world population (millions) in 2050'
+                    text: 'Số lượng vé bán ra'
                 }
             }
         });
@@ -138,10 +101,62 @@
             }
         });
     </script>
+    <script>
+        var ctx = document.getElementById("myChart4").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: deparmentName,
+                datasets: [{
+                    label: 'Employee',
+                    backgroundColor: "#caf270",
+                    data: ticketPrice,
+                }, {
+                    label: 'Engineer',
+                    backgroundColor: "#45c490",
+                    data: ticketPrice,
+                }, {
+                    label: 'Government',
+                    backgroundColor: "#008d93",
+                        data: ticketPrice,
+                }, {
+                    label: 'Political parties',
+                    backgroundColor: "#2e5468",
+                        data: ticketPrice,
+                }],
+            },
+            options: {
+                tooltips: {
+                    displayColors: true,
+                    callbacks: {
+                        mode: 'x',
+                    },
+                },
+                scales: {
+                    xAxes: [{
+                        stacked: true,
+                        gridLines: {
+                            display: false,
+                        }
+                    }],
+                    yAxes: [{
+                        stacked: true,
+                        ticks: {
+                            beginAtZero: true,
+                        },
+                        type: 'linear',
+                    }]
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: { position: 'bottom' },
+            }
+        });
+    </script>
 }
 <div class="row">
     <div class="col-md-6">
-        <canvas id="line-chart" width="800" height="450"></canvas>
+        <canvas id="myChart4" width="800" height="450"></canvas>
     </div>
     <div class="col-md-6">
         <canvas id="pie-chart" width="800" height="450"></canvas>
@@ -154,4 +169,6 @@
     </div>
 
 </div>
+
+
 

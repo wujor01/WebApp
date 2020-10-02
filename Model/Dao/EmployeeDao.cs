@@ -28,11 +28,12 @@ namespace Model.Dao
             {
                 if (!string.IsNullOrEmpty(entity.Password))
                 {
+                    string password = entity.Password;
                     // pass = pass + salt
-                    string pass = entity.Password + Crypto.GenerateSalt();
+                    string salt = Crypto.GenerateSalt();
                     //Lưu lại giá trị hash và salt vào db
-                    entity.Password = Crypto.GenerateSalt();
-                    entity.Hash = Crypto.HashPassword(pass);
+                    entity.Password = salt;
+                    entity.Hash = Crypto.HashPassword(password + salt);
                 }
                 entity.Status = true;
                 db.Employees.Add(entity);
@@ -192,7 +193,7 @@ namespace Model.Dao
                         }
                         else if (result.TimeOut < result.TimeStart)
                         {
-                            if (DateTime.Now.TimeOfDay < result.TimeStart && DateTime.Now.TimeOfDay < result.TimeOut)
+                            if (!(DateTime.Now.TimeOfDay > result.TimeStart && DateTime.Now.TimeOfDay < result.TimeOut))
                             {
                                 return 1;
                             }

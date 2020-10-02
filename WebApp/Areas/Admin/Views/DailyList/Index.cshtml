@@ -86,7 +86,7 @@
                                 <td>@(string.Format("{0:HH:mm}", item.TimeOut))</td>
                                 <td>@(string.Format("{0:#,##0}", item.Ticket.Price))</td>
                                 <td>@(string.Format("{0:#,##0}", item.Tip))</td>
-                            <td>@item.Voucher.Code</td>
+                                <td>@item.Voucher.Code</td>
 
                                 @{
                                     if (item.Taxi_ID != null)
@@ -100,17 +100,18 @@
                                         <td>@(string.Format("{0:#,##0}", item.Total))</td>
                                     }
                                 }
-                                <td>@Html.Raw(item.Status ? "<strong style=\"color:Green;\">Đã xác nhận</strong>" : "<strong style=\"color:Tomato;\">Đang chờ</strong>")</td>
+                                <td><a href="/Admin/DailyList/Comfirm/@item.ID" class="btn-active" data-id="@item.ID">@Html.Raw(item.Status ? "<strong style=\"color:Green;\">Đã xác nhận</strong>" : "<strong style=\"color:Tomato;\">Xác nhận</strong>")</a></td>
+
                                 <td>
                                     <a href="/Admin/DailyList/Edit/@item.ID">Sửa</a>
                                     |
                                     <a href="/Admin/DailyList/Detail/@item.ID">Chi tiết</a>
                                     @*@Ajax.ActionLink("Xoá", "Delete", new { @id = item.ID }, new AjaxOptions
-                               {
-                                   Confirm = "Bạn có muốn xoá bản ghi này?",
-                                   OnComplete = "$('#row_" + @item.ID + "').remove()",
-                                   HttpMethod = "Delete"
-                               })*@
+            {
+                Confirm = "Bạn có muốn xoá bản ghi này?",
+                OnComplete = "$('#row_" + @item.ID + "').remove()",
+                HttpMethod = "Delete"
+            })*@
                                 </td>
                             </tr>
                             }

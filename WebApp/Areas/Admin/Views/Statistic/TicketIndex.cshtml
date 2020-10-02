@@ -61,7 +61,7 @@
 
                         </tbody>
                     </table>
-                    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, @searchString = @ViewBag.SearchString }))
+                    @Html.PagedListPager(Model, page => Url.Action("TicketIndex", new { page, @searchString = @ViewBag.SearchString }))
                 </div>
                 <!-- /.table-responsive -->
             </div>
