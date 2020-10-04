@@ -50,11 +50,11 @@ namespace Model.Dao
         {
             if (departmentId == 0)
             {
-                return db.Tickets.Where(x => x.Status == true).OrderBy(x => x.ID).ToList();
+                return db.Tickets.Where(x => x.Status == true).ToList();
             }
             else
             {
-                return db.Tickets.Where(x => x.Status == true).OrderBy(x => x.ID).Where(x => x.Department_ID == departmentId).ToList();
+                return db.Tickets.Where(x => x.Status == true && x.Department_ID == departmentId).ToList();
             }
         }
 

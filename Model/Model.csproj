@@ -91,13 +91,13 @@
     <Compile Include="Dao\TicketDao.cs" />
     <Compile Include="Dao\ViolatorDao.cs" />
     <Compile Include="Dao\ViolatorKTVDao.cs" />
-    <Compile Include="EFView\DailyListViews.cs" />
     <Compile Include="EF\Credential.cs" />
     <Compile Include="EF\Customer.cs" />
     <Compile Include="EF\DailyList.cs" />
     <Compile Include="EF\DayOff.cs" />
     <Compile Include="EF\Department.cs" />
     <Compile Include="EF\Employee.cs" />
+    <Compile Include="EF\OrderDetail.cs" />
     <Compile Include="EF\ReExType.cs" />
     <Compile Include="EF\RevenueExpenditure.cs" />
     <Compile Include="EF\Role.cs" />
@@ -124,6 +124,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="EFView\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,5 +1,4 @@
 ﻿using Model.EF;
-using Model.EFView;
 using PagedList;
 using System;
 using System.Collections.Generic;

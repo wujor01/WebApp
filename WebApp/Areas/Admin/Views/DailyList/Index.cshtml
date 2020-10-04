@@ -1,129 +1,316 @@
-﻿@model PagedList.IPagedList<Model.EF.DailyList>
-@using PagedList.Mvc;
+﻿@model IEnumerable<Model.EF.DailyList>
+
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layouts.cshtml";
 }
-@section header{
-    Danh sách bảng kê
-}
 
 @section JsFooter{
-    <script>
-        $("#txtsearch").on("keyup", function () {
-            var txtenter = $(this).val();
-            $("table tr").each(function (results) {
-                if (results!==0) {
-                    var id = $(this).find("td:nth-child(3)").text();//Vị trí của <td>từ 1 đếm xuống tương ứng với mã KTV
-                    if (id.indexOf(txtenter) !== 0 && id.toLowerCase().indexOf(txtenter.toLowerCase()) < 0)
-                    {
-                        $(this).hide();
-                    }
-                    else {
-                        $(this).show();
-                    }
-                }
-            })
+    <script type="text/javascript">
+
+        $(function () {
+
+            $('#ticketId').chosen({ allow_single_deselect: true });
+
         });
     </script>
-    }
-<div class="row">
+    <script>
+        //Show Modal.
+        function addNewOrder() {
+            $("#newOrderModal").modal();
+        }
+        //Add Multiple Order.
+        $("#addToList").click(function (e) {
+            e.preventDefault();
 
-    <div class="col-lg-12">
+            if ($.trim($("#roomId").val()) == "" || $.trim($("#ticketId").val()) == ""
+                || $.trim($("#employeeId").val()) == "") return;
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Danh sách bảng kê
-            </div>
+            var roomId = $("#roomId").val(),
+                ticketId = $("#ticketId").val(),
+                employeeId = $("#employeeId").val(),
+                detailsTableBody = $("#detailsTable tbody");
 
-            <!-- /.panel-heading -->
+            var orderItem = '<tr><td>' + roomId + '</td><td>' + ticketId
+                + '</td><td>' + employeeId + '</td><td>' + tip + '</td><td>'
+                + '</td><td>' + (parseFloat(price) * parseInt(quantity)) + '</td><td><a data-itemId="0" href="#" class="deleteItem">Remove</a></td></tr>';
+            detailsTableBody.append(orderItem);
+            clearItem();
+        });
+        //After Add A New Order In The List, Clear Clean The Form For Add More Order.
+        function clearItem() {
+            $("#roomId").val('');
+            $("#ticketId").val('');
+            $("#employeeId").val('');
+        }
+        // After Add A New Order In The List, If You Want, You Can Remove It.
+        $(document).on('click', 'a.deleteItem', function (e) {
+            e.preventDefault();
+            var $self = $(this);
+            if ($(this).attr('data-itemId') == "0") {
+                $(this).parents('tr').css("background-color", "#ff6347").fadeOut(800, function () {
+                    $(this).remove();
+                });
+            }
+        });
+        //After Click Save Button Pass All Data View To Controller For Save Database
+        function saveOrder(data) {
+            return $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                type: 'POST',
+                url: "/Orders/SaveOrder",
+                data: data,
+                success: function (result) {
+                    alert(result);
+                    location.reload();
+                },
+                error: function () {
+                    alert("Error!")
+                }
+            });
+        }
+        //Collect Multiple Order List For Pass To Controller
+        $("#saveOrder").click(function (e) {
+            e.preventDefault();
+
+            var orderArr = [];
+            orderArr.length = 0;
+
+            $.each($("#detailsTable tbody tr"), function () {
+                orderArr.push({
+                    productName: $(this).find('td:eq(0)').html(),
+                    quantity: $(this).find('td:eq(1)').html(),
+                    price: $(this).find('td:eq(2)').html(),
+                    amount: $(this).find('td:eq(3)').html()
+                });
+            });
+
+
+            var data = JSON.stringify({
+                name: $("#name").val(),
+                address: $("#address").val(),
+                order: orderArr
+            });
+
+            $.when(saveOrder(data)).then(function (response) {
+                console.log(response);
+            }).fail(function (err) {
+                console.log(err);
+            });
+        });
+    </script>
+}
+<br />
+<br />
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <h2 class="panel-title pull-left" style="margin-left:10px;">
+                <strong>Order Details</strong>
+            </h2>
+            <button style="margin-right:10px" class="btn btn-primary pull-right" onclick="addNewOrder()">New Order</button>
+        </div>
+    </div>
+
+    @*Receive All Database Data From Controller And Display Those Data In Client Side*@
+
+    @if (Model.Count() != 0)
+    {
+        foreach (var item in Model)
+        {
             <div class="panel-body">
-                @using (Html.BeginForm("Index", "DailyList", FormMethod.Get))
-                {
+                <table class="table table-striped table-responsive">
+                    <tbody>
+                        <tr>
+                            <th>#ID: @item.ID </th>
+                            <th>Yêu cầu: @item.Description </th>
+                            <td>Ngày: @item.CreatedDate </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <th>Phòng</th>
+                                            <th>Vé</th>
+                                            <th>Giá vé</th>
+                                            <th>Tip</th>
+                                            <th>Số tiền</th>
+                                        </tr>
+                                        @{
+                                            var totalBill = 0;
+                                        }
+                                        @foreach (var order in item.OrderDetails)
+                                        {
+                                            <tr>
+                                                <td>@order.Room.Name</td>
+                                                <td>@order.Ticket.Name</td>
+                                                <td>@order.Ticket.Price</td>
+                                                <td>@order.Tip</td>
+                                                <td>@order.Amount</td>
+                                            </tr>
+                                            totalBill = totalBill + @Convert.ToInt32(order.Amount);
+                                        }
+                                    </tbody>
+                                </table>
+                                <span class="pull-right" style="margin-right:100px;"><strong>Total Bill :  </strong> @totalBill</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="panel-body">
+            <h3 style="color:red;">Empty!</h3>
+        </div>
 
-                    <div class="row form-group">
-                        <div class="col-lg-12">
+    }
+</div>
+
+@*Desing Bootdtrap Modal With Order Form*@
+
+<div class="modal fade" id="newOrderModal">
+    <div class="modal-dialog modal-lg" style=" width: 900px !important;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4>Tạo mới bảng kê</h4>
+            </div>
+            <form id="NewOrderForm">
+                <div class="modal-body">
+                    @*Customer Details*@
+                    <h5 style="color:#ff6347">Customer Details</h5>
+                    <hr />
+                    <div class="form-horizontal">
+                        <input type="hidden" id="ID" />
+                        <div class="form-group">
+                            <label class="control-label col-md-2">
+                                Yêu cầu
+                            </label>
                             <div class="col-md-4">
-                                @*<input type="text" id="txtsearch" class="form-control" placeholder="Nhập vào mã KTV" />*@
-                                <input type="text" value="@ViewBag.SearchString" class="form-control" name="searchString" placeholder="Nhập vào ID hoặc mã KTV" />
+                                <input type="text" id="request" name="request" placeholder="Yêu cầu" class="form-control" />
                             </div>
+                            <label class="control-label col-md-2">
+                                Voucher/Code
+                            </label>
                             <div class="col-md-4">
-                                <button type="submit" class="btn btn-success">Tìm kiếm</button>
-                                <a class="btn btn-primary" href="/Admin/DailyList/Create">Thêm mới</a>
+                                <input type="text" id="voucherId" name="voucherId" placeholder="voucherId" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">
+                                taxiCode
+                            </label>
+                            <div class="col-md-4">
+                                <input type="text" id="taxiCode" name="taxiCode" placeholder="taxiCode" class="form-control" />
+                            </div>
+                            <label class="control-label col-md-2">
+                                taxiName
+                            </label>
+                            <div class="col-md-4">
+                                <input type="text" id="taxiName" name="taxiName" placeholder="taxiName" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">
+                                taxiPhone
+                            </label>
+                            <div class="col-md-4">
+                                <input type="text" id="taxiPhone" name="taxiPhone" placeholder="taxiPhone" class="form-control" />
+                            </div>
+                            <label class="control-label col-md-2">
+                                taxiPrice
+                            </label>
+                            <div class="col-md-4">
+                                <input type="number" id="taxiPrice" name="taxiPrice" placeholder="taxiPrice" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">
+                                taxiNumCustomer
+                            </label>
+                            <div class="col-md-4">
+                                <input type="number" id="taxiNumCustomer" name="taxiNumCustomer" placeholder="taxiNumCustomer" class="form-control" />
+                            </div>
+                            <label class="control-label col-md-2">
+                                taxiDescription
+                            </label>
+                            <div class="col-md-4">
+                                <input type="text" id="taxiDescription" name="taxiDescription" placeholder="taxiDescription" class="form-control" />
                             </div>
                         </div>
                     </div>
-                }
-                <hr />
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Chi nhánh</th>
-                                <th>ID</th>
-                                <td>KTV</td>
-                                <td>Phòng</td>
-                                <td>Giờ vào</td>
-                                <td>Giờ ra</td>
-                                <td>Giá vé</td>
-                                <td>Tip</td>
-                                <td>Code</td>
-                                <td>CTV</td>
-                                <td>Tổng tiền</td>
-                                <td>Xác nhận</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                            <tr id="row_@item.ID">
-
-                                <th>@item.Room.Department.Name</th>
-                                <th>#@item.ID</th>
-                                <td>@item.Employee_ID</td>
-                                <td>@item.Room.Name</td>
-                                <td>@(string.Format("{0:HH:mm}", item.TimeIn))</td>
-                                <td>@(string.Format("{0:HH:mm}", item.TimeOut))</td>
-                                <td>@(string.Format("{0:#,##0}", item.Ticket.Price))</td>
-                                <td>@(string.Format("{0:#,##0}", item.Tip))</td>
-                                <td>@item.Voucher.Code</td>
-
-                                @{
-                                    if (item.Taxi_ID != null)
-                                    {
-                                        <td>@(string.Format("{0:#,##0}", item.Taxi.Price))</td>
-                                        <td>@(string.Format("{0:#,##0}", item.Total))</td>
-                                    }
-                                    else
-                                    {
-                                        <td></td>
-                                        <td>@(string.Format("{0:#,##0}", item.Total))</td>
-                                    }
-                                }
-                                <td><a href="/Admin/DailyList/Comfirm/@item.ID" class="btn-active" data-id="@item.ID">@Html.Raw(item.Status ? "<strong style=\"color:Green;\">Đã xác nhận</strong>" : "<strong style=\"color:Tomato;\">Xác nhận</strong>")</a></td>
-
-                                <td>
-                                    <a href="/Admin/DailyList/Edit/@item.ID">Sửa</a>
-                                    |
-                                    <a href="/Admin/DailyList/Detail/@item.ID">Chi tiết</a>
-                                    @*@Ajax.ActionLink("Xoá", "Delete", new { @id = item.ID }, new AjaxOptions
-            {
-                Confirm = "Bạn có muốn xoá bản ghi này?",
-                OnComplete = "$('#row_" + @item.ID + "').remove()",
-                HttpMethod = "Delete"
-            })*@
-                                </td>
-                            </tr>
-                            }
-
-
-                        </tbody>
-                    </table>
-                    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, @searchString = @ViewBag.SearchString }))
                 </div>
-                <!-- /.table-responsive -->
-            </div>
-            <!-- /.panel-body -->
+
+                @*Order Details*@
+                <div class="modal-body">
+                    <h5 style="margin-top:10px;color:#ff6347">Order Details</h5>
+                    <hr />
+                    <div class="form-horizontal">
+                        <input type="hidden" id="OrderId" />
+                        <div class="form-group">
+                            <label class="control-label col-md-2">
+                                roomId
+                            </label>
+                            <div class="col-md-4">
+                                <input type="number" id="roomId" name="roomId" placeholder="roomId" class="form-control" />
+                            </div>
+                            
+                            <label class="control-label col-md-2">
+                                ticketId
+                            </label>
+                            <select data-placement="Choosen a Ticket" id="ticketId" class="chosen-select">
+                                @foreach (var item in ViewBag.ticketId)
+                                {
+                                    <option value="@item">@item</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">
+                                employeeId
+                            </label>
+                            <div class="col-md-4">
+                                <input type="text" id="employeeId" name="employeeId" placeholder="employeeId" class="form-control" />
+                            </div>
+                            <label class="control-label col-md-2">
+                                Tiền Tip
+                            </label>
+                            <div class="col-md-4">
+                                <input type="number" id="tip" name="tip" placeholder="tip" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-2 col-lg-offset-4">
+                                <a id="addToList" class="btn btn-primary">Add To List</a>
+                            </div>
+                        </div>
+
+                        <table id="detailsTable" class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width:30%">Phòng</th>
+                                    <th style="width:20%">Vé</th>
+                                    <th style="width:15%">Giá vé</th>
+                                    <th style="width:25%">KTV</th>
+                                    <th style="width:10%"></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
         </div>
+        <div class="modal-footer">
+            <button type="reset" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button id="saveOrder" type="submit" class="btn btn-danger">Save Order</button>
+        </div>
+        </form>
     </div>
+</div>
 </div>

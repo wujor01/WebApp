@@ -18,6 +18,7 @@ namespace Model.EF
         public virtual DbSet<DayOff> DayOffs { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<ReExType> ReExTypes { get; set; }
         public virtual DbSet<RevenueExpenditure> RevenueExpenditures { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
@@ -60,14 +61,6 @@ namespace Model.EF
                 .IsUnicode(false);
 
             modelBuilder.Entity<DailyList>()
-                .Property(e => e.Employee_ID)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<DailyList>()
-                .Property(e => e.Tip)
-                .HasPrecision(18, 0);
-
-            modelBuilder.Entity<DailyList>()
                 .Property(e => e.PricewithVoucher)
                 .HasPrecision(18, 0);
 
@@ -82,6 +75,12 @@ namespace Model.EF
             modelBuilder.Entity<DailyList>()
                 .Property(e => e.ModifiedBy)
                 .IsUnicode(false);
+
+            modelBuilder.Entity<DailyList>()
+                .HasMany(e => e.OrderDetails)
+                .WithRequired(e => e.DailyList)
+                .HasForeignKey(e => e.DailyList_ID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<DayOff>()
                 .Property(e => e.CreatedBy)
@@ -156,6 +155,14 @@ namespace Model.EF
                 .WithOptional(e => e.Employee)
                 .HasForeignKey(e => e.Employee_ID);
 
+            modelBuilder.Entity<OrderDetail>()
+                .Property(e => e.Tip)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<OrderDetail>()
+                .Property(e => e.Amount)
+                .HasPrecision(18, 0);
+
             modelBuilder.Entity<ReExType>()
                 .HasMany(e => e.RevenueExpenditures)
                 .WithRequired(e => e.ReExType)
@@ -187,9 +194,10 @@ namespace Model.EF
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
-                .HasMany(e => e.DailyLists)
-                .WithOptional(e => e.Room)
-                .HasForeignKey(e => e.Room_ID);
+                .HasMany(e => e.OrderDetails)
+                .WithRequired(e => e.Room)
+                .HasForeignKey(e => e.Room_ID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<StatisticDepartment>()
                 .Property(e => e.TotalListinDate)
@@ -253,9 +261,10 @@ namespace Model.EF
                 .IsUnicode(false);
 
             modelBuilder.Entity<Ticket>()
-                .HasMany(e => e.DailyLists)
-                .WithOptional(e => e.Ticket)
-                .HasForeignKey(e => e.Ticket_ID);
+                .HasMany(e => e.OrderDetails)
+                .WithRequired(e => e.Ticket)
+                .HasForeignKey(e => e.Ticket_ID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Ticket>()
                 .HasMany(e => e.StatisticTickets)
