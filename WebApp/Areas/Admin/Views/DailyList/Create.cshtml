@@ -8,6 +8,84 @@
 }
 
 @section JsFooter{
+    <script>
+        //Add Multiple Order.
+        $("#addToList").click(function (e) {
+            e.preventDefault();
+
+            var Room_ID = $("#Room_ID").val(),
+                Ticket_ID = $("#Ticket_ID").val(),
+                Employee_ID = $('#SelectedIDArray').val(),
+                detailsTableBody = $("#detailsTable tbody");
+
+            var orderItem = '<tr><td>' + Room_ID + '</td><td>' + Ticket_ID + '</td><td>'
+                + Employee_ID + '</td><td><a data-itemId="0" href="#" class="deleteItem">Remove</a></td></tr>';
+            detailsTableBody.append(orderItem);
+        });
+        //After Add A New Order In The List, Clear Clean The Form For Add More Order.
+        // After Add A New Order In The List, If You Want, You Can Remove It.
+        $(document).on('click', 'a.deleteItem', function (e) {
+            e.preventDefault();
+            var $self = $(this);
+            if ($(this).attr('data-itemId') == "0") {
+                $(this).parents('tr').css("background-color", "#ff6347").fadeOut(800, function () {
+                    $(this).remove();
+                });
+            }
+        });
+        //After Click Save Button Pass All Data View To Controller For Save Database
+        function saveOrder(data) {
+            return $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                type: 'POST',
+                url: "/DailyList/SaveOrder",
+                data: data,
+                success: function (result) {
+                    alert(result);
+                    location.reload();
+                },
+                error: function () {
+                    alert("Error!")
+                }
+            });
+        }
+        //Collect Multiple Order List For Pass To Controller
+        $("#saveOrder").click(function (e) {
+            e.preventDefault();
+
+            var orderArr = [];
+            orderArr.length = 0;
+
+            $.each($("#detailsTable tbody tr"), function () {
+                orderArr.push({
+                    Room_ID: $(this).find('td:eq(0)').html(),
+                    Ticket_ID: $(this).find('td:eq(1)').html(),
+                    SelectedIDArray: $(this).find('td:eq(2)').html()
+                });
+            });
+
+
+            var data = JSON.stringify({
+                Voucher_ID: $("#Voucher_ID").val(),
+                Request: $("#Request").val(),
+                Description: $("#Description").val(),
+                Code: $("#Taxi_Code").val(),
+                Name: $("#Taxi_Name").val(),
+                NumberOfCustomers: $("#Taxi_NumberOfCustomers").val(),
+                Price: $("#Taxi_Price").val(),
+                Phone: $("#Taxi_Phone").val(),
+                Taxi_Description: $("#Taxi_Description").val(),
+                order: orderArr
+            });
+
+            $.when(saveOrder(data)).then(function (response) {
+                console.log(response);
+            }).fail(function (err) {
+                console.log(err);
+            });
+        });
+    </script>
     <script type="text/javascript">
 
         $(function () {
@@ -16,7 +94,6 @@
 
         });
     </script>
-
     <script type="text/javascript">
 
         $(function () {
@@ -25,7 +102,6 @@
 
         });
     </script>
-
     <script type="text/javascript">
 
         $(function () {
@@ -65,7 +141,6 @@
 
         });
     </script>
-
     <script type="text/javascript">
         $(document).ready(function () {
             $("form").bind("keypress", function (e) {
@@ -77,55 +152,22 @@
     </script>
 }
 
-@using (Html.BeginForm("Create", "DailyList", FormMethod.Post))
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
+
     <div class="form-horizontal">
-        <h4>Bảng kê hàng ngày</h4>
+        <h4>DailyList</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Employee_ID, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.ListBoxFor(model => model.SelectedIDArray, null, new { htmlAttributes = new { @class = "form-control", multiple = "multiple" } })
-                @Html.ValidationMessageFor(model => model.Employee_ID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Room_ID, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.Room_ID, null, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Room_ID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Ticket_ID, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.Ticket_ID, null, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Ticket_ID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Tip, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Tip, new { htmlAttributes = new { @class = "form-control money" } })
-                @Html.ValidationMessageFor(model => model.Tip, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
             @Html.LabelFor(model => model.Voucher_ID, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.Voucher_ID, null, new { htmlAttributes = new { @class = "form-control"} })
+                @Html.DropDownListFor(model => model.Voucher_ID, null, new { htmlAttributes = new { @class = "MakeWide" } })
                 @Html.ValidationMessageFor(model => model.Voucher_ID, "", new { @class = "text-danger" })
             </div>
         </div>
-
-
         <div class="form-group">
             @Html.LabelFor(model => model.Request, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -141,6 +183,7 @@
                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
             </div>
         </div>
+
         <div class="form-group">
             <div class="control-label col-md-2"></div>
             <div class="col-md-10">
@@ -171,7 +214,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Taxi.NumberOfCustomers, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.Taxi.NumberOfCustomers, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.Taxi.NumberOfCustomers, new { htmlAttributes = new { @class = "form-control", Value = 0 } })
                     @Html.ValidationMessageFor(model => model.Taxi.NumberOfCustomers, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -179,7 +222,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Taxi.Price, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.Taxi.Price, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.Taxi.Price, new { htmlAttributes = new { @class = "form-control", Value = 0 } })
                     @Html.ValidationMessageFor(model => model.Taxi.Price, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -201,15 +244,6 @@
             </div>
         </div>
         <hr />
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
     </div>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+@RenderPage("Order.cshtml")

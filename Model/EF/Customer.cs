@@ -1,4 +1,4 @@
-﻿namespace Model.EF
+namespace Model.EF
 {
     using System;
     using System.Collections.Generic;
@@ -11,21 +11,15 @@
     {
         public long ID { get; set; }
 
-        [Display(Name ="Tên khách hàng")]
         [StringLength(50)]
         public string Name { get; set; }
 
-        [Display(Name = "CMND")]
         [StringLength(50)]
         public string CardID { get; set; }
 
-        [Display(Name = "SĐT")]
-        [DataType(DataType.PhoneNumber)]
-        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Không phải số")]
         [StringLength(10)]
         public string Phone { get; set; }
 
-        [Display(Name = "Ghi chú")]
         [StringLength(500)]
         public string Description { get; set; }
 

@@ -1,5 +1,4 @@
 ﻿using Model.EF;
-using Model.EFView;
 using PagedList;
 using System;
 using System.Collections.Generic;
@@ -275,7 +274,7 @@ namespace Model.Dao
             }
             else
             {
-                return db.Rooms.Where(x=>x.Department_ID == departmentId).ToList();
+                return db.Rooms.Where(x=>x.Department_ID == departmentId || x.Department_ID == null).ToList();
             }
         }
     }

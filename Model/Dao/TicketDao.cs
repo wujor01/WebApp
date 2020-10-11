@@ -54,7 +54,7 @@ namespace Model.Dao
             }
             else
             {
-                return db.Tickets.Where(x => x.Status == true).OrderBy(x => x.ID).Where(x => x.Department_ID == departmentId).ToList();
+                return db.Tickets.Where(x => x.Status == true || x.ID == 0).OrderBy(x => x.ID).Where(x => x.Department_ID == departmentId || x.Department_ID == null).ToList();
             }
         }
 

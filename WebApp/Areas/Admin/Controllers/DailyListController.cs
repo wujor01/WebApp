@@ -2,9 +2,12 @@
 using Model.EF;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 using WebApp.Areas.Admin.Models;
 using WebApp.Common;
 
@@ -12,6 +15,8 @@ namespace WebApp.Areas.Admin.Controllers
 {
     public class DailyListController : BaseController
     {
+        WebAppDbContext db = new WebAppDbContext();
+
         public void SetViewDepartment(int? selectedId = null)
         {
             var session = (UserLogin)Session[CommonConstants.USER_SESSION];
@@ -25,7 +30,15 @@ namespace WebApp.Areas.Admin.Controllers
             var session = (UserLogin)Session[CommonConstants.USER_SESSION];
 
             var dao = new EmployeeDao();
-            ViewBag.SelectedIDArray = new MultiSelectList(dao.ListAll("KTV",session.DepartmentID), "Code", "Code",selectedlist);
+            ViewBag.SelectedIDArray = new MultiSelectList(dao.ListAll("KTV",session.DepartmentID), "ID", "Code",selectedlist);
+        }
+
+        public void SetViewEmp(string[] selectedlist = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new EmployeeDao();
+            ViewBag.Employee_ID = new SelectList(dao.ListAll("KTV", session.DepartmentID), "ID", "Code", selectedlist);
         }
 
         public void SetViewRoom(int? selectedID = null)
@@ -154,51 +167,96 @@ namespace WebApp.Areas.Admin.Controllers
             return View();
         }
 
-        [HttpPost]
-        [HasCredential(RoleID = "ADD_LIST")]
-        public ActionResult Create(DailyList list)
+        public ActionResult SaveOrder(
+            long Voucher_ID, string Request, string Description,
+            string Code, string Name, int NumberOfCustomers, decimal Price, string Phone, string Taxi_Description,
+            OrderDetail[] order)
         {
-            //if (ModelState.IsValid)
-            //{
-                list.Employee_ID = string.Join(",",list.SelectedIDArray).Replace(" ", "");
+            string result = "Error! Order Is Not Complete!";
 
-                var dao = new DailyListDao();
+            DailyList model = new DailyList();
+            model.Voucher_ID = Voucher_ID;
+            model.Request = Request;
+            model.Description = Description;
+            model.PricewithVoucher = 0;
+            model.Total = 0;
+            if (Price != 0)
+            {
+                Taxi taxi = new Taxi();
+                taxi.Code = Code;
+                taxi.Name = Name;
+                taxi.NumberOfCustomers = NumberOfCustomers;
+                taxi.Price = Price;
+                taxi.Phone = Phone;
+                taxi.Description = Taxi_Description;
+                db.Taxis.Add(taxi);
+                db.SaveChanges();
 
-            //lấy id trong session đăng nhập của quản trị lưu vào phiên tạo mới user
+                model.Taxi_ID = taxi.ID;
+            }
+
             var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-                list.CreatedBy = session.UserName;
-                list.CreatedDate = DateTime.Now;
 
-            long id = dao.Insert(list);
-                if (id > 0)
+            model.Department_ID = session.DepartmentID;
+            model.CreatedDate = DateTime.Now;
+            model.CreatedBy = session.UserName;
+            db.DailyLists.Add(model);
+            db.SaveChanges();
+
+            var voucher = db.Vouchers.Find(model.Voucher_ID);
+            foreach (var item in order)
+            {
+                OrderDetail O = new OrderDetail();
+                O.Room_ID = item.Room_ID;
+                O.Ticket_ID = item.Ticket_ID;
+                var ticket = db.Tickets.Find(item.Ticket_ID);
+                O.Employee_ID = string.Join(",", item.SelectedIDArray).Replace(" ", "");
+
+                if (model.Voucher_ID == 0)
                 {
-                    SetAlert("Thêm bảng kê thành công", "success");
-                    return RedirectToAction("Detail/"+list.ID, "DailyList");
+                    O.Amount = ticket.Price;
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Thêm bảng kê không thành công");
+                    O.Amount = ticket.Price * (1 - voucher.DiscountPercent / 100);
                 }
-            //}
-            SetViewVoucher();
-            SetViewDepartment();
-            SetViewCustomer();
-            SetViewBag();
-            SetViewTicket();
-            SetViewRoom();
-            SetAlert("Error!", "error");
-            return RedirectToAction("Index", "DailyList");
+                O.TimeIn = DateTime.Now;
+                O.TimeOut = DateTime.Now.AddMinutes(ticket.TimeTotal);
+                O.DailyList_ID = model.ID;
+                model.PricewithVoucher = model.PricewithVoucher + O.Amount;
+                db.OrderDetails.Add(O);
+                db.SaveChanges();
+                foreach (var temp in item.SelectedIDArray)
+                {
+                    DailyEmployee emp = new DailyEmployee();
+                    emp.Order_ID = O.ID;
+                    emp.Employee_ID = long.Parse(temp);
+                    emp.Date = DateTime.Now.Date;
+                    emp.Clean = 0;
+                    emp.Tour = 0;
+                    emp.Tour = 0;
+                    db.DailyEmployees.Add(emp);
+                    db.SaveChanges();
+                }
+            }
+            model.Total = model.PricewithVoucher;
+            db.SaveChanges();
+            result = "Success! Order Is Complete!";
+
+        return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HasCredential(RoleID = "EDIT_LIST")]
         public ActionResult Comfirm(int id)
         {
             new DailyListDao().Comfirm(id);
+            SetAlert("Đổi trạng thái thành công", "success");
             return RedirectToAction("Index");
         }
+
         [HttpGet]
         [HasCredential(RoleID = "EDIT_LIST")]
-        public ActionResult Edit(int id)
+        public ActionResult EditDailyList(int id)
         {
             var dailyList = new DailyListDao().ViewDetail(id);
             SetViewDepartment();
@@ -212,7 +270,7 @@ namespace WebApp.Areas.Admin.Controllers
 
         [HttpPost]
         [HasCredential(RoleID = "EDIT_LIST")]
-        public ActionResult Edit(DailyList dailyList)
+        public ActionResult EditDailyList(DailyList dailyList)
         {
             var dao = new DailyListDao();
             SetViewDepartment();
@@ -234,6 +292,78 @@ namespace WebApp.Areas.Admin.Controllers
                 SetAlert("Error!", "error");
                 return RedirectToAction("Index", "DailyList");
             }
+        }
+
+        [HttpGet]
+        [HasCredential(RoleID = "EDIT_LIST")]
+        public ActionResult EditOrder(int id)
+        {
+            var dailyList = new DailyListDao().ViewDetail(id);
+            SetViewDepartment();
+            SetViewCustomer();
+            SetViewBag();
+            SetViewTicket();
+            SetViewVoucher();
+            SetViewRoom();
+            return View(dailyList);
+        }
+
+        [HttpPost]
+        [HasCredential(RoleID = "EDIT_LIST")]
+        public ActionResult EditOrder(OrderDetail order)
+        {
+            var dao = new DailyListDao();
+            SetViewDepartment();
+            SetViewTicket();
+            SetViewCustomer();
+            SetViewBag();
+            SetViewVoucher();
+            SetViewRoom();
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+            if (order.Room_ID == 0 || order.Ticket_ID == 0 || order.SelectedIDArray == null)
+            {
+                SetAlert("Thiếu thông tin!", "error");
+                return View();
+            }
+            
+            long id = dao.UpdateOrder(order, session.UserName);
+            if (id > 0)
+            {
+                SetAlert("Sửa thông tin bảng kê thành công", "success");
+                return RedirectToAction("Index", "DailyList");
+            }
+            else
+            {
+                SetAlert("Error!", "error");
+                return RedirectToAction("Index", "DailyList");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult EditEmp(long orderId, long empId)
+        {
+            var emp = db.DailyEmployees.Find(orderId,empId);
+            SetViewEmp();
+            return View(emp);
+        }
+
+        [HttpPost]
+        public ActionResult EditEmp(DailyEmployee emp)
+        {
+            var dao =new DailyListDao();
+            long id = dao.UpdateEmp(emp);
+            SetViewEmp();
+            if (id > 0)
+            {
+                SetAlert("Sửa thông tin bảng kê thành công", "success");
+                return RedirectToAction("Index", "DailyList");
+            }
+            else
+            {
+                SetAlert("Error!", "error");
+                return RedirectToAction("Index", "DailyList");
+            }
+            
         }
 
         [HttpDelete]

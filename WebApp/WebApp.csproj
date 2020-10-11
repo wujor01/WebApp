@@ -608,6 +608,7 @@
     <Content Include="assets\admin\dist\css\sb-admin-2.css" />
     <Content Include="assets\admin\dist\css\timeline.css" />
     <Content Include="assets\admin\dist\js\sb-admin-2.js" />
+    <Content Include="assets\admin\js\bootbox.min.js" />
     <Content Include="assets\admin\js\controller\productController.js" />
     <Content Include="assets\admin\js\controller\userController.js" />
     <Content Include="assets\admin\js\flot-data.js" />
@@ -1629,7 +1630,6 @@
     <Content Include="Areas\Admin\Views\DayOff\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\DailyList\Create.cshtml" />
     <Content Include="Areas\Admin\Views\DailyList\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\DailyList\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\RevenueExpenditure\Create.cshtml" />
     <Content Include="Areas\Admin\Views\RevenueExpenditure\Index.cshtml" />
     <Content Include="Areas\Admin\Views\RevenueExpenditure\Edit.cshtml" />
@@ -1640,7 +1640,6 @@
     <Content Include="Content\bootstrap-chosen.scss" />
     <Content Include="Content\bootstrap-chosen.less" />
     <Content Include="Areas\Admin\Views\DailyList\CodeIndex.cshtml" />
-    <Content Include="Areas\Admin\Views\DailyList\Detail.cshtml" />
     <Content Include="Areas\Admin\Views\DailyList\CodeCreate.cshtml" />
     <Content Include="Areas\Admin\Views\DailyList\CodeDetail.cshtml" />
     <Content Include="Areas\Admin\Views\Customer\Index.cshtml" />
@@ -1663,6 +1662,11 @@
     <Content Include="Areas\Admin\Views\Statistic\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Statistic\TicketIndex.cshtml" />
     <Content Include="Areas\Admin\Views\Statistic\GetDataDailyList.cshtml" />
+    <Content Include="Areas\Admin\Views\DailyList\Order.cshtml" />
+    <Content Include="Areas\Admin\Views\DailyList\EditOrder.cshtml" />
+    <Content Include="Areas\Admin\Views\DailyList\EditDailyList.cshtml" />
+    <Content Include="Areas\Admin\Views\DailyList\EditEmp.cshtml" />
+    <Content Include="Areas\Admin\Views\Statistic\EmpIndex.cshtml" />
     <None Include="Properties\PublishProfiles\registry.hub.docker.com_wujor01.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\chosen.jquery.js" />

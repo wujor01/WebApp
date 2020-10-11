@@ -27,27 +27,27 @@ namespace Model.Dao
                 db.SaveChanges();
             }
 
-            var list = db.DailyLists.ToList();
-            
+            var list = db.OrderDetails.ToList();
+
             foreach (var item in list)
             {
-                DateTime a = item.CreatedDate.Value.Date;
+                DateTime a = item.DailyList.CreatedDate.Value.Date;
 
                 var s = db.StatisticTickets.Where(x => DbFunctions.TruncateTime(x.Datetime) == a && x.Ticket_ID == item.Ticket_ID).ToList();
                 if (s.Count == 0)
                 {
                     StatisticTicket sta = new StatisticTicket();
-                    sta.Datetime = (DateTime)item.CreatedDate;
+                    sta.Datetime = (DateTime)item.DailyList.CreatedDate;
                     sta.TicketinDate = 1;
                     sta.Employee_ID = "'" + item.Employee_ID + "'";
-                    if (item.Taxi == null)
+                    if (item.DailyList.Taxi == null)
                     {
-                        sta.TicketPriceinDate = item.Total - item.Tip;
+                        sta.TicketPriceinDate = item.Amount;
                     }
                     else
                     {
-                        sta.TicketPriceinDate = item.Total - item.Tip + item.Taxi.Price;
-                    }    
+                        sta.TicketPriceinDate = item.Amount + item.DailyList.Taxi.Price;
+                    }
                     sta.Ticket_ID = (int)item.Ticket_ID;
                     db.StatisticTickets.Add(sta);
                     db.SaveChanges();
@@ -60,18 +60,57 @@ namespace Model.Dao
                         var statistic = db.StatisticTickets.Find(itemid);
                         if (statistic.Employee_ID.Contains(item.ID.ToString()) != true)
                         {
-                            statistic.TicketinDate = statistic.TicketinDate+ 1;
+                            statistic.TicketinDate = statistic.TicketinDate + 1;
                             statistic.Employee_ID = statistic.Employee_ID + ",'" + item.Employee_ID + "'";
-                            if (item.Taxi == null)
-                            {
-                                statistic.TicketPriceinDate = statistic.TicketPriceinDate + (item.Total - item.Tip);
-                            }
-                            else
-                            {
-                                statistic.TicketPriceinDate = statistic.TicketPriceinDate + (item.Total - item.Tip + item.Taxi.Price);
-                            }
+
+                                statistic.TicketPriceinDate = statistic.TicketPriceinDate + item.Amount;
+
                             db.SaveChanges();
                         }
+                    }
+                }
+            }
+            return 1;
+        }
+
+        public int InsertStatisticEmpDate()
+        {
+            if (db.StatisticEmployees.Count() != 0)
+            {
+                var all = from c in db.StatisticEmployees select c;
+                db.StatisticEmployees.RemoveRange(all);
+                db.SaveChanges();
+            }
+
+            var list = db.DailyEmployees.ToList();
+
+            foreach (var item in list)
+            {
+                DateTime a = item.Date;
+
+                var s = db.StatisticEmployees.Where(x => DbFunctions.TruncateTime(x.Datetime) == a && x.Employee_ID == item.Employee_ID).ToList();
+                if (s.Count == 0)
+                {
+                    StatisticEmployee sta = new StatisticEmployee();
+                    sta.Datetime = item.Date;
+                    sta.Employee_ID = item.Employee_ID;
+                    sta.CountinDate = 1;
+                    sta.TipinDate = item.Tip;
+                    sta.TourinDate = item.Tour;
+                    sta.CleaninDate = item.Employee.Department.Clean;
+                    db.StatisticEmployees.Add(sta);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    var sta = db.StatisticEmployees.Where(x => DbFunctions.TruncateTime(x.Datetime) == a && x.Employee_ID == item.Employee_ID).Select(x => x.ID).ToList();
+                    foreach (var itemid in sta)
+                    {
+                        var statistic = db.StatisticEmployees.Find(itemid);
+                        statistic.CountinDate = statistic.CountinDate + 1;
+                        statistic.TipinDate = statistic.TipinDate + item.Tip;
+                        statistic.TourinDate = statistic.TourinDate + item.Tour;
+                        db.SaveChanges();
                     }
                 }
             }
@@ -90,8 +129,22 @@ namespace Model.Dao
                     || x.Ticket.Department.Name.Contains(searchString)
                 );
             }
-                return model.OrderByDescending(x => x.ID).ToPagedList(page, pageSize);
+            return model.OrderByDescending(x => x.ID).ToPagedList(page, pageSize);
         }
 
+        public IEnumerable<StatisticEmployee> ListAllPagingKTV(string searchString, int page, int pageSize)
+        {
+
+            IQueryable<StatisticEmployee> model = db.StatisticEmployees;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                model = model.Where(
+                    x => x.Employee.Code.Contains(searchString) || x.Datetime.ToString().Contains(searchString)
+                    || x.Employee.Department.Name.Contains(searchString)
+                );
+            }
+            return model.OrderByDescending(x => x.ID).ToPagedList(page, pageSize);
+        }
     }
 }

@@ -2,6 +2,7 @@
 using PagedList;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Configuration;
 using System.Globalization;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace Model.Dao
             }
             else
             {
-                return db.DailyLists.Where(x => x.Room.Department_ID == departmentId).ToList();
+                return db.DailyLists.Where(x => x.Department_ID == departmentId).ToList();
             }
         }
 
@@ -54,72 +55,21 @@ namespace Model.Dao
             return voucher.ID;
         }
 
-        public long Insert(DailyList list)
+        public long Insert(DailyList list, OrderDetail order)
         {
-
-            var ticket = db.Tickets.Find(list.Ticket_ID);
-            var voucher = db.Vouchers.Find(list.Voucher_ID);
-
-            list.TimeIn = DateTime.Now;
-            list.TimeOut = DateTime.Now.Add(TimeSpan.FromMinutes(ticket.TimeTotal));
-
-            list.Status = true;
-
-            if (list.Taxi.Price == 0)
+            if (list.Voucher_ID == 0 || list.Taxi == null)
             {
-
-                if (voucher.DiscountPercent !=0)
-                {
-                    list.Status = false;
-                    list.PricewithVoucher = ticket.Price * (1 - voucher.DiscountPercent / 100);
-                    list.Total = list.PricewithVoucher + list.Tip;
-                }
-                else
-                {
-                    list.PricewithVoucher = ticket.Price;
-                    list.Total = ticket.Price + list.Tip;
-                }
-
-                //lưu vào db
-                db.DailyLists.Add(list);
-                db.SaveChanges();
-
-                var dailylist = db.DailyLists.Find(list.ID);
-                if (voucher.ID > 99)
-                {
-                    voucher.Status = false;
-                    voucher.ModifiedBy = list.CreatedBy;
-                    voucher.ModifiedDate = list.CreatedDate;
-                }
-                //tìm trong db để sửa lại Taxi.Code về null và xóa bảng null taxi
-                var taxi = db.Taxis.Find(dailylist.Taxi_ID);
-                db.Taxis.Remove(taxi);
-                dailylist.Taxi_ID = null;
-                db.SaveChanges();
+                list.Status = true;
             }
             else
             {
-                if (voucher.DiscountPercent != 0)
-                {
-                    list.Status = false;
-                    list.PricewithVoucher = ticket.Price * (1 - voucher.DiscountPercent / 100);
-                    list.Total = list.PricewithVoucher - list.Taxi.Price + list.Tip;
-                }
-                else
-                {
-                    list.PricewithVoucher = ticket.Price;
-                    list.Total = ticket.Price - list.Taxi.Price + list.Tip;
-                }
-
-                if (voucher.ID > 99 )
-                {
-                    voucher.Status = false;
-                    voucher.ModifiedBy = list.CreatedBy;
-                    voucher.ModifiedDate = list.CreatedDate;
-                }
-                db.DailyLists.Add(list);
-                db.SaveChanges();
+                list.Status = false;
             }
+
+            db.DailyLists.Add(list);
+            db.OrderDetails.Add(order);
+            db.SaveChanges();
+
             return list.ID;
         }
 
@@ -128,53 +78,144 @@ namespace Model.Dao
 
             var dailyList = db.DailyLists.Find(entity.ID);
 
-            if (entity.SelectedIDArray != null)
+
+            if (entity.Voucher_ID != dailyList.Voucher_ID)
             {
-                dailyList.Employee_ID = string.Join(",", entity.SelectedIDArray).Replace(" ", "");
+                dailyList.Voucher_ID = entity.Voucher_ID;
+                var order = db.OrderDetails.Where(x => x.DailyList_ID == entity.ID);
+                var voucher = db.Vouchers.Find(entity.Voucher_ID);
+                foreach (var item in order)
+                {
+                    var O = db.OrderDetails.Find(item.ID);
+                    var ticket = db.Tickets.Find(item.Ticket_ID);
+                    if (entity.Voucher_ID == 0)
+                    {
+                        O.Amount = ticket.Price;
+                    }
+                    else
+                    {
+                        O.Amount = ticket.Price * (1 - voucher.DiscountPercent / 100);
+                    }
+                }
+                db.SaveChanges();
             }
 
-            dailyList.Description = entity.Description;
-            //dailyList.Employee_ID = entity.Employee_ID;
-            dailyList.Room_ID = entity.Room_ID;
-            dailyList.Status = entity.Status;
-            dailyList.Tip = entity.Tip;
-            dailyList.Ticket_ID = entity.Ticket_ID;
-            dailyList.Voucher_ID = entity.Voucher_ID;
-
-            var ticket = db.Tickets.Find(entity.Ticket_ID);
-            var voucher = db.Vouchers.Find(entity.Voucher_ID);
-
-
-            if (entity.Taxi.Price != 0)
+            if (entity.Taxi.Price != 0 && dailyList.Taxi_ID == null)
             {
-                if (voucher.DiscountPercent != 0)
-                {
-                    dailyList.PricewithVoucher = ticket.Price * (1 - voucher.DiscountPercent / 100);
-                    dailyList.Total = dailyList.PricewithVoucher - entity.Taxi.Price + entity.Tip;
-                }
-                else
-                {
-                    dailyList.PricewithVoucher = ticket.Price;
-                    dailyList.Total = ticket.Price - entity.Taxi.Price + entity.Tip;
-                }
-                dailyList.Taxi = entity.Taxi;
+                Taxi taxi = new Taxi();
+                taxi.Code = entity.Taxi.Code;
+                taxi.Name = entity.Taxi.Name;
+                taxi.NumberOfCustomers = entity.Taxi.NumberOfCustomers;
+                taxi.Price = entity.Taxi.Price;
+                taxi.Phone = entity.Taxi.Phone;
+                taxi.Description = entity.Taxi.Description;
+                db.Taxis.Add(taxi);
+                db.SaveChanges();
+                dailyList.Taxi_ID = taxi.ID;
             }
-            else
+            else if (entity.Taxi.Price != 0 && dailyList.Taxi_ID != null)
             {
-                if (voucher.DiscountPercent != 0)
-                {
-                    dailyList.Total = ticket.Price * (1 - voucher.DiscountPercent / 100) + entity.Tip;
-                }
-                else
-                {
-                    dailyList.Total = ticket.Price + entity.Tip;
-                }
+                var taxi = db.Taxis.Find(dailyList.Taxi_ID);
+                taxi.Code = entity.Taxi.Code;
+                taxi.Name = entity.Taxi.Name;
+                taxi.NumberOfCustomers = entity.Taxi.NumberOfCustomers;
+                taxi.Price = entity.Taxi.Price;
+                taxi.Phone = entity.Taxi.Phone;
+                taxi.Description = entity.Taxi.Description;
+                db.SaveChanges();
             }
-            //Ngày chỉnh sửa = Now
+            else if (entity.Taxi.Price == 0 && dailyList.Taxi_ID != null)
+            {
+                var taxi = db.Taxis.Find(dailyList.Taxi_ID);
+                db.Taxis.Remove(taxi);
+                db.SaveChanges();
+                dailyList.Taxi_ID = null;
+            }
+            dailyList.Total = db.OrderDetails.Where(x => x.DailyList_ID == entity.ID).Sum(x => x.Amount);
+
             dailyList.ModifiedBy = username;
             dailyList.ModifiedDate = DateTime.Now;
             db.SaveChanges();
             return entity.ID;
+        }
+
+        public long UpdateOrder(OrderDetail entity, string username)
+        {
+
+            var order = db.OrderDetails.Find(entity.ID);
+            var dailyList = db.DailyLists.Find(order.DailyList_ID);
+
+            order.Room_ID = entity.Room_ID;
+            if (order.Employee_ID != string.Join(",", entity.SelectedIDArray).Replace(" ", ""))
+            {
+                string[] arrListStr = order.Employee_ID.Split(',');
+                for (int i = 0; i < arrListStr.Length; i++)
+                {
+                    int a = Int32.Parse(arrListStr[i]);
+                    var dailyEmployee = db.DailyEmployees.Find(entity.ID,a);
+                    db.DailyEmployees.Remove(dailyEmployee);
+                    db.SaveChanges();
+                }
+                
+
+                order.Employee_ID = string.Join(",", entity.SelectedIDArray).Replace(" ", "");
+
+                foreach (var temp in entity.SelectedIDArray)
+                {
+                    DailyEmployee emp = new DailyEmployee();
+                    emp.Order_ID = entity.ID;
+                    emp.Employee_ID = long.Parse(temp);
+                    emp.Date = DateTime.Now.Date;
+                    emp.Clean = 0;
+                    emp.Tour = 0;
+                    emp.Tour = 0;
+                    db.DailyEmployees.Add(emp);
+                    db.SaveChanges();
+                }
+
+            }
+            
+            var ticket = db.Tickets.Find(entity.Ticket_ID);
+
+            if (entity.Ticket_ID != order.Ticket_ID)
+            {
+                order.Ticket_ID = entity.Ticket_ID;
+                order.TimeIn = order.TimeIn;
+                order.TimeOut = order.TimeIn.Value.AddMinutes(ticket.TimeTotal);
+
+                if (dailyList.Voucher_ID == 0)
+                {
+                    order.Amount = ticket.Price;
+                }
+                else
+                {
+                    order.Amount = ticket.Price * (1 - dailyList.Voucher.DiscountPercent / 100);
+                }
+
+                dailyList.Total = db.OrderDetails.Where(x => x.DailyList_ID == order.DailyList_ID).Sum(x => x.Amount);
+            }
+
+            dailyList.ModifiedBy = username;
+            dailyList.ModifiedDate = DateTime.Now;
+            db.SaveChanges();
+            return entity.ID;
+        }
+
+        public long UpdateEmp(DailyEmployee entity)
+        {
+            var order = db.OrderDetails.Find(entity.Order_ID);
+            var emp = db.DailyEmployees.Find(entity.Order_ID,entity.Employee_ID);
+            var employee = db.Employees.Find(entity.Employee_ID);
+            var dep = db.Departments.Find(employee.Department.ID);
+            var dailyList = db.DailyLists.Find(order.DailyList_ID);
+
+            emp.Employee_ID = entity.Employee_ID;
+            emp.Tip = entity.Tip;
+            emp.Tour = dep.Tour;
+
+            dailyList.Total = order.Amount + emp.Tour;
+            db.SaveChanges();
+            return entity.Order_ID;
         }
 
         public DailyList ViewDetail(int list_ID)
@@ -195,7 +236,7 @@ namespace Model.Dao
             if (!string.IsNullOrEmpty(searchString))
             {
                 model = model.Where(
-                    x => x.Room.Name.Contains(searchString) || x.ID.ToString().Contains(searchString)
+                    x => x.ID.ToString().Contains(searchString)
                 );
             }
             if (departmentId == 0)
@@ -205,7 +246,7 @@ namespace Model.Dao
             }
             else
             {
-                return model.OrderByDescending(x => x.CreatedDate).Where(x => x.Room.Department_ID == departmentId).ToPagedList(page, pageSize);
+                return model.OrderByDescending(x => x.CreatedDate).Where(x => x.Department_ID == departmentId).ToPagedList(page, pageSize);
             }
         }
 
@@ -224,7 +265,7 @@ namespace Model.Dao
             }
             else
             {
-                return model.OrderByDescending(x => x.CreatedDate).Where(x=>x.Room.Department_ID == departmentId).ToPagedList(page, pageSize);
+                return model.OrderByDescending(x => x.CreatedDate).Where(x=>x.Department_ID == departmentId).ToPagedList(page, pageSize);
             }
         }
 
@@ -303,6 +344,11 @@ namespace Model.Dao
                 return false;
             }
 
+        }
+
+        public long Order(OrderDetail order)
+        {
+            throw new NotImplementedException();
         }
 
         public List<Employee> ListAll(string position, int departmentId)

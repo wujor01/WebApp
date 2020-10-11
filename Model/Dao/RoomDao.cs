@@ -81,12 +81,12 @@ namespace Model.Dao
             }
             if (departmentId == 0)
             {
-                return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+                return model.Where(x=>x.ID != 0).OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
 
             }
             else
             {
-                return model.OrderByDescending(x => x.CreatedDate).Where(x => x.Department_ID == departmentId).ToPagedList(page, pageSize);
+                return model.Where(x => x.ID != 0).OrderByDescending(x => x.CreatedDate).Where(x => x.Department_ID == departmentId).ToPagedList(page, pageSize);
             }
         }
     }
