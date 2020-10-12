@@ -19,11 +19,11 @@ namespace Model.EF
 
         public long DailyList_ID { get; set; }
 
+        public string[] SelectedIDArray { get; set; }
+
         public int Room_ID { get; set; }
 
         public int Ticket_ID { get; set; }
-
-        public string[] SelectedIDArray { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -34,6 +34,8 @@ namespace Model.EF
         public DateTime? TimeOut { get; set; }
 
         public decimal Amount { get; set; }
+
+        public bool Status { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DailyEmployee> DailyEmployees { get; set; }

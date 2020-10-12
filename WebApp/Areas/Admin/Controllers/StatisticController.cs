@@ -59,8 +59,6 @@ namespace WebApp.Areas.Admin.Controllers
             List<decimal> ticketCountinMonth = new List<decimal>();
             List<decimal> ticketCountinYear = new List<decimal>();
 
-            List<int> empCount = new List<int>();
-
             var dep = db.OrderDetails.Select(x => x.Ticket.Department.Name).Distinct().ToList();
             foreach (var item in dep)
             {
@@ -91,16 +89,67 @@ namespace WebApp.Areas.Admin.Controllers
 
             }
 
-            var emp = db.Employees.Select(x => x.Code).Distinct().ToList();
-
-            foreach (var item in emp)
-            {
-                empCount.Add(db.OrderDetails.Select(x => x.Employee_ID.Contains("'"+item+"'")).Count());
-            }
-
             ViewBag.ticketCount = ticketCountinMonth;
             ViewBag.deparmentName = dep;
             ViewBag.ticketPrice = ticketPriceinMonth;
+
+            //Emp
+            List<decimal> empPrice = new List<decimal>();
+            List<decimal> empPriceinDate = new List<decimal>();
+            List<decimal> empTotalinDate = new List<decimal>();
+            List<decimal> empPriceinMonth = new List<decimal>();
+            List<decimal> empPriceinYear = new List<decimal>();
+
+            List<decimal> empCount = new List<decimal>();
+            List<decimal> empCountinDate = new List<decimal>();
+            List<decimal> empCountinMonth = new List<decimal>();
+            List<decimal> empCountinYear = new List<decimal>();
+
+            var emp = db.DailyEmployees.Where(x => x.Employee.Department_ID == 4).Select(x => x.Employee.Code).Distinct().ToList();
+            foreach (var item in emp)
+            {
+                empPriceinMonth.Add(db.DailyEmployees.Where(x => x.Employee.Code == item && x.Date.Month == DateTime.Today.Month && x.Date.Year == DateTime.Today.Year).Sum(x => x.Tip));
+
+                empCountinMonth.Add(db.DailyEmployees.Where(x => x.Employee.Code == item && x.Date.Month == DateTime.Today.Month && x.Date.Year == DateTime.Today.Year).Count());
+
+            }
+
+            ViewBag.empCount = empCountinMonth;
+            ViewBag.empName = emp;
+            ViewBag.empPrice = empPriceinMonth;
+
+            return View();
+        }
+
+        [HasCredential(RoleID = "VIEW_STATISTIC")]
+        public ActionResult GetDataEmp()
+        {
+
+            db = new WebAppDbContext();
+            //
+            List<decimal> empPrice = new List<decimal>();
+            List<decimal> empPriceinDate = new List<decimal>();
+            List<decimal> empTotalinDate = new List<decimal>();
+            List<decimal> empPriceinMonth = new List<decimal>();
+            List<decimal> empPriceinYear = new List<decimal>();
+
+            List<decimal> empCount = new List<decimal>();
+            List<decimal> empCountinDate = new List<decimal>();
+            List<decimal> empCountinMonth = new List<decimal>();
+            List<decimal> empCountinYear = new List<decimal>();
+
+            var dep = db.DailyEmployees.Where(x=>x.Employee.Department_ID == 4).Select(x => x.Employee.Code).Distinct().ToList();
+            foreach (var item in dep)
+            {
+                empPriceinMonth.Add(db.DailyEmployees.Where(x => x.Employee.Code == item && x.Date.Month == DateTime.Today.Month && x.Date.Year == DateTime.Today.Year).Sum(x => x.Tip));
+
+                empCountinMonth.Add(db.DailyEmployees.Where(x => x.Employee.Code == item && x.Date.Month == DateTime.Today.Month && x.Date.Year == DateTime.Today.Year).Count());
+
+            }
+
+            ViewBag.ticketCount = empCountinMonth;
+            ViewBag.deparmentName = dep;
+            ViewBag.ticketPrice = empPriceinMonth;
 
             return View();
         }

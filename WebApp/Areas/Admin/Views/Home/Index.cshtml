@@ -1,88 +1,167 @@
 ﻿@model PagedList.IPagedList<Model.EF.Room>
 @using PagedList.Mvc;
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Home Page";
     Layout = "~/Areas/Admin/Views/Shared/_Layouts.cshtml";
 }
+@section JsFooter{
 
-<h2>Danh sách phòng</h2>
+    <script>
+        var lstTimer = @Html.Raw(Json.Encode(ViewBag.TimerList));
+
+        function _SetTimerDisplay(objTime, label) {
+
+            var now = new Date().getTime();
+            // Find the distance between now and the count down date
+            var distance = objTime.ReleaseDateTime - now;
+            // Time calculations for days, hours, minutes and seconds
+            var minutes = Math.floor((distance  / (1000 * 60)));
+            var seconds = Math.floor((distance % (1000 * 60) / 1000));
+            // If the count down is over, write some text
+            if (distance < 0) {
+                //clearInterval(x);
+                alert(objTime.Message);
+                objTime.Name = "EXPIRED";
+                document.getElementById(label).innerHTML = "Hết giờ";
+            }
+            else {
+                // Output the result in an element with id="Display"
+                document.getElementById(label).innerHTML = minutes + "m " + seconds + "s ";
+            }
+
+        }
+
+        // Set the date we're counting down to
+        function UpdateTimer() {
+            for (var i = 0; i < lstTimer.length; i++) {
+                var iCount = 0;
+                if (lstTimer[i].Name != 'EXPIRED') {
+                    _SetTimerDisplay(lstTimer[i], lstTimer[i].Name);
+                    iCount++;
+                }
+            }
+            var vFound = lstTimer.find(function (element) {
+                return (element.Name != "EXPIRED" ? true : false);
+            });
+            if (vFound == undefined) {
+                clearInterval(x);
+            }
+        }
+
+        var x = setInterval(function () {
+            UpdateTimer();
+        }, 1000);
+    </script>
+}
 
 <div class="row">
+    @foreach (var item in Model)
+    {
 
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Earnings (Monthly)</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Earnings (Annual)</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks</div>
-                        <div class="row no-gutters align-items-center">
-                            <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+        if (item.OrderDetails.Count != 0)
+        {
+            foreach (var temp in item.OrderDetails.Where(x => x.DailyList.Status == true).OrderByDescending(x => x.ID).Take(1))
+            {
+                if (temp.DailyEmployees.Sum(x => x.Tip) > 0)
+                {
+                    <div class="col-6 col-sm-3">
+                        <div class="panel panel-default">
+                            <div class="panel-heading text-center">
+                                @item.Name
+                                <td class="text-right"><a href="/Admin/DailyList/Create" class="btn btn-default text-right" data-id="@item.ID"><strong style="color:green;">Chọn</strong></a></td>
                             </div>
-                            <div class="col">
-                                <div class="progress progress-sm mr-2">
-                                    <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
+                            <div class="panel-body">
+                                <tbody>
+                                    <tr>
+                                        <td>KTV: </td>
+                                        <br />
+                                        <td>Loại vé: </td>
+                                        <br />
+                                        <td>Giờ vào: </td>
+                                        <br />
+                                        <td>Giờ ra: </td>
+                                        <br />
+                                        <td>Số tiền: </td>
+                                    </tr>
+                                </tbody>
+                            </div>
+                            <div class="panel-footer">
+                                <p>Phòng trống</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-auto">
-                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                }
+                else
+                {
+                    <div class="col-6 col-sm-3">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading text-center">
+                                <td id="a" style="margin-left: 4px;">@item.Name</td>
+                                <td class="text-right"><a href="/Admin/DailyList/Payment/@temp.DailyList_ID" class="btn btn-default text-right" data-id="@item.ID"><strong style="color:Tomato;">Thanh toán</strong></a></td>
+                            </div>
+                            <div class="panel-body">
+                                <tbody>
+                                    <tr>
+                                        <td>KTV: @temp.Employee_ID</td>
+                                        <br />
+                                        <td>Loại vé: @temp.Ticket.Name</td>
+                                        <br />
+                                        <td>Giờ vào: @(string.Format("{0:HH:mm}", temp.TimeIn))</td>
+                                        <br />
+                                        <td>Giờ ra: @(string.Format("{0:HH:mm}", temp.TimeOut))</td>
+                                        <br />
+                                        <td>Số tiền: @(string.Format("{0:#,##0}", temp.Amount))</td>
+                                    </tr>
+                                </tbody>
+                            </div>
+                            <div class="panel-footer">
 
-    <!-- Pending Requests Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Requests</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                @if ((DateTime.Now - temp.TimeOut).Value.TotalSeconds > 0)
+                                {
+                                    <p style="color: crimson;">Chưa thanh toán</p>
+                                }
+                                else
+                                {
+                                    <p style="color: red;" id="@item.ID"></p>
+                                }
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-auto">
-                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                }
+
+            }
+        }
+        else
+        {
+            <div class="col-6 col-sm-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading text-center">
+                        @item.Name
+                        <td class="text-right"><a href="/Admin/DailyList/Create" class="btn btn-default text-right" data-id="@item.ID"><strong style="color:green;">Chọn</strong></a></td>
+                    </div>
+                    <div class="panel-body">
+                        <tbody>
+                            <tr>
+                                <td>KTV: </td>
+                                <br />
+                                <td>Loại vé: </td>
+                                <br />
+                                <td>Giờ vào: </td>
+                                <br />
+                                <td>Giờ ra: </td>
+                                <br />
+                                <td>Số tiền: </td>
+                            </tr>
+                        </tbody>
+                    </div>
+                    <div class="panel-footer">
+                        <p>Phòng trống</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        }
+    }
 </div>
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, @searchString = @ViewBag.SearchString }))

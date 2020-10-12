@@ -1,0 +1,85 @@
+﻿@model Model.EF.DailyList
+
+@{
+    ViewBag.Title = "Payment";
+    Layout = "~/Areas/Admin/Views/Shared/_Layouts.cshtml";
+}
+
+<div class="pannel pannel-default">
+    <div class="panel-heading text-center">
+        <p style="font-size: 20px;">Thanh Toán</p>
+        </div>
+        <div class="panel-body">
+            <table class="table table-striped table-responsive">
+                <tbody>
+                    <tr>
+                        <th>#ID: @Model.ID </th>
+                        <th>Yêu cầu: @Model.Description </th>
+                        <td>
+                            Ngày: @Model.CreatedDate
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th>Phòng</th>
+                                        <th>Vé</th>
+                                        <th>Giá vé</th>
+                                        <th>Voucher/Code</th>
+                                        <th>Số tiền</th>
+                                    </tr>
+                                    @{
+                                        var totalBill = 0;
+                                    }
+                                    @foreach (var order in Model.OrderDetails)
+                                    {
+                                        <tr>
+                                            <td>@order.Room.Name</td>
+                                            <td>@order.Ticket.Name</td>
+                                            <td>@order.Ticket.Price</td>
+                                            <td>@order.DailyList.Voucher.Code</td>
+                                            <td>@order.Amount</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>KTV</th>
+                                            <th>Tip</th>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            @foreach (var emp in order.DailyEmployees)
+                                            {
+                                            <tr>
+                                                <td>@emp.Employee.Code</td>
+                                                <td>@emp.Tip</td>
+                                                <td>@Html.ActionLink(" ", "EditEmp", new { orderId = @order.ID, empId = emp.Employee_ID }, new { @class = "btn btn-warning pull-right  btn-sm glyphicon glyphicon-edit" })</td>
+                                            </tr>
+                                        }
+                            </tr>
+                            totalBill = totalBill + @Convert.ToInt32(order.Amount) + Convert.ToInt32(order.DailyEmployees.Sum(x => x.Tip));
+                        }
+                                </tbody>
+                            </table>
+                            <span class="pull-right" style="margin-right:100px;">
+
+                                @{
+                                    if (Model.Taxi_ID != null)
+                                    {
+                                        <strong>Giảm trực tiếp : </strong> @Model.Taxi.Price <strong class="glyphicon glyphicon-arrow-right"></strong>
+                                        <strong>Total Bill :  </strong> @(totalBill-Model.Taxi.Price)
+                                    }
+                                    else
+                                    {
+                                        <strong>Total Bill :  </strong> @totalBill
+                                    }
+                                }
+
+                            </span>
+                            </td>
+                            </tr>
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>

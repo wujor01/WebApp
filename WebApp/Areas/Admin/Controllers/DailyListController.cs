@@ -107,14 +107,6 @@ namespace WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HasCredential(RoleID = "VIEW_LIST")]
-        public ActionResult Detail(int id)
-        {
-
-            var dailyList = new DailyListDao().ViewDetail(id);
-            return View(dailyList);
-        }
-
         [HasCredential(RoleID = "VIEW_CODE")]
         public ActionResult CodeDetail(int id)
         {
@@ -175,13 +167,20 @@ namespace WebApp.Areas.Admin.Controllers
             string result = "Error! Order Is Not Complete!";
 
             DailyList model = new DailyList();
+            model.Status = true;
+            if (Voucher_ID != 0)
+            {
+                model.Status = false;
+            }
             model.Voucher_ID = Voucher_ID;
             model.Request = Request;
             model.Description = Description;
             model.PricewithVoucher = 0;
             model.Total = 0;
+            
             if (Price != 0)
             {
+                model.Status = false;
                 Taxi taxi = new Taxi();
                 taxi.Code = Code;
                 taxi.Name = Name;
@@ -210,7 +209,19 @@ namespace WebApp.Areas.Admin.Controllers
                 O.Room_ID = item.Room_ID;
                 O.Ticket_ID = item.Ticket_ID;
                 var ticket = db.Tickets.Find(item.Ticket_ID);
-                O.Employee_ID = string.Join(",", item.SelectedIDArray).Replace(" ", "");
+
+                string[] arrEmpId = string.Join(",", item.SelectedIDArray).Replace(" ", "").Split(',');
+
+                List<string> emplist = new List<string>();
+
+                foreach (var temp in arrEmpId)
+                {
+                    int id = Convert.ToInt32(temp);
+                    var e = db.Employees.Find(id);
+                    emplist.Add(e.Code);
+                }
+
+                O.Employee_ID = string.Join(",", emplist).Replace(" ", "");
 
                 if (model.Voucher_ID == 0)
                 {
@@ -226,7 +237,7 @@ namespace WebApp.Areas.Admin.Controllers
                 model.PricewithVoucher = model.PricewithVoucher + O.Amount;
                 db.OrderDetails.Add(O);
                 db.SaveChanges();
-                foreach (var temp in item.SelectedIDArray)
+                foreach (var temp in arrEmpId)
                 {
                     DailyEmployee emp = new DailyEmployee();
                     emp.Order_ID = O.ID;
@@ -294,6 +305,28 @@ namespace WebApp.Areas.Admin.Controllers
             }
         }
 
+        [HasCredential(RoleID = "VIEW_LIST")]
+        public ActionResult Detail(int id)
+        {
+
+            var dailyList = new DailyListDao().ViewDetail(id);
+            return View(dailyList);
+        }
+
+        [HttpGet]
+        [HasCredential(RoleID = "EDIT_LIST")]
+        public ActionResult Payment(int id)
+        {
+            var dailyList = new DailyListDao().ViewDetail(id);
+            SetViewDepartment();
+            SetViewCustomer();
+            SetViewBag();
+            SetViewTicket();
+            SetViewVoucher();
+            SetViewRoom();
+            return View(dailyList);
+        }
+
         [HttpGet]
         [HasCredential(RoleID = "EDIT_LIST")]
         public ActionResult EditOrder(int id)
@@ -352,11 +385,13 @@ namespace WebApp.Areas.Admin.Controllers
         {
             var dao =new DailyListDao();
             long id = dao.UpdateEmp(emp);
+            var order = db.OrderDetails.Find(emp.Order_ID);
+            long dailyID = order.DailyList_ID;
             SetViewEmp();
             if (id > 0)
             {
                 SetAlert("Sửa thông tin bảng kê thành công", "success");
-                return RedirectToAction("Index", "DailyList");
+                return RedirectToAction("Payment/" + dailyID, "DailyList");
             }
             else
             {

@@ -605,10 +605,13 @@
     <Content Include="assets\admin\bower_components\raphael\license.txt" />
     <Content Include="assets\admin\bower_components\raphael\raphael-min.js" />
     <Content Include="assets\admin\bower_components\raphael\raphael.js" />
+    <Content Include="assets\admin\css\sb-admin-2.min.css" />
     <Content Include="assets\admin\dist\css\sb-admin-2.css" />
     <Content Include="assets\admin\dist\css\timeline.css" />
     <Content Include="assets\admin\dist\js\sb-admin-2.js" />
+    <Content Include="assets\admin\jquery\jquery.easing.min.js" />
     <Content Include="assets\admin\js\bootbox.min.js" />
+    <Content Include="assets\admin\js\bootstrap.bundle.min.js" />
     <Content Include="assets\admin\js\controller\productController.js" />
     <Content Include="assets\admin\js\controller\userController.js" />
     <Content Include="assets\admin\js\flot-data.js" />
@@ -1272,6 +1275,7 @@
     <Content Include="assets\admin\js\plugins\ckfinder\_samples\skin_v1.html" />
     <Content Include="assets\admin\js\plugins\ckfinder\_samples\standalone.html" />
     <Content Include="assets\admin\js\plugins\ckfinder\_samples\standalone_v1.html" />
+    <Content Include="assets\admin\js\sb-admin-2.js" />
     <Content Include="assets\admin\pages\blank.html" />
     <Content Include="assets\admin\pages\buttons.html" />
     <Content Include="assets\admin\pages\flot.html" />
@@ -1667,6 +1671,7 @@
     <Content Include="Areas\Admin\Views\DailyList\EditDailyList.cshtml" />
     <Content Include="Areas\Admin\Views\DailyList\EditEmp.cshtml" />
     <Content Include="Areas\Admin\Views\Statistic\EmpIndex.cshtml" />
+    <Content Include="Areas\Admin\Views\DailyList\Payment.cshtml" />
     <None Include="Properties\PublishProfiles\registry.hub.docker.com_wujor01.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\chosen.jquery.js" />
