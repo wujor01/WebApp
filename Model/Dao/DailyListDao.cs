@@ -3,6 +3,7 @@ using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Data.Entity.ModelConfiguration.Configuration;
 using System.Globalization;
 using System.Linq;
@@ -145,20 +146,48 @@ namespace Model.Dao
             var order = db.OrderDetails.Find(entity.ID);
             var dailyList = db.DailyLists.Find(order.DailyList_ID);
 
-            order.Room_ID = entity.Room_ID;
-            if (order.Employee_ID != string.Join(",", entity.SelectedIDArray).Replace(" ", ""))
+            if (entity.Room_ID != order.Room_ID)
             {
-                string[] arrListStr = order.Employee_ID.Split(',');
+                order.Room.Status = true;
+                db.SaveChanges();
+                order.Room_ID = entity.Room_ID;
+                order.Room.Status = false;
+                db.SaveChanges();
+            }
+            else
+            {
+                order.Room_ID = entity.Room_ID;
+            }
+            if (order.empId != string.Join(",", entity.SelectedIDArray))
+            {
+                string[] arrListStr = order.empId.Split(',');
                 for (int i = 0; i < arrListStr.Length; i++)
                 {
                     int a = Int32.Parse(arrListStr[i]);
                     var dailyEmployee = db.DailyEmployees.Find(entity.ID,a);
+                    var e = db.Employees.Find(a);
+                    e.OnAir = false;
+                    db.SaveChanges();
                     db.DailyEmployees.Remove(dailyEmployee);
                     db.SaveChanges();
                 }
                 
 
-                order.Employee_ID = string.Join(",", entity.SelectedIDArray).Replace(" ", "");
+                order.empId = string.Join(",", entity.SelectedIDArray);
+                
+                string[] arrEmpId = string.Join(",", entity.SelectedIDArray).Split(',');
+                List<string> emplist = new List<string>();
+
+                foreach (var temp in arrEmpId)
+                {
+                    int id = Convert.ToInt32(temp);
+                    var e = db.Employees.Find(id);
+                    e.OnAir = true;
+                    db.SaveChanges();
+                    emplist.Add(e.Code);
+                }
+
+                order.Employee_ID = string.Join(",", emplist);
 
                 foreach (var temp in entity.SelectedIDArray)
                 {
@@ -181,7 +210,7 @@ namespace Model.Dao
             {
                 order.Ticket_ID = entity.Ticket_ID;
                 order.TimeIn = order.TimeIn;
-                order.TimeOut = order.TimeIn.Value.AddMinutes(ticket.TimeTotal);
+                order.TimeOut = order.TimeIn.AddMinutes(ticket.TimeTotal);
 
                 if (dailyList.Voucher_ID == 0)
                 {
@@ -208,9 +237,31 @@ namespace Model.Dao
             var employee = db.Employees.Find(entity.Employee_ID);
             var dep = db.Departments.Find(employee.Department.ID);
             var dailyList = db.DailyLists.Find(order.DailyList_ID);
+            var room = db.Rooms.Find(order.Room_ID);
 
-            emp.Employee_ID = entity.Employee_ID;
-            emp.Tip = entity.Tip;
+            if (entity.Employee_ID != emp.Employee_ID)
+            {
+                employee.OnAir = false;
+                db.SaveChanges();
+                emp.Employee_ID = entity.Employee_ID;
+                employee.OnAir = true;
+                db.SaveChanges();
+            }
+            else
+            {
+                emp.Employee_ID = entity.Employee_ID;
+            }
+            if (entity.Tip > 0)
+            {
+                emp.Tip = entity.Tip;
+                employee.OnAir = false;
+                room.Status = true;
+                db.SaveChanges();
+            }
+            else
+            {
+                emp.Tip = entity.Tip;
+            }
             emp.Tour = dep.Tour;
 
             dailyList.Total = order.Amount + emp.Tour;
@@ -221,6 +272,10 @@ namespace Model.Dao
         public DailyList ViewDetail(int list_ID)
         {
             return db.DailyLists.Find(list_ID);
+        }
+        public OrderDetail ViewDetailOrder(int list_ID)
+        {
+            return db.OrderDetails.Find(list_ID);
         }
 
         public Voucher ViewCodeDetail(int ID)
@@ -236,7 +291,7 @@ namespace Model.Dao
             if (!string.IsNullOrEmpty(searchString))
             {
                 model = model.Where(
-                    x => x.No.ToString().Contains(searchString)
+                    x => x.CreatedDate.ToString().Contains(searchString)
                 );
             }
             if (departmentId == 0)
@@ -293,18 +348,44 @@ namespace Model.Dao
 
         public bool Delete(int id)
         {
+            List<OrderEmployeeModel> model = new List<OrderEmployeeModel>();
+            var dailyList = db.DailyLists.Find(id);
+            foreach (var item in dailyList.OrderDetails)
+            {
+                var order = db.OrderDetails.Find(item.ID);
+                foreach (var temp in order.DailyEmployees)
+                {
+                    model.Add(new OrderEmployeeModel
+                    {
+                        Order_ID = temp.Order_ID,
+                        Employee_ID = temp.Employee_ID
+                    });
+                }
+            }
+            foreach (var item in model)
+            {
+                var e = db.Employees.Find(item.Employee_ID);
+                e.OnAir = false;
+                db.SaveChanges();
+                db.DailyEmployees.Remove(db.DailyEmployees.Find(item.Order_ID, item.Employee_ID));
+                db.SaveChanges();
+            }
             try
             {
-                var dailyList = db.DailyLists.Find(id);
-                db.DailyLists.Remove(dailyList);
-                db.SaveChanges();
-                return true;
+                foreach (var item in model)
+                {
+                    db.OrderDetails.Remove(db.OrderDetails.Find(item.Order_ID));
+                    db.SaveChanges();
+                }
             }
             catch (Exception)
             {
-                return false;
             }
-
+            
+            db.DailyLists.Remove(dailyList);
+            db.SaveChanges();
+            return true;
+            
         }
 
         public bool Comfirm(int id)

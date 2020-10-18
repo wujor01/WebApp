@@ -17,6 +17,10 @@ namespace Model.EF
 
         public long ID { get; set; }
 
+        [Required]
+        [StringLength(20)]
+        public string No { get; set; }
+
         public long DailyList_ID { get; set; }
 
         public string[] SelectedIDArray { get; set; }
@@ -27,11 +31,15 @@ namespace Model.EF
 
         [Required]
         [StringLength(50)]
+        public string empId { get; set; }
+
+        [Required]
+        [StringLength(50)]
         public string Employee_ID { get; set; }
 
-        public DateTime? TimeIn { get; set; }
+        public DateTime TimeIn { get; set; }
 
-        public DateTime? TimeOut { get; set; }
+        public DateTime TimeOut { get; set; }
 
         public decimal Amount { get; set; }
 

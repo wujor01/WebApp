@@ -39,6 +39,10 @@ th.description {
     align-content: center;
 }
 
+#left {
+    text-align: left;
+}
+
 .ticket {
     width: 155px;
     max-width: 155px;

@@ -82,30 +82,62 @@ namespace WebApp.Areas.Admin.Controllers
             string address = dep.Select(x => x.Address).First().ToString();
 
             List<InvoiceModel> model = new List<InvoiceModel>();
-            var order = db.OrderDetails.Where(x => x.DailyList_ID == id);
+            var order = db.OrderDetails.Where(x => x.ID == id);
 
             foreach (var item in order)
             {
                 model.Add(new InvoiceModel { 
                     Description = item.Ticket.Name,
                     Quality = 1,
-                    Price = item.Amount
+                    Price = item.Ticket.Price
                 });
+                if (item.DailyList.Voucher_ID != 0 && item.DailyList.Voucher_ID < 100)
+                {
+                    model.Add(new InvoiceModel
+                    {
+                        Description = "Voucher",
+                        Quality = 1,
+                        Price = item.Amount - item.Ticket.Price
+                    });
+                }
+                else if (item.DailyList.Voucher_ID != 0 && item.DailyList.Voucher_ID > 100)
+                {
+                    model.Add(new InvoiceModel
+                    {
+                        Description = "Code",
+                        Quality = 1,
+                        Price = item.Amount - item.Ticket.Price
+                    });
+                }
 
                 foreach (var temp in item.DailyEmployees)
                 {
                     model.Add(new InvoiceModel
                     {
                         Description = "Tip " + temp.Employee.Code.Trim(),
-                        Quality = 1,
                         Price = temp.Tip
                     });
                 }
             }
-
-            ViewBag.No = db.DailyLists.Where(x => x.ID == id).Select(x => x.No).First().ToString();
+            long listId = order.Select(x => x.DailyList_ID).First();
+            //ViewBag.No = db.DailyLists.Where(x => x.ID == id).Select(x => x.No).First().ToString();
+            if (db.OrderDetails.Where(x=>x.DailyList_ID == listId).Count() == 1)
+            {
+                ViewBag.No = order.Select(x => x.No).First().ToString();
+            }
+            else
+            {
+                ViewBag.No = order.Select(x => x.No).First().ToString() + "-" + order.Select(x => x.ID).First().ToString();
+            }
+            ViewBag.Room = order.Select(x => x.Room.Name).First().ToString();
+            string timeIn = order.Select(x => x.TimeIn).First().ToString();
+            string timeOut = order.Select(x => x.TimeOut).First().ToString();
+            ViewBag.Date = Convert.ToDateTime(timeIn).ToString("dd-MM-yyyy");
+            ViewBag.TimeIn = Convert.ToDateTime(timeIn).ToString("H:mm");
+            ViewBag.TimeOut = Convert.ToDateTime(timeOut).ToString("H:mm");
             ViewBag.Total = model.Sum(x=>x.Price);
             ViewBag.Invoice = model;
+            ViewBag.Null = model.Where(x => x.Price == 0).Count();
             ViewBag.Name = "Massage " + name;
             ViewBag.Address = address;
 
@@ -215,11 +247,13 @@ namespace WebApp.Areas.Admin.Controllers
             {
                 model.Status = false;
             }
-            DateTime dt = DateTime.Today;
-            String date = dt.ToString("yyyy-MM-dd");
-            model.No = date.Replace("-","") + "-" + session.DepartmentID.ToString() 
-                + (db.DailyLists.Where(x => DbFunctions.TruncateTime(x.CreatedDate) == dt).Count()+1).ToString("D3");
             model.Voucher_ID = Voucher_ID;
+            var voucher = db.Vouchers.Find(Voucher_ID);
+            if (Voucher_ID != 0 && Voucher_ID >= 100)
+            {
+                voucher.Status = false;
+                db.SaveChanges();
+            }
             model.Request = Request;
             model.Description = Description;
             model.PricewithVoucher = 0;
@@ -247,15 +281,22 @@ namespace WebApp.Areas.Admin.Controllers
             db.DailyLists.Add(model);
             db.SaveChanges();
 
-            var voucher = db.Vouchers.Find(model.Voucher_ID);
             foreach (var item in order)
             {
                 OrderDetail O = new OrderDetail();
                 O.Room_ID = item.Room_ID;
+                var room = db.Rooms.Find(O.Room_ID);
+                room.Status = false;
+                db.SaveChanges();
                 O.Ticket_ID = item.Ticket_ID;
                 var ticket = db.Tickets.Find(item.Ticket_ID);
+                DateTime dt = DateTime.Today;
+                string date = dt.ToString("yyyy-MM-dd");
+                O.No = date.Replace("-", "") + "-" + session.DepartmentID.ToString()
+                    + (db.OrderDetails.Where(x => DbFunctions.TruncateTime(x.TimeIn) == dt).Count() + 1).ToString("D3");
 
                 string[] arrEmpId = string.Join(",", item.SelectedIDArray).Replace(" ", "").Split(',');
+                O.empId = string.Join(",", item.SelectedIDArray);
 
                 List<string> emplist = new List<string>();
 
@@ -263,6 +304,8 @@ namespace WebApp.Areas.Admin.Controllers
                 {
                     int id = Convert.ToInt32(temp);
                     var e = db.Employees.Find(id);
+                    e.OnAir = true;
+                    db.SaveChanges();
                     emplist.Add(e.Code);
                 }
 
@@ -362,14 +405,14 @@ namespace WebApp.Areas.Admin.Controllers
         [HasCredential(RoleID = "EDIT_LIST")]
         public ActionResult Payment(int id)
         {
-            var dailyList = new DailyListDao().ViewDetail(id);
+            var order = new DailyListDao().ViewDetailOrder(id);
             SetViewDepartment();
             SetViewCustomer();
             SetViewBag();
             SetViewTicket();
             SetViewVoucher();
             SetViewRoom();
-            return View(dailyList);
+            return View(order);
         }
 
         [HttpGet]
@@ -377,12 +420,32 @@ namespace WebApp.Areas.Admin.Controllers
         public ActionResult EditOrder(int id)
         {
             var dailyList = new DailyListDao().ViewDetail(id);
+            var order = db.OrderDetails.Find(id);
+            foreach (var temp in order.DailyEmployees)
+            {
+                var e = db.Employees.Find(temp.Employee_ID);
+                e.OnAir = false;
+                db.SaveChanges();
+            }
+            var room = db.Rooms.Find(order.Room_ID);
+            room.Status = true;
+            db.SaveChanges();
+
             SetViewDepartment();
             SetViewCustomer();
             SetViewBag();
             SetViewTicket();
             SetViewVoucher();
             SetViewRoom();
+
+            room.Status = false;
+            db.SaveChanges();
+            foreach (var temp in order.DailyEmployees)
+            {
+                var e = db.Employees.Find(temp.Employee_ID);
+                e.OnAir = true;
+                db.SaveChanges();
+            }
             return View(dailyList);
         }
 
@@ -436,7 +499,7 @@ namespace WebApp.Areas.Admin.Controllers
             if (id > 0)
             {
                 SetAlert("Sửa thông tin bảng kê thành công", "success");
-                return RedirectToAction("Payment/" + dailyID, "DailyList");
+                return RedirectToAction("Payment/" + emp.Order_ID, "DailyList");
             }
             else
             {
@@ -446,12 +509,17 @@ namespace WebApp.Areas.Admin.Controllers
             
         }
 
-        [HttpDelete]
+        [HttpGet]
         [HasCredential(RoleID = "DELETE_LIST")]
         public ActionResult Delete(int id)
         {
-            new DailyListDao().Delete(id);
+            var dao = new DailyListDao().Delete(id);
 
+            if (dao == true)
+            {
+                SetAlert("Xóa thành công!", "success");
+                return RedirectToAction("Index");
+            }
             return RedirectToAction("Index");
         }
 

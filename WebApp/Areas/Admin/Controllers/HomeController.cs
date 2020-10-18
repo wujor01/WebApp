@@ -49,8 +49,8 @@ namespace WebApp.Areas.Admin.Controllers
                     {
                         list.Add(new TimerModel
                         {
-                            Name = item.ID,
-                            ReleaseDateTime = temp.TimeOut.Value.Subtract(new DateTime(1970, 1, 1).AddHours(7)).TotalMilliseconds,
+                            Name = item.ID.ToString(),
+                            ReleaseDateTime = temp.TimeOut.Subtract(new DateTime(1970, 1, 1).AddHours(7)).TotalMilliseconds,
                             Message = string.Concat(item.Name, " hết giờ")
                         });
                     }

@@ -115,11 +115,13 @@
     <Compile Include="EF\Voucher.cs" />
     <Compile Include="EF\WebAppDbContext.cs" />
     <Compile Include="InvoiceModel.cs" />
+    <Compile Include="OrderEmployeeModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimerModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="backupDB\webApp" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

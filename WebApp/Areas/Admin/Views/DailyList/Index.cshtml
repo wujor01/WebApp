@@ -54,10 +54,18 @@
         foreach (var item in Model)
         {
             decimal tip = 0;
-
+            string no = null;
             foreach (var temp in item.OrderDetails)
             {
                 tip = tip + temp.DailyEmployees.Sum(x => x.Tip);
+                if (no == null)
+                {
+                    no = temp.No;
+                }
+                else
+                {
+                    no = no + temp.No;
+                }
             }
 
             <div class="panel-body">
@@ -65,7 +73,7 @@
                     <tbody>
                         <tr>
                             <th>
-                                @Html.ActionLink(" ", "EditDailyList", new { id = item.ID }, new { @class = "btn btn-warning pull-right  btn-sm glyphicon glyphicon-edit" })No. @item.No &emsp;
+                                No. @no &emsp;
                                 @if (tip > 0)
                                 {
                                     <strong style="color: green;">Đã thanh toán</strong>
@@ -74,10 +82,38 @@
                                 {
                                     <strong style="color: red;">Chưa thanh toán</strong>
                                 }
+                                @Html.ActionLink(" ", "EditDailyList", new { id = item.ID }, new { @class = "btn btn-warning pull-right  btn-sm glyphicon glyphicon-edit" })
                             </th>
                             <th>Yêu cầu: @item.Description </th>
                             <td>
                                 Ngày: @item.CreatedDate &emsp;
+
+                                <!-- Trigger the modal with a button -->
+                                <button type="button" class="btn btn-danger pull-right  btn-sm glyphicon glyphicon-trash" data-toggle="modal" data-target="#@item.ID"></button>
+
+                                <!-- Modal -->
+                                <div id="@item.ID" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title">Xóa Bảng Kê</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Bạn có chắc muốn xóa hóa đơn: <b>@no</b></p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                @Html.ActionLink("Xóa", "Delete", new { id = item.ID }, new { @class = "btn btn-danger" })                                                
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                
                                 <a href="/Admin/DailyList/Comfirm/@item.ID" class="btn btn-default" data-id="@item.ID">@Html.Raw(item.Status ? "<strong style=\"color:Green;\">Đã xác nhận</strong>" : "<strong style=\"color:Tomato;\">Xác nhận</strong>")</a>
                             </td>
                         </tr>
@@ -104,13 +140,15 @@
                                                 <td>@order.Ticket.Price</td>
                                                 <td>@order.DailyList.Voucher.Code</td>
                                                 <td>@order.Amount</td>
-                                                <td>@Html.ActionLink(" ", "EditOrder", new { id = @order.ID }, new { @class = "btn btn-warning pull-right  btn-sm glyphicon glyphicon-edit" })</td>
+                                                <td>@Html.ActionLink(" ", "EditOrder", new { id = order.ID }, new { @class = "btn btn-warning pull-right  btn-sm glyphicon glyphicon-edit" })</td>
                                             </tr>
                                           <tr></tr>
                                             <tr>
                                                 <th>KTV</th>
                                                 <th>Tip</th>
-                                                <td></td>
+                                                <td>
+                                                    @Html.ActionLink(" ", "Invoice", "DailyList", new { id = order.ID }, new { target = "_blank", @class = "btn btn-success pull-right  btn-sm glyphicon glyphicon-print" })
+                                                </td>
                                             </tr>
                                             <tr>
                                                 @foreach (var emp in order.DailyEmployees)

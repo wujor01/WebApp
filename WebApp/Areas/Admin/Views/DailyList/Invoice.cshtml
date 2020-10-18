@@ -9,17 +9,21 @@
 </head>
 <body>
     <div class="ticket">
-        <img src="/Areas/Admin/Data/System/logo.png" alt="Logo">
         <p class="centered">
-        No. @ViewBag.No
-            <br>@ViewBag.Name
-            <br>@ViewBag.Address
+            Số HĐ: @ViewBag.No
+        </p>
+        <p class="centered">
+            <b style="font-size:20px;">@ViewBag.Name</b>
+            <br /><b>Cam kết chất lượng phục vụ</b>
+            <br />Ngày: @ViewBag.Date 
+            <br />@ViewBag.Room - Yêu cầu: <input type="checkbox">
+            <br />Thời gian: từ @ViewBag.TimeIn đến @ViewBag.TimeOut
         </p>
         <table>
             <thead>
                 <tr>
                     <th class="description">Dịch vụ</th>
-                    <th class="quantity">Số lượng</th>
+                    <th class="quantity">SL</th>
                     <th class="price">Số tiền</th>
                 </tr>
             </thead>
@@ -29,19 +33,33 @@
                     <tr>
                         <td class="description">@item.Description</td>
                         <td class="quantity">@item.Quality</td>
-                        <td class="price">@(string.Format("{0:#,##0}", item.Price))</td>
+                        @if (item.Price == 0)
+                        {
+                            <td class="price"><input type="text" style="width:50px;"></td>
+                        }
+                        else
+                        {
+                            <td class="price">@(string.Format("{0:#,##0}", item.Price))</td>
+                        }
                     </tr>
                 }
 
-                        <td class="quantity"></td>
-                        <td class="description">TOTAL</td>
-                        <td class="price">@(string.Format("{0:#,##0}", ViewBag.Total))</td>
-                    </tr>
-                </tbody>
-            </table>
+            <td class="quantity"></td>
+            <td class="description">Tổng</td>
+            @if (ViewBag.Null > 0)
+            {
+                <td class="price"><input type="text" style="width:50px;"></td>
+            }
+            else
+            {
+                <td class="price">@(string.Format("{0:#,##0}", ViewBag.Total))</td>
+            }
+            </tr>
+            </tbody>
+        </table>
         <p class="centered">
-            Cảm ơn quý khách đã sử dụng dịch vụ!
-            <br>massagevua.net
+            <b>Cảm ơn quý khách!</b>
+        <br /><i>Tiền bo tối thiểu bằng tiền vé trở lên</i>
         </p>
     </div>
     <button id="btnPrint" class="hidden-print">In</button>

@@ -17,9 +17,6 @@ namespace Model.EF
 
         public long ID { get; set; }
 
-        [StringLength(20)]
-        public string No { get; set; }
-
         public int? Department_ID { get; set; }
 
         public long? Voucher_ID { get; set; }

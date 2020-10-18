@@ -69,14 +69,18 @@ namespace WebApp.Areas.Admin.Controllers
 
                 foreach (var temp in item.OrderDetails.Where(x => x.DailyList.Status == true).OrderByDescending(x => x.ID).Take(1))
                 {
+                    
                     if (temp.DailyEmployees.Sum(x => x.Tip) < 1)
                     {
-                        list.Add(new TimerModel
+                        foreach (var ktv in temp.DailyEmployees)
                         {
-                            Name = item.ID,
-                            ReleaseDateTime = temp.TimeOut.Value.Subtract(new DateTime(1970, 1, 1).AddHours(7)).TotalMilliseconds,
-                            Message = string.Concat(item.Name, " hết giờ")
-                        });
+                            list.Add(new TimerModel
+                            {
+                                Name = ktv.Employee.Code,
+                                ReleaseDateTime = temp.TimeOut.Subtract(new DateTime(1970, 1, 1).AddHours(7)).TotalMilliseconds,
+                                Message = string.Concat(item.Name, " hết giờ")
+                            });
+                        }
                     }
                 }
             }

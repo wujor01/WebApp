@@ -1,4 +1,4 @@
-﻿@model Model.EF.DailyList
+﻿@model Model.EF.OrderDetail
 
 @{
     ViewBag.Title = "Payment";
@@ -12,11 +12,28 @@
         <div class="panel-body">
             <table class="table table-striped table-responsive">
                 <tbody>
+                    @{ 
+                        decimal tip = 0;
+                        foreach (var item in Model.DailyEmployees)
+                        {
+                            tip = tip + item.Tip;
+                        }
+                    }
                     <tr>
-                        <th>#ID: @Model.ID </th>
-                        <th>Yêu cầu: @Model.Description </th>
+                        <th>
+                            No.@Model.No
+                            @if (tip > 0)
+                            {
+                                <strong style="color: green;">Đã thanh toán</strong>
+                            }
+                            else
+                            {
+                                <strong style="color: red;">Chưa thanh toán</strong>
+                            }
+                        </th>
+                        <th>Yêu cầu: @Model.DailyList.Description </th>
                         <td>
-                            Ngày: @Model.CreatedDate
+                            Ngày: @Model.DailyList.CreatedDate
                         </td>
                     </tr>
                     <tr>
@@ -33,51 +50,55 @@
                                     @{
                                         var totalBill = 0;
                                     }
-                                    @foreach (var order in Model.OrderDetails)
-                                    {
                                         <tr>
-                                            <td>@order.Room.Name</td>
-                                            <td>@order.Ticket.Name</td>
-                                            <td>@order.Ticket.Price</td>
-                                            <td>@order.DailyList.Voucher.Code</td>
-                                            <td>@order.Amount</td>
+                                            <td>@Model.Room.Name</td>
+                                            <td>@Model.Ticket.Name</td>
+                                            <td>@(string.Format("{0:#,##0}", Model.Ticket.Price))</td>
+                                            <td>@Model.DailyList.Voucher.Code</td>
+                                            <td>@(string.Format("{0:#,##0}", Model.Amount))</td>
                                         </tr>
 
                                         <tr>
                                             <th>KTV</th>
                                             <th>Tip</th>
-                                            <td></td>
+                                            <td>
+                                                @Html.ActionLink(" ", "Invoice", "DailyList", new { id = Model.ID }, new { target = "_blank", @class = "btn btn-success pull-right  btn-sm glyphicon glyphicon-print" })
+                                            </td>
                                         </tr>
                                         <tr>
-                                            @foreach (var emp in order.DailyEmployees)
+                                            @foreach (var emp in Model.DailyEmployees)
                                             {
                                             <tr>
                                                 <td>@emp.Employee.Code</td>
-                                                <td>@emp.Tip</td>
-                                                <td>@Html.ActionLink(" ", "EditEmp", new { orderId = @order.ID, empId = emp.Employee_ID }, new { @class = "btn btn-warning pull-right  btn-sm glyphicon glyphicon-edit" })</td>
+                                                <td>@(string.Format("{0:#,##0}", emp.Tip))</td>
+                                                <td>@Html.ActionLink(" ", "EditEmp", new { orderId = Model.ID, empId = emp.Employee_ID }, new { @class = "btn btn-warning pull-right  btn-sm glyphicon glyphicon-edit" })</td>
                                             </tr>
                                         }
                             </tr>
-                            totalBill = totalBill + @Convert.ToInt32(order.Amount) + Convert.ToInt32(order.DailyEmployees.Sum(x => x.Tip));
-                        }
+                            @{ 
+                                totalBill = totalBill + @Convert.ToInt32(Model.Amount) + Convert.ToInt32(Model.DailyEmployees.Sum(x => x.Tip));
+                            }
                                 </tbody>
                             </table>
-                            <span class="pull-right" style="margin-right:100px;">
+            <span class="pull-right" style="margin-right:100px;">
 
-                                @{
-                                    if (Model.Taxi_ID != null)
-                                    {
-                                        <strong>Giảm trực tiếp : </strong> @Model.Taxi.Price <strong class="glyphicon glyphicon-arrow-right"></strong>
-                                        <strong>Total Bill :  </strong> @(totalBill-Model.Taxi.Price)
-                                    }
-                                    else
-                                    {
-                                        <strong>Total Bill :  </strong> @totalBill
-                                    }
-                                }
+                @{
+                    if (Model.DailyList.Taxi_ID != null)
+                    {
+                        <strong>Giảm trực tiếp : </strong> @Model.DailyList.Taxi.Price <strong class="glyphicon glyphicon-arrow-right"></strong>
+                        <strong>Tổng:  </strong> @(string.Format("{0:#,##0}",(totalBill-Model.DailyList.Taxi.Price)))
+                    }
+                    else
+                    {
+                        <strong>Tổng:  </strong> @(string.Format("{0:#,##0}", totalBill))
+                    }
+                }
 
-                            </span>
-            <p style="color: red;">*Thanh toán thành công khi Tiền Tip > 0</p>
+            </span>
+            <p style="color: red;">
+            *Thanh toán thành công khi Tiền Tip > 0
+            <br />
+            </p>
                             </td>
                             </tr>
                             </tbody>

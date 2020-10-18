@@ -142,10 +142,6 @@ namespace Model.EF
                 .HasForeignKey(e => e.Department_ID);
 
             modelBuilder.Entity<Employee>()
-                .Property(e => e.Code)
-                .IsFixedLength();
-
-            modelBuilder.Entity<Employee>()
                 .Property(e => e.Phone)
                 .IsFixedLength();
 

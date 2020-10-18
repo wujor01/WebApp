@@ -10,7 +10,7 @@ namespace Model
     {
         public string Description { get; set; }
 
-        public int Quality { get; set; }
+        public int? Quality { get; set; }
 
         public decimal Price { get; set; }
     }

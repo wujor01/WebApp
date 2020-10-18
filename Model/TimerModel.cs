@@ -7,7 +7,7 @@ namespace Model
 {
     public class TimerModel
     {
-        public int Name { get; set; }
+        public string Name { get; set; }
         public double ReleaseDateTime { get; set; }
         public string Message { get; set; }
     }

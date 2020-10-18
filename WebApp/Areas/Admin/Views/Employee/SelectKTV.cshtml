@@ -121,6 +121,7 @@
 
                                         </div>
                                     </div>
+                                    
                                     @foreach (var temp in item.DailyEmployees.OrderByDescending(x => x.Order_ID).Take(1))
                                     {
                                         if (temp.OrderDetail.TimeOut > DateTime.Now)
@@ -131,7 +132,7 @@
                                             }
                                             else
                                             {
-                                                <p style="font-weight: bold; color: red;" id="@temp.OrderDetail.Room_ID"></p>
+                                                <p style="font-weight: bold; color: red;" id="@item.Code"></p>
                                             }
                                         }
                                         else
@@ -144,7 +145,7 @@
                                 </div>
                             </div>
                         </div>
-</tr>
+                    </tr>
                 }
 
 

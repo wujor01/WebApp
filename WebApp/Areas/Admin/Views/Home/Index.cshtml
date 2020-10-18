@@ -99,7 +99,7 @@
                         <div class="panel panel-primary">
                             <div class="panel-heading text-center">
                                 <td id="a" style="margin-left: 4px;">@item.Name</td>
-                                <td class="text-right"><a href="/Admin/DailyList/Payment/@temp.DailyList_ID" class="btn btn-default text-right" data-id="@item.ID"><strong style="color:Tomato;">Thanh toán</strong></a></td>
+                                <td class="text-right"><a href="/Admin/DailyList/Payment/@temp.ID" class="btn btn-default text-right" data-id="@item.ID"><strong style="color:Tomato;">Thanh toán</strong></a></td>
                             </div>
                             <div class="panel-body">
                                 <tbody>
@@ -118,7 +118,7 @@
                             </div>
                             <div class="panel-footer">
 
-                                @if ((DateTime.Now - temp.TimeOut).Value.TotalSeconds > 0)
+                                @if ((DateTime.Now - temp.TimeOut).TotalSeconds > 0)
                                 {
                                     <p style="color: crimson;">Chưa thanh toán</p>
                                 }

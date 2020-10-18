@@ -2,6 +2,7 @@
 using PagedList;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Security.Cryptography;
@@ -276,13 +277,22 @@ namespace Model.Dao
 
         public List<Employee> ListAll(string position, int departmentId)
         {
+            DateTime date = DateTime.Now;
             if (departmentId == 0)
             {
-                return db.Employees.Where(x => x.Status == true && x.Code.StartsWith(position) == true).ToList();
+                return db.Employees.Where(
+                    x => x.Status == true &&
+                    x.Code.StartsWith(position) == true 
+                    ).ToList();
             }
             else
             {
-                return db.Employees.Where(x => x.Status == true && x.Code.StartsWith(position) == true && x.Department_ID == departmentId).ToList();
+                return db.Employees.Where(
+                    x => x.Status == true && 
+                    x.Code.StartsWith(position) == true && 
+                    x.Department_ID == departmentId &&
+                    x.OnAir == false
+                    ).ToList();
             }
         }
         public List<Room> ListRoomAll(int departmentId)
@@ -294,7 +304,10 @@ namespace Model.Dao
             }
             else
             {
-                return db.Rooms.Where(x=>x.Department_ID == departmentId || x.Department_ID == null).ToList();
+                return db.Rooms.Where(
+                    x=>x.Department_ID == departmentId &&
+                    x.Status == true
+                    || x.Department_ID == null).ToList();
             }
         }
     }
