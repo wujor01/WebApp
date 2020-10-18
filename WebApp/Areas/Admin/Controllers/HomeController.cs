@@ -43,14 +43,17 @@ namespace WebApp.Areas.Admin.Controllers
             {
                 DateTime now = DateTime.Now;
 
-                foreach (var temp in item.OrderDetails.Where(x=>x.DailyList.Status == true && x.DailyEmployees.Sum(a=>a.Tip) < 1).OrderByDescending(x=>x.ID).Take(1))
+                foreach (var temp in item.OrderDetails.Where(x=>x.DailyList.Status == true).OrderByDescending(x=>x.ID).Take(1))
                 {
-                    list.Add(new TimerModel
+                    if (temp.DailyEmployees.Sum(x=>x.Tip) < 1)
                     {
-                        Name = item.ID,
-                        ReleaseDateTime = temp.TimeOut.Value.Subtract(new DateTime(1970, 1, 1).AddHours(7)).TotalMilliseconds,
-                        Message = string.Concat(item.Name, " hết giờ")
-                    }) ;
+                        list.Add(new TimerModel
+                        {
+                            Name = item.ID,
+                            ReleaseDateTime = temp.TimeOut.Value.Subtract(new DateTime(1970, 1, 1).AddHours(7)).TotalMilliseconds,
+                            Message = string.Concat(item.Name, " hết giờ")
+                        });
+                    }
                 }
             }
 

@@ -1,4 +1,5 @@
-﻿using Model.Dao;
+﻿using Model;
+using Model.Dao;
 using Model.EF;
 using System;
 using System.Collections.Generic;
@@ -69,8 +70,50 @@ namespace WebApp.Areas.Admin.Controllers
             ViewBag.Voucher_ID = new SelectList(dao.ListAll(), "ID", "Code", selectedId);
         }
 
+        [HttpGet]
         [HasCredential(RoleID = "VIEW_LIST")]
-        public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
+        public ActionResult Invoice(int id)
+        {
+            WebAppDbContext db = new WebAppDbContext();
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+            var dep = db.Departments.Where(x=>x.ID == session.DepartmentID);
+
+            string name = dep.Select(x => x.Name).First().ToString();
+            string address = dep.Select(x => x.Address).First().ToString();
+
+            List<InvoiceModel> model = new List<InvoiceModel>();
+            var order = db.OrderDetails.Where(x => x.DailyList_ID == id);
+
+            foreach (var item in order)
+            {
+                model.Add(new InvoiceModel { 
+                    Description = item.Ticket.Name,
+                    Quality = 1,
+                    Price = item.Amount
+                });
+
+                foreach (var temp in item.DailyEmployees)
+                {
+                    model.Add(new InvoiceModel
+                    {
+                        Description = "Tip " + temp.Employee.Code.Trim(),
+                        Quality = 1,
+                        Price = temp.Tip
+                    });
+                }
+            }
+
+            ViewBag.No = db.DailyLists.Where(x => x.ID == id).Select(x => x.No).First().ToString();
+            ViewBag.Total = model.Sum(x=>x.Price);
+            ViewBag.Invoice = model;
+            ViewBag.Name = "Massage " + name;
+            ViewBag.Address = address;
+
+            return View();
+        }
+
+        [HasCredential(RoleID = "VIEW_LIST")]
+        public ActionResult Index(string searchString, int page = 1, int pageSize = 6)
         {
             var session = (UserLogin)Session[CommonConstants.USER_SESSION];
             var dao = new DailyListDao();
@@ -165,13 +208,17 @@ namespace WebApp.Areas.Admin.Controllers
             OrderDetail[] order)
         {
             string result = "Error! Order Is Not Complete!";
-
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
             DailyList model = new DailyList();
             model.Status = true;
             if (Voucher_ID != 0)
             {
                 model.Status = false;
             }
+            DateTime dt = DateTime.Today;
+            String date = dt.ToString("yyyy-MM-dd");
+            model.No = date.Replace("-","") + "-" + session.DepartmentID.ToString() 
+                + (db.DailyLists.Where(x => DbFunctions.TruncateTime(x.CreatedDate) == dt).Count()+1).ToString("D3");
             model.Voucher_ID = Voucher_ID;
             model.Request = Request;
             model.Description = Description;
@@ -193,8 +240,6 @@ namespace WebApp.Areas.Admin.Controllers
 
                 model.Taxi_ID = taxi.ID;
             }
-
-            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
 
             model.Department_ID = session.DepartmentID;
             model.CreatedDate = DateTime.Now;

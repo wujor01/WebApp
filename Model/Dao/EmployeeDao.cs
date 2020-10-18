@@ -233,6 +233,27 @@ namespace Model.Dao
             }
         }
 
+        public IEnumerable<Employee> ListAllPagingKTV(string searchString, int page, int pageSize, int departmentid, string position)
+        {
+            IQueryable<Employee> model = db.Employees.Where(x => x.Code.StartsWith(position) == true);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                model = model.Where(
+                    x => x.Name.Contains(searchString) || x.Code.Contains(searchString)
+                );
+            }
+
+            if (departmentid == 0)
+            {
+                return model.OrderByDescending(x => x.CreatedDate).ToPagedList(page, pageSize);
+
+            }
+            else
+            {
+                return model.OrderByDescending(x => x.CreatedDate).Where(x => x.Department_ID == departmentid).ToPagedList(page, pageSize);
+            }
+        }
+
         //Kiểm tra user đang nhập có quyền thực hiện các tác vụ thêm, sửa, xóa theo phân quyền
 
         public List<string> GetListCredential(string userName)
@@ -258,7 +279,6 @@ namespace Model.Dao
             if (departmentId == 0)
             {
                 return db.Employees.Where(x => x.Status == true && x.Code.StartsWith(position) == true).ToList();
-
             }
             else
             {

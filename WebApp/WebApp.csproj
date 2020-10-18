@@ -605,7 +605,9 @@
     <Content Include="assets\admin\bower_components\raphael\license.txt" />
     <Content Include="assets\admin\bower_components\raphael\raphael-min.js" />
     <Content Include="assets\admin\bower_components\raphael\raphael.js" />
+    <Content Include="assets\admin\css\print.min.css" />
     <Content Include="assets\admin\css\sb-admin-2.min.css" />
+    <Content Include="assets\admin\css\style.css" />
     <Content Include="assets\admin\dist\css\sb-admin-2.css" />
     <Content Include="assets\admin\dist\css\timeline.css" />
     <Content Include="assets\admin\dist\js\sb-admin-2.js" />
@@ -1275,6 +1277,7 @@
     <Content Include="assets\admin\js\plugins\ckfinder\_samples\skin_v1.html" />
     <Content Include="assets\admin\js\plugins\ckfinder\_samples\standalone.html" />
     <Content Include="assets\admin\js\plugins\ckfinder\_samples\standalone_v1.html" />
+    <Content Include="assets\admin\js\print.min.js" />
     <Content Include="assets\admin\js\sb-admin-2.js" />
     <Content Include="assets\admin\pages\blank.html" />
     <Content Include="assets\admin\pages\buttons.html" />
@@ -1672,6 +1675,9 @@
     <Content Include="Areas\Admin\Views\DailyList\EditEmp.cshtml" />
     <Content Include="Areas\Admin\Views\Statistic\EmpIndex.cshtml" />
     <Content Include="Areas\Admin\Views\DailyList\Payment.cshtml" />
+    <Content Include="Areas\Admin\Views\Employee\SelectKTV.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_LayoutMember.cshtml" />
+    <Content Include="Areas\Admin\Views\DailyList\Invoice.cshtml" />
     <None Include="Properties\PublishProfiles\registry.hub.docker.com_wujor01.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\chosen.jquery.js" />

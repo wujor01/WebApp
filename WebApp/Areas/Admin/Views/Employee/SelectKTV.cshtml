@@ -1,0 +1,158 @@
+﻿@model PagedList.IPagedList<Model.EF.Employee>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Index";
+    if (ViewBag.UserGroup == "MEMBER")
+    {
+        Layout = "~/Areas/Admin/Views/Shared/_LayoutMember.cshtml";
+    }
+    else
+    {
+        Layout = "~/Areas/Admin/Views/Shared/_Layouts.cshtml";
+    }
+}
+@section header{
+    Danh sách KTV
+}
+@section JsFooter{
+    <script>
+        var lstTimer = @Html.Raw(Json.Encode(ViewBag.TimerList));
+
+        function _SetTimerDisplay(objTime, label) {
+
+            var now = new Date().getTime();
+            // Find the distance between now and the count down date
+            var distance = objTime.ReleaseDateTime - now;
+            // Time calculations for days, hours, minutes and seconds
+            var minutes = Math.floor((distance  / (1000 * 60)));
+            var seconds = Math.floor((distance % (1000 * 60) / 1000));
+            // If the count down is over, write some text
+            if (distance < 0) {
+                //clearInterval(x);
+                objTime.Name = "EXPIRED";
+                document.getElementById(label).innerHTML = "Hết giờ";
+            }
+            else {
+                // Output the result in an element with id="Display"
+                document.getElementById(label).innerHTML = minutes + "m " + seconds + "s ";
+            }
+
+        }
+
+        // Set the date we're counting down to
+        function UpdateTimer() {
+            for (var i = 0; i < lstTimer.length; i++) {
+                var iCount = 0;
+                if (lstTimer[i].Name != 'EXPIRED') {
+                    _SetTimerDisplay(lstTimer[i], lstTimer[i].Name);
+                    iCount++;
+                }
+            }
+            var vFound = lstTimer.find(function (element) {
+                return (element.Name != "EXPIRED" ? true : false);
+            });
+            if (vFound == undefined) {
+                clearInterval(x);
+            }
+        }
+
+        var x = setInterval(function () {
+            UpdateTimer();
+        }, 1000);
+    </script>
+    <script>
+        $("#txtsearch").on("keyup", function () {
+            var txtenter = $(this).val();
+            $("table tr").each(function (results) {
+                if (results !== 0) {
+                    var id = $(this).find("td:nth-child(3)").text();//Vị trí của <td>từ 1 đếm xuống
+                    if (id.indexOf(txtenter) !== 0 && id.toLowerCase().indexOf(txtenter.toLowerCase()) < 0) {
+                        $(this).hide();
+                    }
+                    else {
+                        $(this).show();
+                    }
+                }
+            })
+        });
+    </script>
+}
+
+<div class="row">
+
+    <div class="col-lg-12">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Danh sách KTV
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+
+
+                @foreach (var item in Model)
+                {
+                    <tr id="row_@item.ID">
+                        <div class="col-6 col-sm-3">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <td>@item.Code</td>
+                                </div>
+                                <div class="panel-body">
+                                    <!-- Trigger the modal with a button -->
+                                    <td><button type="button" class="btn btn-link" data-toggle="modal" data-target="#@item.ID"><img class="thumbnail img-responsive" src="@item.Image" /></button></td>
+                                    <br />
+                                    <td>@item.Description</td>
+                                    <br />
+                                    <!-- Modal -->
+                                    <div id="@item.ID" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">@item.Code</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p><img class="thumbnail img-responsive" src="@item.Image" /></p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    @foreach (var temp in item.DailyEmployees.OrderByDescending(x => x.Order_ID).Take(1))
+                                    {
+                                        if (temp.OrderDetail.TimeOut > DateTime.Now)
+                                        {
+                                            if (temp.Tip > 0)
+                                            {
+                                                <td>Trống</td>
+                                            }
+                                            else
+                                            {
+                                                <p style="font-weight: bold; color: red;" id="@temp.OrderDetail.Room_ID"></p>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <td>Trống</td>
+                                        }
+                                    }
+                                    <td>@item.TimeStart</td>
+                                    <td>@item.TimeOut</td>
+                                </div>
+                            </div>
+                        </div>
+</tr>
+                }
+
+
+
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div>
+</div>
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, @searchString = @ViewBag.SearchString }))

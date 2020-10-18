@@ -37,7 +37,15 @@ namespace WebApp.Areas.Admin.Controllers
 
                     Session.Add(CommonConstants.SESSION_CREDENTIALS, listCredentials);
                     Session.Add(CommonConstants.USER_SESSION, userSession);
-                    return RedirectToAction("Index", "Home");
+                    if (user.GroupID == "MEMBER")
+                    {
+                        return RedirectToAction("SelectKTV", "Employee");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    
                 }
                 else if (result == 0)
                 {

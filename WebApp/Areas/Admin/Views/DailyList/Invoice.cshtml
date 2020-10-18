@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="~/assets/admin/css/style.css" rel="stylesheet" />
+    <title>HÓA ĐƠN: @ViewBag.No</title>
+</head>
+<body>
+    <div class="ticket">
+        <img src="/Areas/Admin/Data/System/logo.png" alt="Logo">
+        <p class="centered">
+        No. @ViewBag.No
+            <br>@ViewBag.Name
+            <br>@ViewBag.Address
+        </p>
+        <table>
+            <thead>
+                <tr>
+                    <th class="description">Dịch vụ</th>
+                    <th class="quantity">Số lượng</th>
+                    <th class="price">Số tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ViewBag.Invoice)
+                {
+                    <tr>
+                        <td class="description">@item.Description</td>
+                        <td class="quantity">@item.Quality</td>
+                        <td class="price">@(string.Format("{0:#,##0}", item.Price))</td>
+                    </tr>
+                }
+
+                        <td class="quantity"></td>
+                        <td class="description">TOTAL</td>
+                        <td class="price">@(string.Format("{0:#,##0}", ViewBag.Total))</td>
+                    </tr>
+                </tbody>
+            </table>
+        <p class="centered">
+            Cảm ơn quý khách đã sử dụng dịch vụ!
+            <br>massagevua.net
+        </p>
+    </div>
+    <button id="btnPrint" class="hidden-print">In</button>
+    <script src="script.js"></script>
+</body>
+</html>
+<script>
+    window.onload = function () {
+        window.print();
+    }
+
+    const $btnPrint = document.querySelector("#btnPrint");
+    $btnPrint.addEventListener("click", () => {
+        window.print();
+    });
+</script>

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Model;
 using Model.Dao;
 using Model.EF;
 using WebApp.Common;
@@ -12,8 +13,24 @@ namespace WebApp.Areas.Admin.Controllers
 {
     public class EmployeeController : BaseController
     {
-        // GET: Admin/Employee
+        
+        public void SetViewBag(int? selectedId = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
 
+            var dao = new DepartmentDao();
+            ViewBag.Department_ID = new SelectList(dao.ListDepartment(session.DepartmentID), "ID", "Name", selectedId);
+        }
+
+        public void SetViewEmp(string[] selectedlist = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new EmployeeDao();
+            ViewBag.Employee_ID = new SelectList(dao.ListAll("KTV", session.DepartmentID), "ID", "Code", selectedlist);
+        }
+
+        // GET: Admin/Employee
         [HasCredential(RoleID = "VIEW_USER")]
         public ActionResult Index(string searchString, int page = 1, int pageSize = 10)
         {
@@ -27,12 +44,49 @@ namespace WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        public void SetViewBag(int? selectedId = null)
+        [HasCredential(RoleID = "SELECT_KTV")]
+        public ActionResult SelectKTV(int page = 1, int pageSize = 10)
         {
+            var dao = new EmployeeDao();
             var session = (UserLogin)Session[CommonConstants.USER_SESSION];
 
-            var dao = new DepartmentDao();
-            ViewBag.Department_ID = new SelectList(dao.ListDepartment(session.DepartmentID), "ID", "Name", selectedId);
+            string searchString = null;
+
+            var model = dao.ListAllPagingKTV(searchString, page, pageSize, session.DepartmentID, "KTV");
+
+            List<TimerModel> list = new List<TimerModel>();
+
+            WebAppDbContext db = new WebAppDbContext();
+
+            var daoRoom = new RoomDao();
+            var modelRoom = daoRoom.ListAllPaging(searchString, page, pageSize, session.DepartmentID);
+
+            var rooms = modelRoom;
+
+            foreach (var item in rooms)
+            {
+                DateTime now = DateTime.Now;
+
+                foreach (var temp in item.OrderDetails.Where(x => x.DailyList.Status == true).OrderByDescending(x => x.ID).Take(1))
+                {
+                    if (temp.DailyEmployees.Sum(x => x.Tip) < 1)
+                    {
+                        list.Add(new TimerModel
+                        {
+                            Name = item.ID,
+                            ReleaseDateTime = temp.TimeOut.Value.Subtract(new DateTime(1970, 1, 1).AddHours(7)).TotalMilliseconds,
+                            Message = string.Concat(item.Name, " hết giờ")
+                        });
+                    }
+                }
+            }
+
+            ViewBag.UserGroup = session.GroupID;
+            ViewBag.TimerList = list;
+
+            ViewBag.SearchString = searchString;
+
+            return View(model);
         }
 
         [HttpGet]

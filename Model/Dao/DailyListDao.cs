@@ -236,7 +236,7 @@ namespace Model.Dao
             if (!string.IsNullOrEmpty(searchString))
             {
                 model = model.Where(
-                    x => x.ID.ToString().Contains(searchString)
+                    x => x.No.ToString().Contains(searchString)
                 );
             }
             if (departmentId == 0)

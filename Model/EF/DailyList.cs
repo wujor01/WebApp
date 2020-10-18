@@ -17,6 +17,9 @@ namespace Model.EF
 
         public long ID { get; set; }
 
+        [StringLength(20)]
+        public string No { get; set; }
+
         public int? Department_ID { get; set; }
 
         public long? Voucher_ID { get; set; }
@@ -35,7 +38,7 @@ namespace Model.EF
         [StringLength(500)]
         public string Description { get; set; }
 
-        public DateTime? CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         [StringLength(50)]
         public string CreatedBy { get; set; }

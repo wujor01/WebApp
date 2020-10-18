@@ -64,25 +64,25 @@ namespace WebApp.Areas.Admin.Controllers
             {
 
                 ////Tổng ngày hôm nay
-                ticketTotalinDate.Add(db.OrderDetails.Where(x => x.Ticket.Department.Name == item && DbFunctions.TruncateTime(x.DailyList.CreatedDate.Value) == DateTime.Today).Sum(x => x.Amount));
+                ticketTotalinDate.Add(db.OrderDetails.Where(x => x.Ticket.Department.Name == item && x.DailyList.CreatedDate.Day == DateTime.Today.Day && x.DailyList.CreatedDate.Month == DateTime.Today.Month && x.DailyList.CreatedDate.Year == DateTime.Today.Year).Sum(x => x.Amount));
 
                 //Tổng tháninnày
-                ticketPriceinMonth.Add(db.OrderDetails.Where(x => x.Ticket.Department.Name == item && x.DailyList.CreatedDate.Value.Month == DateTime.Today.Month && x.DailyList.CreatedDate.Value.Year == DateTime.Today.Year).Sum(x => x.Amount));
+                ticketPriceinMonth.Add(db.OrderDetails.Where(x => x.Ticket.Department.Name == item && x.DailyList.CreatedDate.Month == DateTime.Today.Month && x.DailyList.CreatedDate.Year == DateTime.Today.Year).Sum(x => x.Amount));
                            
                 //Tổng năm iny
-                ticketPriceinYear.Add(db.OrderDetails.Where(x => x.Ticket.Department.Name == item && x.DailyList.CreatedDate.Value.Month == DateTime.Today.Month && x.DailyList.CreatedDate.Value.Year == DateTime.Today.Year).Sum(x => x.Amount));
+                ticketPriceinYear.Add(db.OrderDetails.Where(x => x.Ticket.Department.Name == item && x.DailyList.CreatedDate.Month == DateTime.Today.Month && x.DailyList.CreatedDate.Year == DateTime.Today.Year).Sum(x => x.Amount));
 
                 //Tổng trước đến nay
                 ticketCount.Add(db.OrderDetails.Where(x => x.Ticket.Department.Name == item ).Sum(x => x.Amount));
 
                 ////TổngCount hôm nay
-                ticketCountinDate.Add(db.OrderDetails.Where(x => x.Ticket.Department.Name == item && DbFunctions.TruncateTime(x.DailyList.CreatedDate.Value) == DateTime.Today).Count());
+                ticketCountinDate.Add(db.OrderDetails.Where(x => x.Ticket.Department.Name == item && DbFunctions.TruncateTime(x.DailyList.CreatedDate) == DateTime.Today).Count());
 
                 //TổngCount tháng này
-                ticketCountinMonth.Add(db.OrderDetails.Where(x => x.Ticket.Department.Name == item && x.DailyList.CreatedDate.Value.Month == DateTime.Today.Month && x.DailyList.CreatedDate.Value.Year == DateTime.Today.Year).Count());
+                ticketCountinMonth.Add(db.OrderDetails.Where(x => x.Ticket.Department.Name == item && x.DailyList.CreatedDate.Month == DateTime.Today.Month && x.DailyList.CreatedDate.Year == DateTime.Today.Year).Count());
                            
                 //TổngCount năm
-                ticketCountinYear.Add(db.OrderDetails.Where(x => x.Ticket.Department.Name == item && x.DailyList.CreatedDate.Value.Year == DateTime.Today.Year).Count());
+                ticketCountinYear.Add(db.OrderDetails.Where(x => x.Ticket.Department.Name == item && x.DailyList.CreatedDate.Year == DateTime.Today.Year).Count());
 
                 //TổngCount từ trước đến nay
                 ticketCount.Add(db.OrderDetails.Where(x => x.Ticket.Department.Name == item ).Count());

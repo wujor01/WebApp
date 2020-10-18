@@ -31,7 +31,7 @@ namespace Model.Dao
 
             foreach (var item in list)
             {
-                DateTime a = item.DailyList.CreatedDate.Value.Date;
+                DateTime a = item.DailyList.CreatedDate.Date;
 
                 var s = db.StatisticTickets.Where(x => DbFunctions.TruncateTime(x.Datetime) == a && x.Ticket_ID == item.Ticket_ID).ToList();
                 if (s.Count == 0)

@@ -10,7 +10,6 @@
     <!-- Bootstrap Core CSS -->
 
     <link href="/assets/admin/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/assets/admin/css/print.min.css" rel="stylesheet" />
 
     @*<link href="/assets/client/css/font-awesome.min.css" rel="stylesheet" />*@
     <!-- MetisMenu CSS -->
@@ -30,28 +29,26 @@
 <body>
     <div id="wrapper">
         <!-- Navigation -->
-        @RenderPage("_Navigation.cshtml")
         <!-- Page Content -->
-        <div id="page-wrapper">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h3 class="page-header">@RenderSection("header", required: false)</h3>
-                    </div>
-                    <!-- /.col-lg-12 -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="page-header">@RenderSection("header", required: false)</h3>
                 </div>
-                <!-- /.row -->
-                @if (TempData["AlertMessage"] != null)
-                {
-                    <div id="AlertBox" class="alert @TempData["AlertType"] hide">
-                        @TempData["AlertMessage"]
-                    </div>
-                }
-
-                @RenderBody()
+                <!-- /.col-lg-12 -->
             </div>
-            <!-- /.container-fluid -->
+            <!-- /.row -->
+            @if (TempData["AlertMessage"] != null)
+            {
+                <div id="AlertBox" class="alert @TempData["AlertType"] hide">
+                    @TempData["AlertMessage"]
+                </div>
+            }
+
+            @RenderBody()
+            <a href=@Url.Action("LogOut","Login")><i class="fa fa-sign-out fa-fw"></i> Đăng xuất</a>
         </div>
+        <!-- /.container-fluid -->
         <!-- /#page-wrapper -->
     </div>
     <!-- /#wrapper -->
@@ -65,7 +62,6 @@
     <!-- Metis Menu Plugin JavaScript -->
     <script src="/assets/admin/bower_components/metisMenu/dist/metisMenu.min.js"></script>
     <script src="/assets/admin/js/plugins/ckfinder/ckfinder.js"></script>
-    <script src="~/assets/admin/js/print.min.js"></script>
     @*<script src="/assets/admin/js/plugins/ckeditor/ckeditor.js"></script>*@
     <!-- Custom Theme JavaScript -->
     <script src="/assets/admin/dist/js/sb-admin-2.js"></script>
