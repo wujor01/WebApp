@@ -180,8 +180,6 @@ namespace WebApp.Areas.Admin.Controllers
         [HasCredential(RoleID = "VIEW_CODE")]
         public ActionResult CodeIndex(string searchString, int page = 1, int pageSize = 10)
         {
-            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
-
             var dao = new DailyListDao();
             var model = dao.ListAllPagingCode(searchString, page, pageSize);
 
@@ -523,8 +521,6 @@ namespace WebApp.Areas.Admin.Controllers
         {
             var dao =new DailyListDao();
             long id = dao.UpdateEmp(emp);
-            var order = db.OrderDetails.Find(emp.Order_ID);
-            long dailyID = order.DailyList_ID;
             SetViewEmp();
             if (id > 0)
             {

@@ -1681,6 +1681,8 @@
     <Content Include="Areas\Admin\Views\DailyList\Invoice.cshtml" />
     <Content Include="Areas\Admin\Views\Credential\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Credential\Index.cshtml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
     <None Include="Properties\PublishProfiles\registry.hub.docker.com_wujor01.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\chosen.jquery.js" />

@@ -1,4 +1,4 @@
-namespace Model.EF
+﻿namespace Model.EF
 {
     using System;
     using System.Collections.Generic;
@@ -21,8 +21,10 @@ namespace Model.EF
 
         public decimal Tip { get; set; }
 
+        [Display(Name = "Tua")]
         public decimal Tour { get; set; }
 
+        [Display(Name = "Vệ sinh")]
         public decimal Clean { get; set; }
 
         [Column(TypeName = "date")]

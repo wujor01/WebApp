@@ -1,4 +1,4 @@
-namespace Model.EF
+﻿namespace Model.EF
 {
     using System;
     using System.Collections.Generic;
@@ -17,14 +17,17 @@ namespace Model.EF
 
         public long ID { get; set; }
 
+        [Display(Name = "Chi nhánh")]
         public int? Department_ID { get; set; }
 
+        [Display(Name = "Voucher/Code")]
         public long? Voucher_ID { get; set; }
 
         public long? Taxi_ID { get; set; }
 
         public decimal PricewithVoucher { get; set; }
 
+        [Display(Name = "Tổng")]
         public decimal Total { get; set; }
 
         public bool Status { get; set; }
