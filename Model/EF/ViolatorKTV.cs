@@ -21,13 +21,19 @@ namespace Model.EF
 
         public bool? Request { get; set; }
 
+        public string[] SelectedIDArray { get; set; }
+
+        [DataType(DataType.Time)]
+        public DateTime TimeIn { get; set; }
+
+        [DataType(DataType.Time)]
+        public DateTime TimeOut { get; set; }
+
         public decimal Tour { get; set; }
 
         public decimal Fruit { get; set; }
 
         public decimal Elevator { get; set; }
-
-        public decimal Substitution { get; set; }
 
         public decimal? TipinDate { get; set; }
 

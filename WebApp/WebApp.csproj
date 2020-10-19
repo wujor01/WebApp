@@ -155,6 +155,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CredentialController.cs" />
     <Compile Include="Areas\Admin\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Admin\Controllers\DayOffController.cs" />
     <Compile Include="Areas\Admin\Controllers\DepartmentController.cs" />
@@ -1678,6 +1679,8 @@
     <Content Include="Areas\Admin\Views\Employee\SelectKTV.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_LayoutMember.cshtml" />
     <Content Include="Areas\Admin\Views\DailyList\Invoice.cshtml" />
+    <Content Include="Areas\Admin\Views\Credential\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Credential\Index.cshtml" />
     <None Include="Properties\PublishProfiles\registry.hub.docker.com_wujor01.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\chosen.jquery.js" />

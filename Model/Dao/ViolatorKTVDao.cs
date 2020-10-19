@@ -18,9 +18,17 @@ namespace Model.Dao
 
         public long Insert(ViolatorKTV entity)
         {
-            db.ViolatorKTVs.Add(entity);
-            db.SaveChanges();
-            return entity.ID;
+            int a = 0;
+            string[] arrEmpId = string.Join(",", entity.SelectedIDArray).Replace(" ", "").Split(',');
+            for (int i = 0; i < arrEmpId.Length; i++)
+            {
+                entity.Employee_ID = Int32.Parse(arrEmpId[i]);
+                entity.TimeOut = entity.TimeIn.AddHours(12);
+                db.ViolatorKTVs.Add(entity);
+                db.SaveChanges();
+                a = 1;
+            }
+            return a;
         }
 
         public long Update(ViolatorKTV entity,string username)

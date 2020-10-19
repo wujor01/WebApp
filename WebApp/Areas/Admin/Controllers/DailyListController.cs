@@ -34,6 +34,14 @@ namespace WebApp.Areas.Admin.Controllers
             ViewBag.SelectedIDArray = new MultiSelectList(dao.ListAll("KTV",session.DepartmentID), "ID", "Code",selectedlist);
         }
 
+        public void SetViewBagKTV(string[] selectedlist = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new EmployeeDao();
+            ViewBag.SelectedIDArray = new MultiSelectList(dao.ListAllKTV("KTV", session.DepartmentID), "ID", "Code", selectedlist);
+        }
+
         public void SetViewEmp(string[] selectedlist = null)
         {
             var session = (UserLogin)Session[CommonConstants.USER_SESSION];
@@ -243,7 +251,15 @@ namespace WebApp.Areas.Admin.Controllers
             var session = (UserLogin)Session[CommonConstants.USER_SESSION];
             DailyList model = new DailyList();
             model.Status = true;
-            if (Voucher_ID != 0)
+            foreach (var item in order)
+            {
+                if (item.Room_ID == 0 || item.Ticket_ID == 0)
+                {
+                    SetAlert("Lỗi khi tạo phòng và vé", "error");
+                    return RedirectToAction("Index");
+                }
+            }
+                if (Voucher_ID != 0)
             {
                 model.Status = false;
             }
@@ -292,8 +308,22 @@ namespace WebApp.Areas.Admin.Controllers
                 var ticket = db.Tickets.Find(item.Ticket_ID);
                 DateTime dt = DateTime.Today;
                 string date = dt.ToString("yyyy-MM-dd");
-                O.No = date.Replace("-", "") + "-" + session.DepartmentID.ToString()
-                    + (db.OrderDetails.Where(x => DbFunctions.TruncateTime(x.TimeIn) == dt).Count() + 1).ToString("D3");
+                if (db.OrderDetails.Where(x => DbFunctions.TruncateTime(x.TimeIn) == dt).Count() == 0)
+                {
+                    O.No = date.Replace("-", "") + "-" + session.DepartmentID.ToString()
+                    + 1.ToString("D3");
+                }
+                else
+                {
+                    string Str = null;
+                    foreach (var temp in db.OrderDetails.Where(x => DbFunctions.TruncateTime(x.TimeIn) == dt).OrderByDescending(x => x.ID).Take(1))
+                    {
+                        Str = temp.No;
+                    }
+                    string Str1 = Str.Substring(11);
+                    O.No = date.Replace("-", "") + "-" + session.DepartmentID.ToString()
+                    + (Int32.Parse(Str1) + 1).ToString("D3");
+                }
 
                 string[] arrEmpId = string.Join(",", item.SelectedIDArray).Replace(" ", "").Split(',');
                 O.empId = string.Join(",", item.SelectedIDArray);

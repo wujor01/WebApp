@@ -68,7 +68,7 @@ namespace WebApp.Areas.Admin.Controllers
                     ModelState.AddModelError("","Đăng nhập không thành công!");
                 }
             }
-            return View("Index");
+            return RedirectToAction("Index", "Home");
         }
         public ActionResult LogOut()
         {

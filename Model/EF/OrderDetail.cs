@@ -23,9 +23,9 @@ namespace Model.EF
 
         public long DailyList_ID { get; set; }
 
-        public string[] SelectedIDArray { get; set; }
-
         public int Room_ID { get; set; }
+
+        public string[] SelectedIDArray { get; set; }
 
         public int Ticket_ID { get; set; }
 

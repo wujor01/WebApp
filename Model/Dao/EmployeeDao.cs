@@ -287,14 +287,45 @@ namespace Model.Dao
             }
             else
             {
-                return db.Employees.Where(
+                var vio =  db.ViolatorKTVs.Where(
+                    x => DateTime.Compare(x.TimeIn,date) < 0 &&
+                    DateTime.Compare(x.TimeOut,date) > 0
+                    ).ToList();
+
+                var emp =  db.Employees.Where(
                     x => x.Status == true && 
                     x.Code.StartsWith(position) == true && 
                     x.Department_ID == departmentId &&
-                    x.OnAir == false
+                    x.OnAir == false &&
+                    x.ViolatorKTVs.Where(
+                    a => DateTime.Compare(a.TimeIn, date) < 0 &&
+                    DateTime.Compare(a.TimeOut, date) > 0).Count() > 0
+                    ).ToList();
+                return emp;
+            }
+        }
+
+        public List<Employee> ListAllKTV(string position, int departmentId)
+        {
+            DateTime date = DateTime.Now;
+            if (departmentId == 0)
+            {
+                return db.Employees.Where(
+                    x => x.Status == true &&
+                    x.Code.StartsWith(position) == true
+                    ).ToList();
+            }
+            else
+            {
+
+                return db.Employees.Where(
+                    x => x.Status == true &&
+                    x.Code.StartsWith(position) == true &&
+                    x.Department_ID == departmentId
                     ).ToList();
             }
         }
+
         public List<Room> ListRoomAll(int departmentId)
         {
             if (departmentId == 0)

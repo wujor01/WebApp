@@ -80,6 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dao\CredentialDao.cs" />
     <Compile Include="Dao\CustomerDao.cs" />
     <Compile Include="Dao\DayOffDao.cs" />
     <Compile Include="Dao\DeparmentDao.cs" />

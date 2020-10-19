@@ -5,9 +5,6 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layouts.cshtml";
 }
 
-@section header{
-    Danh sách vi phạm/tạm ứng
-}
 
 <div class="row">
 
@@ -15,7 +12,7 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                Danh sách vi phạm/tạm ứng
+                Chấm công KTV
             </div>
 
             <!-- /.panel-heading -->
@@ -40,36 +37,36 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <td>Ngày giờ</td>
+                                <td>Giờ vào ca</td>
+                                <td>Giờ kết ca</td>
                                 <th>Mã nhân viên</th>
                                 <td>Tua</td>
                                 <td>Trái cây</td>
-                                <td>Thế chân</td>
                                 <td>Ghi chú</td>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr id="row_@item.ID">
-                                    <th>#@item.ID</th>
-                                    <td>@item.CreatedDate</td>
-                                    <td>@item.Employee.Code</td>
-                                    <td>@(string.Format("{0:#,##0}", item.Tour))</td>
-                                    <td>@(string.Format("{0:#,##0}", item.Fruit))</td>
-                                    <td>@(string.Format("{0:#,##0}", item.Substitution))</td>
-                                    <td>@item.Description</td>
-                                    <td>
-                                        <a href="/Admin/ViolatorKTV/Edit/@item.ID">Sửa</a>
-                                        |
-                                        @Ajax.ActionLink("Xoá", "Delete", new { @id = item.ID }, new AjaxOptions
-                                   {
-                                       Confirm = "Bạn có muốn xoá bản ghi này?",
-                                       OnComplete = "$('#row_" + @item.ID + "').remove()",
-                                       HttpMethod = "Delete"
-                                   })
-                                    </td>
-                                </tr>
+                            <tr id="row_@item.ID">
+                                <th>#@item.ID</th>
+                                <td>@item.TimeIn</td>
+                                <td>@item.TimeOut</td>
+                                <td>@item.Employee.Code</td>
+                                <td>@(string.Format("{0:#,##0}", item.Tour))</td>
+                                <td>@(string.Format("{0:#,##0}", item.Fruit))</td>
+                                <td>@item.Description</td>
+                                <td>
+                                    <a href="/Admin/ViolatorKTV/Edit/@item.ID">Sửa</a>
+                                    |
+                                    @Ajax.ActionLink("Xoá", "Delete", new { @id = item.ID }, new AjaxOptions
+                               {
+                                   Confirm = "Bạn có muốn xoá bản ghi này?",
+                                   OnComplete = "$('#row_" + @item.ID + "').remove()",
+                                   HttpMethod = "Delete"
+                               })
+                                </td>
+                            </tr>
                             }
 
 

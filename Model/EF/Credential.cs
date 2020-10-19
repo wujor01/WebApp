@@ -18,5 +18,7 @@ namespace Model.EF
         [Column(Order = 1)]
         [StringLength(50)]
         public string RoleID { get; set; }
+
+        public string[] SelectedIDRole { get; set; }
     }
 }

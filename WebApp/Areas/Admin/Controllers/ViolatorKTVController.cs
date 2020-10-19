@@ -28,6 +28,7 @@ namespace WebApp.Areas.Admin.Controllers
         [HasCredential(RoleID = "ADD_VIOLATORKTV")]
         public ActionResult Create()
         {
+            SetViewBagKTV();
             SetViewBag();
             return View();
         }
@@ -37,7 +38,15 @@ namespace WebApp.Areas.Admin.Controllers
             var session = (UserLogin)Session[CommonConstants.USER_SESSION];
 
             var dao = new EmployeeDao();
-            ViewBag.Employee_ID = new SelectList(dao.ListAll("KTV", session.DepartmentID), "ID", "Code", selectedId);
+            ViewBag.Employee_ID = new SelectList(dao.ListAllKTV("KTV", session.DepartmentID), "ID", "Code", selectedId);
+        }
+
+        public void SetViewBagKTV(string[] selectedlist = null)
+        {
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+
+            var dao = new EmployeeDao();
+            ViewBag.SelectedIDArray = new MultiSelectList(dao.ListAllKTV("KTV", session.DepartmentID), "ID", "Code", selectedlist);
         }
 
         [HttpPost]
@@ -73,6 +82,9 @@ namespace WebApp.Areas.Admin.Controllers
         public ActionResult Edit(int id)
         {
             var violatorKTV = new ViolatorKTVDao().ViewDetail(id);
+            var session = (UserLogin)Session[CommonConstants.USER_SESSION];
+            ViewBag.Role = session.GroupID;
+            SetViewBagKTV();
             SetViewBag();
             return View(violatorKTV);
         }

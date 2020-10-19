@@ -340,10 +340,6 @@ namespace Model.EF
                 .HasPrecision(18, 0);
 
             modelBuilder.Entity<ViolatorKTV>()
-                .Property(e => e.Substitution)
-                .HasPrecision(18, 0);
-
-            modelBuilder.Entity<ViolatorKTV>()
                 .Property(e => e.TipinDate)
                 .HasPrecision(18, 0);
 
