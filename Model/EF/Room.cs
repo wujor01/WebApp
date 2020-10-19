@@ -31,6 +31,8 @@
         [Display(Name = "Trạng thái")]
         public bool Status { get; set; }
 
+        public DateTime? CreatedDate { get; set; }
+
         [StringLength(50)]
         public string CreatedBy { get; set; }
 

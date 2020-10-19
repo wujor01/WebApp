@@ -52,7 +52,7 @@ namespace WebApp.Areas.Admin.Controllers
 
             string searchString = null;
 
-            var model = dao.ListAllPagingKTV(searchString, page, pageSize, session.DepartmentID, "KTV");
+            var model = dao.ListAllPagingKTVStatus(searchString, page, pageSize, session.DepartmentID, "KTV");
 
             List<TimerModel> list = new List<TimerModel>();
 

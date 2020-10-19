@@ -124,16 +124,9 @@
                                     
                                     @foreach (var temp in item.DailyEmployees.OrderByDescending(x => x.Order_ID).Take(1))
                                     {
-                                        if (temp.OrderDetail.TimeOut > DateTime.Now)
+                                        if (temp.Employee.OnAir == true)
                                         {
-                                            if (temp.Tip > 0)
-                                            {
-                                                <td>Trống</td>
-                                            }
-                                            else
-                                            {
                                                 <p style="font-weight: bold; color: red;" id="@item.Code"></p>
-                                            }
                                         }
                                         else
                                         {
